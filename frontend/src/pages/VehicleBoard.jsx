@@ -5,8 +5,9 @@ import VehicleMakeFilter from '../components/VehicleMakeFilter';
 import { useState } from 'react';
 import VehicleFuelFilter from '../components/VehicleFuelFilter';
 
-const VehicleBoard = () => {
+import { useNavigate } from 'react-router-dom';
 
+const VehicleBoard = () => {
 
   const vehiclesMock = [
     {
@@ -258,6 +259,8 @@ const VehicleBoard = () => {
     { id: '6', name: 'Tesla' },
   ]);
 
+  const navigate = useNavigate();
+
   const [selectedGroup, setSelectedGroup] = useState('0');
   const [selectedMake, setSelectedMake] = useState('0');
   const [selectedFuelType, setSelectedFuelType] = useState('0');
@@ -300,6 +303,11 @@ const VehicleBoard = () => {
     setVehicles(filteredVehicles);
   }
 
+  const handleClickDetails = (vehicleId) => {
+    const vehicle = vehicles.find(vehicle => vehicle.vehicleId === vehicleId);
+    navigate(`/vehicle-details/${vehicleId}`, { state: { vehicle } });
+  }
+
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
       <h1 className='text-center'>Select a vehicle group</h1>
@@ -307,7 +315,7 @@ const VehicleBoard = () => {
       <VehicleFuelFilter vehicleFuelTypes={vehicleFuelTypes} selectedFuelType={selectedFuelType} onSelectFuelType={handleSelectFuelType}/>
       <VehicleMakeFilter vehicleMakes={vehicleMake} selectedMake={selectedMake} onSelectVehicleMake={handleSelectVehicleMake}/>
       <RentalDateFilter/>
-      <VehicleCardList vehicles={vehicles} />
+      <VehicleCardList vehicles={vehicles} onClickDetails={handleClickDetails} />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Car, User} from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -11,34 +12,61 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-white shadow-md">
-      <Link to="/" className="text-2xl font-bold">Best Car Rental</Link>
-      <div>
+    <>
+      <header className='container flex items-center justify-between px-6 py-4'>
+        <div className='flex items-center gap-2'>
+          <div className='p-2 rounded-full bg-primary'>
+            <Car className='w-6 h-6 text-white' />
+          </div>
+          <span className='font-medium'>Best Car Rental</span>
+        </div>
+        <nav className='flex items-center gap-8'>
+          <Link to='/' className='hover:text-primary'>
+            Home
+          </Link>
+          <Link to='/vehicles' className='hover:text-primary'>
+            Vehicles
+          </Link>
+          <Link to='#' className='hover:text-primary'>
+            About Us
+          </Link>
+          <Link to='#' className='hover:text-primary'>
+            Contact Us
+          </Link>
+        </nav>
         {user ? (
-          <>
-            <Link to="/cars" className="mr-4">Cars</Link>
-            <Link to="/rentals" className="mr-4">Bookings</Link>
-            <Link to="/profile" className="mr-4">Profile</Link>
+          <div className='flex items-center gap-4'>
+            <Link to='/profile' className='flex items-center gap-2'>
+              <span className='text-sm text-gray-600'>Hello, Alex</span>
+              <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
+                <User className='w-6 h-6' />
+              </div>
+            </Link>
+            <Link to='#' className='hover:text-primary'>
+              My Bookings
+            </Link>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 rounded hover:bg-red-700"
+              className='px-4 py-2 bg-red-500 rounded hover:bg-red-700'
             >
               Logout
             </button>
-          </>
+          </div>
         ) : (
-          <>
-            <Link to="/login" className="mr-4">Login</Link>
+          <div className='flex items-center gap-4'>
+            <Link to='/login' className='mr-4'>
+              Login
+            </Link>
             <Link
-              to="/register"
-              className="px-4 py-2 bg-green-500 rounded hover:bg-green-700"
+              to='/register'
+              className='px-4 py-2 bg-green-500 rounded cursor-pointer hover:bg-green-700'
             >
               Register
             </Link>
-          </>
+          </div>
         )}
-      </div>
-    </nav>
+      </header>
+    </>
   );
 };
 

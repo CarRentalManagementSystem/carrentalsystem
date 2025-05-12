@@ -7,6 +7,7 @@ import Rentals from './pages/Rentals';
 import RentalForm from "./components/RentalForm";
 import Home from './pages/Home';
 import VehicleBoard from './pages/VehicleBoard';
+import VehicleDetails from './pages/VehicleDetails';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/rentals" element={<Rentals />} />
         <Route path="/cars" element={<Home />} />
         <Route path="/vehicles" element={<VehicleBoard />} />
+        <Route path="/vehicle-details/:vehicleId" element={<VehicleDetails/>} />
         <Route path="/rental-form/:carId" element={<RentalForm />} />
       </Routes>
     </Router>

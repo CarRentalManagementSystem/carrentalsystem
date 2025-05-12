@@ -1,9 +1,11 @@
 import { Fuel, Settings2 } from 'lucide-react';
 
-const VehicleCard = ({ car }) => {
+const VehicleCard = ({ car, onClickDetails }) => {
+
+  
   return (
     <div
-      key={car._id}
+      key={car.vehicleId}
       className='overflow-hidden bg-white border border-gray-100 rounded shadow-sm'
     >
       <div className='flex items-center justify-center h-48 bg-secondary'>
@@ -12,7 +14,9 @@ const VehicleCard = ({ car }) => {
       <div className='p-4'>
         <div className='flex items-start justify-between mb-1'>
           <div>
-            <h3 className='text-lg font-semibold'>{car.manufacturer} {car.model}</h3>
+            <h3 className='text-lg font-semibold'>
+              {car.manufacturer} {car.model}
+            </h3>
             <p className='text-sm text-gray-500'>{car.vehicleType}</p>
           </div>
           <div className='text-right'>
@@ -33,7 +37,10 @@ const VehicleCard = ({ car }) => {
             <span className='text-xs'>{car.fuelType}</span>
           </div>
         </div>
-        <button className='w-full bg-primary text-white py-2 hover:bg-[#4a2dc0] transition-colors rounded'>
+        <button
+          className='w-full bg-primary text-white py-2 hover:bg-[#4a2dc0] transition-colors rounded'
+          onClick={() => onClickDetails(car.vehicleId)}
+        >
           View Details
         </button>
       </div>
