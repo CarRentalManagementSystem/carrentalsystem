@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const Rental = require('../models/Rental');
 const getRentals = async (req, res) => {
     try {
-        const rentals = await Rental.find({ userId: req.user.id }).populate("carId"); //  Populate car details
+        
+        const rentals = await Rental.find({ userId: req.user.id }).populate("vehicleId"); //  Populate car details
         console.log("API returning Rentals:", JSON.stringify(rentals, null, 2)); //  check whether return rentals
         res.json(rentals);
     } catch (error) {
@@ -17,18 +18,23 @@ const getRentals = async (req, res) => {
 // Add Rental Function:
 const addRental = async (req, res) => {
     const { carId, pickupDate, returnDate } = req.body;
+
+    // Map the frontend field names to your backend names
+    const vehicleId = carId;
+    const rentedDate = pickupDate;
+    const returnedDate = returnDate;
     console.log("Backend Received Rental:", req.body);
-    if (!carId || !pickupDate || !returnDate) {
-        console.error("Missing required fields:", { carId, pickupDate, returnDate });
-        return res.status(400).json({ message: 'There are missing required fields: carId, pickupDate, returnDate' });
+    if (!vehicleId || !rentedDate || !returnedDate) {
+        console.error("Missing required fields:", { vehicleId, rentedDate, returnedDate });
+        return res.status(400).json({ message: 'There are missing required fields: carId, rentedDate, returnedDate' });
     }
     try {
         const rental = await Rental.create({
-            userId: req.user.id,
-            carId: new mongoose.Types.ObjectId(carId),
-            pickupDate: new Date(pickupDate),
-            returnDate: new Date(returnDate),
-            status: 'confirmed' // set confirm as default
+            customerId: req.user.id,
+            vehicleId: new mongoose.Types.ObjectId(vehicleId),
+            rentedDate: new Date(rentedDate),
+            returnedDate: new Date(returnedDate),
+            rentalStatus: 'booked' // set confirm as default
         });
 
         console.log("Successfully stored rental data in DB:", rental);

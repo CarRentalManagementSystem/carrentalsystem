@@ -3,13 +3,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
+    role: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phoneNumber: { type: String, required: true },
-    dateOfBirth: { type: Date, required: true },
-    driverLicenseNumber: { type: String, required: true, unique: true },
-    address: { type: String, required: true }
+    dateOfBirth: { type: Date, required: true }
 },
     { timestamps: true } // add timestamps to record time
 );

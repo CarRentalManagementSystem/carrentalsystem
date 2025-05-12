@@ -8,23 +8,21 @@ const generateToken = (id) => {
 };
 
 const registerUser = async (req, res) => {
+    
     console.log('Received data:', req.body);
     console.log('Request Body:', req.body);
-    const { name, email, password, dateOfBirth, driverLicenseNumber, phoneNumber, address } = req.body;
-    console.log('Received data:', req.body);
+    const { role = 'customer', name, email, password, phoneNumber, dateOfBirth} = req.body;
     try {
         const userExists = await User.findOne({ email });
-
         if (userExists) return res.status(400).json({ message: 'User already exists' });
-
         const user = await User.create({
-            name, email, password, dateOfBirth, driverLicenseNumber,
-            phoneNumber, address
+            role, name, email, password,phoneNumber, dateOfBirth
         });
+        
+        console.log('bbbbb');
         res.status(201).json({
-            id: user.id, name: user.name, email: user.email, password: user.password,
-            dateOfBirth: user.dateOfBirth, driverLicenseNumber: user.driverLicenseNumber,
-            phoneNumber: user.phoneNumber, address: user.address, token: generateToken(user.id)
+            id: user.id, role: user.role, name: user.name, email: user.email, password: user.password, phoneNumber: user.phoneNumber,dateOfBirth: user.dateOfBirth,
+            token: generateToken(user.id)
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -59,9 +57,7 @@ const getProfile = async (req, res) => {
             name: user.name,
             email: user.email,
             phoneNumber: user.phoneNumber,
-            dateOfBirth: user.dateOfBirth,
-            driverLicenseNumber: user.driverLicenseNumber,
-            address: user.address,
+            dateOfBirth: user.dateOfBirth
         });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -99,9 +95,7 @@ const updateUserProfile = async (req, res) => {
             name: updatedUser.name,
             email: updatedUser.email,
             phoneNumber: updatedUser.phoneNumber,
-            address: updatedUser.address,
             dateOfBirth: user.dateOfBirth,
-            driverLicenseNumber: user.driverLicenseNumber,
             token: generateToken(updatedUser.id),
         });
     } catch (error) {

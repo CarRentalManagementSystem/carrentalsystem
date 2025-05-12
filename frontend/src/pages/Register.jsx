@@ -4,8 +4,7 @@ import axiosInstance from '../axiosConfig';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '', email: '', password: '', phoneNumber: '', dateOfBirth: '',
-    driverLicenseNumber: '', address: ''
+    role: 'customer', name: '', email: '', password: '', phoneNumber: '', dateOfBirth: ''
   });
   console.log('Form Data:', formData);
   const navigate = useNavigate();
@@ -15,12 +14,11 @@ const Register = () => {
     console.log('Form submitted');
     console.log(formData);
 
-    if (!formData.name || !formData.email || !formData.password || !formData.phoneNumber
-      || !formData.dateOfBirth || !formData.driverLicenseNumber || !formData.address) {
+    if (!formData.name || !formData.email || !formData.password || !formData.phoneNumber|| !formData.dateOfBirth) {
       alert('Please fill out all fields.');
       return;
     }
-    console.log('Address:', formData.address);
+    
 
     try {
       await axiosInstance.post('/api/auth/register', formData);
@@ -73,20 +71,6 @@ const Register = () => {
           placeholder="Date of Birth"
           value={formData.dateOfBirth}
           onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Driver License Number"
-          value={formData.driverLicenseNumber}
-          onChange={(e) => setFormData({ ...formData, driverLicenseNumber: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          value={formData.address}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
         />
         <button type="submit" className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">

@@ -2,11 +2,11 @@
 const mongoose = require('mongoose');
 
 const rentalSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    carId: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
-    pickupDate: { type: Date, required: true },
-    returnDate: { type: Date, required: true },
-    status: { type: String, enum: ['confirmed', 'completed', 'cancelled'], default: 'confirmed' }
+    customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    vehicleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
+    rentedDate: { type: Date, required: true },
+    returnedDate: { type: Date, required: true },
+    rentalStatus: { type: String, enum: ['available', 'booked', 'inuse'], default: 'available' }
 });
 /*
 //fix issue, to avoid conflict

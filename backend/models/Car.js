@@ -2,12 +2,14 @@
 const mongoose = require('mongoose');
 
 const carSchema = new mongoose.Schema({
-    brand: { type: String, required: true },
+    manufacturer: { type: String, required: true },
     model: { type: String, required: true },
-    year: { type: Number, required: true },
-    pricePerDay: { type: Number, required: true },
+    vehicleType: { type: String, required: true },
+    features: { type: String, required: true },
+    transmissionType: { type: String, required: true },
+    rentalPricePerDay: { type: Number, required: true },
     imageUrl: { type: String, required: true },
-    available: { type: Boolean, default: true }
+    vehicleStatus: { type: Boolean, default: true }
 });
 
 
