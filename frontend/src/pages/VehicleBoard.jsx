@@ -1,15 +1,13 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import RentalDateFilter from '../components/RentalDateFilter';
 import VehicleGroupFilter from '../components/VehicleGroupFilter';
-import VehicleCardList from '../components/VehicleCardList';
-import VehicleMakeFilter from '../components/VehicleMakeFilter';
-import { useState } from 'react';
 import VehicleFuelFilter from '../components/VehicleFuelFilter';
+import VehicleMakeFilter from '../components/VehicleMakeFilter';
+import VehicleCardList from '../components/VehicleCardList';
 
-import { useNavigate } from 'react-router-dom';
-
-const VehicleBoard = () => {
-
-  const vehiclesMock = [
+// Sample vehicle data (mock)
+const vehiclesMock = [
     {
       vehicleId: '6640b9f1b9a1a1a1a1a1a101',
       manufacturer: 'Toyota',
@@ -232,24 +230,72 @@ const VehicleBoard = () => {
     },
   ];
 
-  const [vehicles, setVehicles] = useState(vehiclesMock);
-  
-  const [vehicleGroups, setVehicleGroups] = useState([
+// Strategy Classes
+class FilterStrategy {
+  apply(vehicles, criteria) {
+    return vehicles;
+  }
+}
+
+class GroupFilterStrategy extends FilterStrategy {
+  constructor(groups) {
+    super();
+    this.groups = groups;
+  }
+
+  apply(vehicles, groupId) {
+    if (groupId === '0') return vehicles;
+    const groupName = this.groups.find(group => group.id === groupId)?.name;
+    return vehicles.filter(vehicle => vehicle.vehicleType === groupName);
+  }
+}
+
+class MakeFilterStrategy extends FilterStrategy {
+  constructor(makes) {
+    super();
+    this.makes = makes;
+  }
+
+  apply(vehicles, makeId) {
+    if (makeId === '0') return vehicles;
+    const makeName = this.makes.find(make => make.id === makeId)?.name;
+    return vehicles.filter(vehicle => vehicle.manufacturer === makeName);
+  }
+}
+
+class FuelFilterStrategy extends FilterStrategy {
+  constructor(fuels) {
+    super();
+    this.fuels = fuels;
+  }
+
+  apply(vehicles, fuelId) {
+    if (fuelId === '0') return vehicles;
+    const fuelName = this.fuels.find(fuel => fuel.id === fuelId)?.name;
+    return vehicles.filter(vehicle => vehicle.fuelType === fuelName);
+  }
+}
+
+const VehicleBoard = () => {
+  const navigate = useNavigate();
+
+  // Filter options
+  const vehicleGroups = [
     { id: '0', name: 'All vehicles' },
     { id: '1', name: 'Sedan' },
     { id: '2', name: 'Compact' },
     { id: '3', name: 'SUV' },
     { id: '4', name: 'Hatchback' },
-  ]);
+  ];
 
-  const [vehicleFuelTypes, setVehicleFuelTypes] = useState([
-    { id: '0', name: 'All fuel types' },  
+  const vehicleFuelTypes = [
+    { id: '0', name: 'All fuel types' },
     { id: '1', name: 'Petrol' },
     { id: '2', name: 'Diesel' },
     { id: '3', name: 'Electric' },
-  ]);
+  ];
 
-  const [vehicleMake, setVehicleMake] = useState([
+  const vehicleMakes = [
     { id: '0', name: 'All models' },
     { id: '1', name: 'Toyota' },
     { id: '2', name: 'Ford' },
@@ -257,64 +303,57 @@ const VehicleBoard = () => {
     { id: '4', name: 'Suzuki' },
     { id: '5', name: 'BMW' },
     { id: '6', name: 'Tesla' },
-  ]);
+  ];
 
-  const navigate = useNavigate();
-
+  // State
+  const [vehicles, setVehicles] = useState(vehiclesMock);
   const [selectedGroup, setSelectedGroup] = useState('0');
   const [selectedMake, setSelectedMake] = useState('0');
   const [selectedFuelType, setSelectedFuelType] = useState('0');
 
+
+  const groupFilter = new GroupFilterStrategy(vehicleGroups);
+  const makeFilter = new MakeFilterStrategy(vehicleMakes);
+  const fuelFilter = new FuelFilterStrategy(vehicleFuelTypes);
+
+
+  const applyFilters = (groupId, makeId, fuelId) => {
+    let filteredVehicles = vehiclesMock;
+    filteredVehicles = groupFilter.apply(filteredVehicles, groupId);
+    filteredVehicles = makeFilter.apply(filteredVehicles, makeId);
+    filteredVehicles = fuelFilter.apply(filteredVehicles, fuelId);
+    setVehicles(filteredVehicles);
+  };
+
+
   const handleSelectVehicleGroup = (groupId) => {
     setSelectedGroup(groupId);
-    applyFilters(groupId, selectedMake, selectedFuelType)
+    applyFilters(groupId, selectedMake, selectedFuelType);
   };
 
   const handleSelectVehicleMake = (makeId) => {
     setSelectedMake(makeId);
     applyFilters(selectedGroup, makeId, selectedFuelType);
-  }
+  };
 
   const handleSelectFuelType = (fuelTypeId) => {
     setSelectedFuelType(fuelTypeId);
-    applyFilters(selectedGroup, selectedMake, fuelTypeId);}
-
-  const applyFilters = (groupId, makeId, fuelId) => {
-    let filteredVehicles = vehiclesMock;
-
-    if (groupId !== '0') {
-      filteredVehicles = filteredVehicles.filter(
-        (vehicle) => vehicle.vehicleType === vehicleGroups.find(group => group.id === groupId).name
-      );
-    }
-    
-    if (fuelId !== '0') {
-      filteredVehicles = filteredVehicles.filter(
-        (vehicle) => vehicle.fuelType === vehicleFuelTypes.find(fuel => fuel.id === fuelId).name
-      );
-    }
-  
-    if (makeId !== '0') {
-      filteredVehicles = filteredVehicles.filter(
-        (vehicle) => vehicle.manufacturer === vehicleMake.find(make => make.id === makeId).name
-      );
-    }
-
-    setVehicles(filteredVehicles);
-  }
+    applyFilters(selectedGroup, selectedMake, fuelTypeId);
+  };
 
   const handleClickDetails = (vehicleId) => {
     const vehicle = vehicles.find(vehicle => vehicle.vehicleId === vehicleId);
     navigate(`/vehicle-details/${vehicleId}`, { state: { vehicle } });
-  }
+  };
+
 
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
       <h1 className='text-center'>Select a vehicle group</h1>
       <VehicleGroupFilter vehicleGroups={vehicleGroups} selectedVehicleGroup={selectedGroup} onSelectVehicleGroup={handleSelectVehicleGroup}/>
       <VehicleFuelFilter vehicleFuelTypes={vehicleFuelTypes} selectedFuelType={selectedFuelType} onSelectFuelType={handleSelectFuelType}/>
-      <VehicleMakeFilter vehicleMakes={vehicleMake} selectedMake={selectedMake} onSelectVehicleMake={handleSelectVehicleMake}/>
-      <RentalDateFilter/>
+      <VehicleMakeFilter vehicleMakes={vehicleMakes} selectedMake={selectedMake} onSelectVehicleMake={handleSelectVehicleMake}/>
+      <RentalDateFilter />
       <VehicleCardList vehicles={vehicles} onClickDetails={handleClickDetails} />
     </div>
   );
