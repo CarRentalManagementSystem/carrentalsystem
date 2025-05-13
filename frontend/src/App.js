@@ -8,6 +8,8 @@ import RentalForm from "./components/RentalForm";
 import Home from './pages/Home';
 import VehicleBoard from './pages/VehicleBoard';
 import VehicleDetails from './pages/VehicleDetails';
+import CardDetailForm from './components/CardDetailForm';
+import Payment from './pages/Payment';
 import Contact from './pages/Contact';
 import Report from './pages/Report';
 
@@ -24,6 +26,7 @@ function App() {
         <Route path="/cars" element={<Home />} />
         <Route path="/vehicles" element={<VehicleBoard />} />
         <Route path="/vehicle-details/:vehicleId" element={<VehicleDetails/>} />
+        <Route path="/payment" element={<Payment/>} />
         <Route path="/rental-form/:carId" element={<RentalForm />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/report" element={<Report />} />

@@ -57,7 +57,10 @@ const Login = () => {
         Don’t have an account?
       </div>
 
-      <button type="submit" className="w-full text-primary text-lg font-['Work_Sans'] font-medium rounded hover:text-primary-700 transition">
+      <button
+        type="button"
+        onClick={() => navigate('/register')}
+        className="w-full text-primary text-lg font-['Work_Sans'] font-medium rounded hover:text-primary-700 transition">
         Create an account
       </button>
     </div>
