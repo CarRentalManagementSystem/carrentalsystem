@@ -23,6 +23,7 @@ const addRental = async (req, res) => {
     const vehicleId = carId;
     const rentedDate = pickupDate;
     const returnedDate = returnDate;
+
     console.log("Backend Received Rental:", req.body);
     if (!vehicleId || !rentedDate || !returnedDate) {
         console.error("Missing required fields:", { vehicleId, rentedDate, returnedDate });
@@ -50,6 +51,12 @@ const addRental = async (req, res) => {
 const updateRental = async (req, res) => {
     const { carId, pickupDate, returnDate } = req.body;
     const userId = req.user.id;
+
+    const vehicleId = carId;
+    const rentedDate = pickupDate;
+    const returnedDate = returnDate;
+
+    
     try {
         const rental = await Rental.findById(req.params.id);
         if (!rental) return res.status(404).json({ message: 'Rental not found' });
@@ -64,17 +71,48 @@ const updateRental = async (req, res) => {
         console.error("Error updating rental:", error.message);
         res.status(500).json({ message: error.message });
     }
+
+
+
 };
 
 // Delete Rental Booking:
 const deleteRental = async (req, res) => {
-    try {
+    const { carId, pickupDate, returnDate } = req.body;
+    const userId = req.user.id;
+    const userRole = req.user.role;
+    const vehicleId = carId;
+    const rentedDate = pickupDate;
+    const returnedDate = returnDate;
+
+     try {
         const rental = await Rental.findById(req.params.id);
-        if (!rental) return res.status(404).json({ message: 'Rental not found' });
-        await rental.remove();
-        res.json({ message: 'Rental deleted' });
+        if (!rental) {
+            return res.status(404).json({ message: 'Rental not found' });
+        }else {
+            if (userRole == "customer"){
+                rental.rentalStatus = 'cancelled'
+                const updatedRental = await rental.save();
+                res.json(updatedRental);
+
+
+
+            }}
     } catch (error) {
+        console.error("Error updating rental:", error.message);
         res.status(500).json({ message: error.message });
     }
+
+    
+
+
+    // try {
+    //     const rental = await Rental.findById(req.params.id);
+    //     if (!rental) return res.status(404).json({ message: 'Rental not found' });
+    //     await rental.remove();
+    //     res.json({ message: 'Rental deleted' });
+    // } catch (error) {
+    //     res.status(500).json({ message: error.message });
+    // }
 };
 module.exports = { getRentals, addRental, updateRental, deleteRental };

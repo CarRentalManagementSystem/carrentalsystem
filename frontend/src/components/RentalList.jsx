@@ -10,7 +10,11 @@ const RentalList = ({ rentals, setRentals, setEditingRental }) => {
       await axiosInstance.delete(`/api/rentals/${rentalId}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
-      setRentals(rentals.filter((rental) => rental._id !== rentalId));
+      // setRentals(rentals.filter((rental) => rental._id !== rentalId));
+      const response = await axiosInstance.get("/api/rentals", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setRentals(response.data);
     } catch (error) {
       alert('Failed to delete rental.');
     }
@@ -41,7 +45,7 @@ const RentalList = ({ rentals, setRentals, setEditingRental }) => {
               onClick={() => handleDelete(rental._id)}
               className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
             >
-              Delete
+              Cancel Booking
             </button>
           </div>
         </div>
