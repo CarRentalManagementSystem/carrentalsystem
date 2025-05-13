@@ -21,7 +21,7 @@ const Payment = () => {
         cvv: "",
     });
 
-    const duration = Math.ceil((new Date(returnDate) - new Date(rentalDate)) / (1000 * 60 * 60 * 24))
+    const duration = Math.ceil((new Date(returnDate) - new Date(rentalDate)) / (1000 * 60 * 60 * 24));
 
     const [open, setOpen] = useState(false);
 

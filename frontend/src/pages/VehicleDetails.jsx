@@ -15,6 +15,12 @@ const VehicleDetails = () => {
 
   const [open,setOpen] = useState(false);
 
+  const duration = Math.ceil(
+    (new Date(returnDate) - new Date(rentalDate)) / (1000 * 60 * 60 * 24)
+  );
+
+  const totalCost = vehicle.rentalPricePerDay * duration;
+
   const handleClick =()=> {
     navigate('/payment', {
       state: {
@@ -30,16 +36,6 @@ const VehicleDetails = () => {
   return (
     <div className='grid gap-8 m-20 md:grid-cols-2'>
       <div>
-        <h1 className='mb-2 text-3xl font-bold'>
-          {vehicle.manufacturer} {vehicle.model}
-        </h1>
-        <div className='flex items-center mb-6'>
-          <span className='text-2xl font-bold text-primary'>
-            ${vehicle.rentalPricePerDay}
-          </span>
-          <span className='ml-1 text-sm text-gray-500'>/ day</span>
-        </div>
-
         <div className='mb-6'>
           <img
             src={`/images/${vehicle.manufacturer}-${vehicle.model}-${vehicle.techSpecs.type}.png`}
@@ -48,62 +44,60 @@ const VehicleDetails = () => {
           />
         </div>
 
-        <div className='flex gap-4 mb-4'>
-          <div className='w-20 h-20 overflow-hidden rounded'>
-            <img
-              src='https://via.placeholder.com/80'
-              alt='Car thumbnail 1'
-              className='object-cover w-full h-full'
-            />
+        <div>
+          <h1 className='mb-2 text-3xl font-bold'>
+            {vehicle.manufacturer} {vehicle.model}
+          </h1>
+          <div className='flex items-center mb-6'>
+            <span className='text-2xl font-bold text-primary'>
+              Total Cost: ${totalCost}
+            </span>
+            <span className='ml-2 text-xl font-semibold text-gray-700'>
+              for <span className='text-primary'>{duration > 1 ? `${duration} days` : `${duration} day`}</span>
+            </span>
           </div>
-          <div className='w-20 h-20 overflow-hidden rounded'>
-            <img
-              src='https://via.placeholder.com/80'
-              alt='Car thumbnail 2'
-              className='object-cover w-full h-full'
-            />
-          </div>
-          <div className='w-20 h-20 overflow-hidden rounded'>
-            <img
-              src='https://via.placeholder.com/80'
-              alt='Car thumbnail 3'
-              className='object-cover w-full h-full'
-            />
-          </div>
+        </div>
+        <div className='grid items-center grid-cols-2 gap-4 p-4 my-2 rounded bg-secondary'>
+          <span>
+            <strong>Pick up on:</strong> {rentalDate}
+          </span>
+          <span>
+            <strong>Return on:</strong> {returnDate}
+          </span>
         </div>
       </div>
       <div>
         <h2 className='mb-4 text-xl font-semibold'>Technical Specification</h2>
-          <ItemBox>
-            <SpecItem
-              title='Transmission'
-              value={vehicle.techSpecs.transmission}
-              icon='gear'
-              />
-            <SpecItem
-              title='Fuel'
-              value={vehicle.techSpecs.fuelType}
-              icon='fuel'
-              />
-            <SpecItem title='Type' value={vehicle.techSpecs.type} icon='car' />
-            <SpecItem title='Air Conditioner' value="Yes" icon='aircon' />
-            <SpecItem
-              title='Seats'
-              value={vehicle.techSpecs.seats}
-              icon='seats'
-              />
-            <SpecItem
-              title='Doors'
-              value={vehicle.techSpecs.doors}
-              icon='distance'
-              />
-            </ItemBox>
-          <button
-            className='w-full bg-primary text-white py-3 rounded hover:bg-[#4a2dc0] transition-colors'
-            onClick={handleClick}
-          >
-            Rent a car
-          </button>
+        <ItemBox>
+          <SpecItem
+            title='Transmission'
+            value={vehicle.techSpecs.transmission}
+            icon='gear'
+          />
+          <SpecItem
+            title='Fuel'
+            value={vehicle.techSpecs.fuelType}
+            icon='fuel'
+          />
+          <SpecItem title='Type' value={vehicle.techSpecs.type} icon='car' />
+          <SpecItem title='Air Conditioner' value='Yes' icon='aircon' />
+          <SpecItem
+            title='Seats'
+            value={vehicle.techSpecs.seats}
+            icon='seats'
+          />
+          <SpecItem
+            title='Doors'
+            value={vehicle.techSpecs.doors}
+            icon='distance'
+          />
+        </ItemBox>
+        <button
+          className='w-full bg-primary text-white py-3 rounded hover:bg-[#4a2dc0] transition-colors'
+          onClick={handleClick}
+        >
+          Rent a car
+        </button>
         <div className='mt-8'>
           <h2 className='mb-4 text-xl font-semibold'>Car Features</h2>
 

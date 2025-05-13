@@ -20,7 +20,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container p-6 mx-auto">
       <CarList cars={cars} setRentingCar={setRentingCar} />
     </div>
   );
