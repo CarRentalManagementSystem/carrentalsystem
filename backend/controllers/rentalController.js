@@ -2,14 +2,16 @@
 const mongoose = require('mongoose');
 //Get Rental Function:
 const Rental = require('../models/Rental');
+
+
 const getRentals = async (req, res) => {
     try {
         
         const rentals = await Rental.find({ userId: req.user.id }).populate("vehicleId"); //  Populate car details
-        console.log("API returning Rentals:", JSON.stringify(rentals, null, 2)); //  check whether return rentals
+        console.log("rentalController API returning Rentals:", JSON.stringify(rentals, null, 2)); //  check whether return rentals
         res.json(rentals);
     } catch (error) {
-        console.error("Error fetching rentals:", error.message);
+        console.error("rentalController Error fetching rentals:", error.message);
         res.status(500).json({ message: error.message });
     }
 };
@@ -94,9 +96,6 @@ const deleteRental = async (req, res) => {
                 rental.rentalStatus = 'cancelled'
                 const updatedRental = await rental.save();
                 res.json(updatedRental);
-
-
-
             }}
     } catch (error) {
         console.error("Error updating rental:", error.message);

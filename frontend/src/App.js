@@ -8,6 +8,8 @@ import RentalForm from "./components/RentalForm";
 import Home from './pages/Home';
 import VehicleBoard from './pages/VehicleBoard';
 import VehicleDetails from './pages/VehicleDetails';
+import Contact from './pages/Contact';
+import Report from './pages/Report';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/vehicles" element={<VehicleBoard />} />
         <Route path="/vehicle-details/:vehicleId" element={<VehicleDetails/>} />
         <Route path="/rental-form/:carId" element={<RentalForm />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/report" element={<Report />} />
       </Routes>
     </Router>
   );

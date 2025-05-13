@@ -8,7 +8,7 @@ const issueSchema = new mongoose.Schema({
     issueCategory: { type: String, required: true },
     issueContent: { type: String, required: true },
     createdDate: { type: Date, required: true },
-    issueStatus: { type: String, enum: ['notCompleted', 'completed'], default: 'notCompleted' }
+    issueStatus: { type: String, enum: ['incomplete', 'completed'], default: 'incomplete' }
 });
 
 
