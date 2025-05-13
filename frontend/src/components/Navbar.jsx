@@ -37,7 +37,7 @@ const Navbar = () => {
         {user ? (
           <div className='flex items-center gap-4'>
             <Link to='/profile' className='flex items-center gap-2'>
-              <span className='text-sm text-gray-600'>Hello, Alex</span>
+              <span className='text-sm text-gray-600'>Hello, {user.name}</span>
               <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
                 <User className='w-6 h-6' />
               </div>
