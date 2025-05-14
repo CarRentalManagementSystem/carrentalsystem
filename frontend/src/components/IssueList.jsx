@@ -23,7 +23,7 @@ const RentalList = ({ issues, setIssues, setEditingIssue }) => {
       }
     };
 
-    if (user.role === 'admin') {
+    if (user?.role === 'admin') {
       fetchUsers();
     }
 
@@ -58,12 +58,12 @@ return (
   <div>
     {/* Category Filter */}
     <div className="mb-4">
-  <label htmlFor="category" className="block mb-2 font-bold text-lg">Filter:</label>
+  <label htmlFor="category" className="block mb-2 text-lg font-bold">Filter:</label>
   <select
     id="category"
     value={selectedCate}
     onChange={(e) => setSelectedCate(e.target.value)}
-    className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+    className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded md:w-64 focus:outline-none focus:ring-2 focus:ring-blue-300"
   >
     <option value="">All</option>
     {cateList.map((cate) => (
@@ -90,26 +90,26 @@ return (
 return (
   <div
     key={issue._id}
-    className="bg-white rounded-xl shadow p-6 mb-4 border border-gray-200"
+    className="p-6 mb-4 bg-white border border-gray-200 shadow rounded-xl"
   >
-    <div className="flex justify-between items-start">
+    <div className="flex items-start justify-between">
       <div className="w-full">
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold">{issue.title ?? 'No Title'}</h2>
         </div>
         
  
         <div className="flex justify-end gap-2"> 
-          <span className="px-3 py-1 bg-blue-100 text-sm text-black rounded-full border border-blue-300">
+          <span className="px-3 py-1 text-sm text-black bg-blue-100 border border-blue-300 rounded-full">
             {issue.issueCategory ?? 'N/A'}
           </span>
-          <span className="px-3 py-1 bg-blue-100 text-sm text-black rounded-full border border-blue-300">
+          <span className="px-3 py-1 text-sm text-black bg-blue-100 border border-blue-300 rounded-full">
             {issue?.rentalId ?? 'N.A'}
           </span>
         </div>
                <div className="flex justify-end gap-2"><span className="text-sm text-gray-500">{new Date(issue.createdDate).toISOString().split('T')[0]}</span></div>
         
-        <p className="text-gray-500 mb-2">{issue.issueContent ?? 'No content'}</p>
+        <p className="mb-2 text-gray-500">{issue.issueContent ?? 'No content'}</p>
 
         <div className="text-sm text-gray-700">
           <p>Sender: {sender ? sender.name : 'Visitor'}</p>
