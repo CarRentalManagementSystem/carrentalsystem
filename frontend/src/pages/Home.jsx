@@ -10,6 +10,7 @@ const Home = () => {
   const [setRentingVehicle] = useState(null);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
@@ -78,6 +79,7 @@ const Home = () => {
         showViewAll={true}
       />
     </>
+
   );
 };
 

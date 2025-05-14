@@ -11,7 +11,7 @@ const VehicleGroupFilter = ({
         <div
           className={`'bg-[#f9f9f9] cursor-pointer hover:bg-[#e5e5e5] px-6 py-2 rounded-full flex items-center gap-2'} ${
             selectedVehicleGroup === group.id
-              ? 'bg-primary text-white'
+              ? 'bg-primary-700 text-white'
               : 'bg-secondary'
           }`}
           onClick={() => onSelectVehicleGroup(group.id)}
