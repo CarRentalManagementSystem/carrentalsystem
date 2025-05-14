@@ -1,10 +1,21 @@
 import { Fuel, Settings2 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) => {
 
   const { user } = useAuth();
+
+  const navigate = useNavigate();
+
+  const handleClickDetails = () => {
+    navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle } });
+  };
+
+  const handleClickUpdate = () => {
+    navigate('/manage-vehicle', { state: { vehicle, mode: 'update' } });
+  }
   
   return (
     <div
@@ -48,13 +59,13 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
           <div className='grid grid-cols-3 gap-2'>
             <button
               className='w-full bg-primary text-white py-2 hover:bg-[#4a2dc0] transition-colors rounded'
-              onClick={() => onClickDetails(vehicle?._id)}
+              onClick={handleClickDetails}
             >
               View Details
             </button>
             <button
               className='w-full py-2 text-white transition-colors bg-orange-500 rounded hover:bg-orange-700'
-              onClick={() => onClickUpdate(vehicle?._id)}
+              onClick={handleClickUpdate}
             >
               Update Vehicle
             </button>
@@ -68,7 +79,7 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
         ) : (
           <button
             className='w-full bg-primary text-white py-2 hover:bg-[#4a2dc0] transition-colors rounded'
-            onClick={() => onClickDetails(vehicle?._id)}
+            onClick={handleClickDetails}
           >
             View Details
           </button>

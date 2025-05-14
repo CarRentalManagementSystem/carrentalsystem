@@ -149,24 +149,24 @@ const VehicleBoard = () => {
     setVehicles(filteredVehicles);
   }
 
-  const handleClickDetails = (vehicleId) => {
-    const vehicle = vehicles.find(vehicle => vehicle._id === vehicleId);
-    navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle } });
-  };
+  // const handleClickDetails = (vehicleId) => {
+  //   const vehicle = vehicles.find(vehicle => vehicle._id === vehicleId);
+  //   navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle } });
+  // };
 
-  const handleClickUpdate = async (vehicleId) => {
+  // const handleClickUpdate = async (vehicleId) => {
     
-    try {
-      const response = await axiosInstance.get(`/api/vehicles/${vehicleId}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      const vehicle = response.data;
-      navigate('/manage-vehicle', { state : { vehicle, mode: 'update' }})
+  //   try {
+  //     const response = await axiosInstance.get(`/api/vehicles/${vehicleId}`, {
+  //       headers: { Authorization: `Bearer ${user.token}` },
+  //     });
+  //     const vehicle = response.data;
+  //     navigate('/manage-vehicle', { state : { vehicle, mode: 'update' }})
 
-    } catch (error) {
-      console.log({ message: error.message });
-    }
-  };
+  //   } catch (error) {
+  //     console.log({ message: error.message });
+  //   }
+  // };
 
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
@@ -199,8 +199,6 @@ const VehicleBoard = () => {
       )}
       <VehicleCardList
         vehicles={vehicles}
-        onClickDetails={handleClickDetails}
-        onClickUpdate={handleClickUpdate}
       />
     </div>
   );
