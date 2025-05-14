@@ -22,24 +22,24 @@ const addIssue = async (req, res) => {
 
     console.log("issueController Backend Received Issue:", req.body);
 
-    if (!rentalId || !senderId || !title|| !issueCategory|| !issueContent) {
-        console.error("Missing required fields:", { rentalId, senderId, title, issueCategory, issueContent });
+    if ( !title|| !issueCategory|| !issueContent) {
+        console.error("Missing required fields:", { rentalId, title, issueCategory, issueContent });
         return res.status(400).json({ message: 'There are missing required fields' });
     }
+    
+    let rentalIdObj = null;
+    if (rentalId && rentalId.trim() !== '') {
+        rentalIdObj = new mongoose.Types.ObjectId(rentalId); // Only convert if it's a valid string
+    }
+    let senderIdObj = null;
+    if (senderId && senderId.trim() !== '') {
+        senderIdObj = new mongoose.Types.ObjectId(senderId); // Only convert if it's a valid string
+    }
+
     try {
-
-    // rentalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Rental' },
-    // senderId : { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    // title: { type: String, required: true },
-    // issueCategory: { type: String, required: true },
-    // issueContent: { type: String, required: true },
-    // createdDate: { type: Date, required: true },
-    // issueStatus: { type: String, enum: ['incompleted', 'completed'], default: 'incompleted' }
-
-
         const issue = await Issue.create({
-            rentalId: new mongoose.Types.ObjectId(rentalId),
-            senderId: senderId,
+            rentalId: rentalIdObj,
+            senderId: senderIdObj,
             title: title,
             issueCategory: issueCategory,
             issueContent: issueContent,

@@ -12,22 +12,23 @@ const RentalForm = ({ rentals, setRentals}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    formData.senderId = user.id;
-
+    alert(user);
+    if(user){formData.senderId = user.id;} 
+    else{formData.rentalId = null;}
+    
     console.log('Form submitted');
     console.log(formData);
 
-    if (!formData.senderId  || !formData.title || !formData.issueCategory || !formData.issueContent) {
-      alert(user.name);
+    if ( !formData.title || !formData.issueCategory || !formData.issueContent) {
       alert('Please fill out all fields.');
       return;
     }
-    
 
     try {
-      await axiosInstance.post('/api/issue',formData,{headers: {Authorization: `Bearer ${user.token}`}});
+      
+      await axiosInstance.post('/api/issue',formData);
       alert('Issue report successful! Our staff will contact you as soon as possible.');
-      navigate('/login');
+      navigate('/home');
     } catch (error) {
       console.error('Issue report failed:', {
         status: error.response?.status,
@@ -50,7 +51,7 @@ const RentalForm = ({ rentals, setRentals}) => {
             className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
           >
             <option value="">Select a category</option>
-            <option value="option1">Option 1{user.role}</option>
+            <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
             <option value="option3">Option 3</option>
             

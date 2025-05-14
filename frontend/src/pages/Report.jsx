@@ -20,7 +20,7 @@ const Reports = () => {
         // navigate('/login');
       }
     };
-    fetchRentals();
+    if(user){fetchRentals();}
   }, [user, navigate]);
 
 

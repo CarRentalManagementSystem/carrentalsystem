@@ -12,6 +12,7 @@ import CardDetailForm from './components/CardDetailForm';
 import Payment from './pages/Payment';
 import Contact from './pages/Contact';
 import Report from './pages/Report';
+import Issue from './pages/Issue';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/rental-form/:carId" element={<RentalForm />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/report" element={<Report />} />
+        <Route path="/issue" element={<Issue />} />
       </Routes>
     </Router>
   );
