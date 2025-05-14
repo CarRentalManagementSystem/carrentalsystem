@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { getIssues, addIssue } = require('../controllers/issueController');
+const { getIssues, addIssue , updateIssueStatus} = require('../controllers/issueController');
 const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.use((req, res, next) => {
 });
 
 router.route('/').get(protect, getIssues).post( addIssue);
-//router.route('/:id').put(protect, updateIssue).delete(protect, deleteIssue);
+router.route('/:id').put(protect, updateIssueStatus)
 
 
 module.exports = router;

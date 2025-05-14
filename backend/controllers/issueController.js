@@ -56,6 +56,29 @@ const addIssue = async (req, res) => {
 };
 
 
-module.exports = { getIssues, addIssue };
+
+const updateIssueStatus = async (req, res) => {
+  try {
+    const { issueStatus } = req.body;
+
+    const updatedIssue = await Issue.findByIdAndUpdate(
+      req.params.id,
+      { issueStatus },
+      { new: true } // return the updated document
+    );
+
+    if (!updatedIssue) {
+      return res.status(404).json({ message: 'Issue not found' });
+    }
+
+    res.json(updatedIssue);
+  } catch (error) {
+    console.error("Error updating issue status:", error.message);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
+module.exports = { getIssues, addIssue,  updateIssueStatus};
 
 
