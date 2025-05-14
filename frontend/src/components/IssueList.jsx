@@ -8,7 +8,7 @@ const RentalList = ({ issues, setIssues, setEditingIssue }) => {
   const [names, setNames] = useState([]);
   const navigate = useNavigate();
   const [selectedCate, setSelectedCate] = useState('');
-  const cateList = ["Car Issue", "Lost Item", "Insurance", "Others", "option1", "option2"];
+  const cateList = ["Car Issue", "Lost Item", "Insurance", "Others", "option1", "option2","option3"];
 
 
   useEffect(() => {
@@ -56,29 +56,26 @@ const handleMarkDone = async (issueId) => {
 
 return (
   <div>
+    {/* Category Filter */}
     <div className="mb-4">
-      <label className="block mb-2 font-bold">Category:</label>
-      <div className="flex flex-wrap gap-2">
-        <button
-          onClick={() => setSelectedCate('')}
-          className={`p-2 rounded ${selectedCate === '' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-        >
-          All
-        </button>
-        {cateList.map((cate) => (
-          <button
-            key={cate}
-            onClick={() => setSelectedCate(cate)}
-            className={`p-2 rounded ${selectedCate === cate ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          >
-            {cate}
-          </button>
-        ))}
-      </div>
-    </div>
+  <label htmlFor="category" className="block mb-2 font-bold text-lg">Filter:</label>
+  <select
+    id="category"
+    value={selectedCate}
+    onChange={(e) => setSelectedCate(e.target.value)}
+    className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+  >
+    <option value="">All</option>
+    {cateList.map((cate) => (
+      <option key={cate} value={cate}>
+        {cate}
+      </option>
+    ))}
+  </select>
+</div>
 
     {issues
-      .filter((issue) => selectedCate === '' || issue.issueCategory === selectedCate) // 🔹 filter by category
+      .filter((issue) => selectedCate === '' || issue.issueCategory === selectedCate)
       .slice()
       .sort((a, b) => {
         if (a.issueStatus === 'incomplete' && b.issueStatus === 'completed') return -1;
@@ -90,34 +87,59 @@ return (
           ? names.find((u) => u._id === issue.senderId)
           : null;
 
-        return (
-          <div key={issue._id} className="bg-gray-100 p-4 mb-4 rounded shadow">
-            <p className="text-sm text-gray-500">
-              Sender Name: {sender ? sender.name : 'Visitor'}
-            </p>
-            <p className="text-sm text-gray-500">Title: {issue.title ?? 'N/A'}</p>
-            <p className="text-sm text-gray-500">Content: {issue.issueContent ?? 'N/A'}</p>
-            <p className="text-sm text-gray-500">
-              Category: {issue.issueCategory ?? 'N/A'}
-            </p>
-            <p className="text-sm text-gray-500">
-              Date: {new Date(issue.createdDate).toLocaleString() ?? 'N/A'}
-            </p>
-            <p className="text-sm text-gray-500">Status: {issue.issueStatus ?? 'N/A'}</p>
+return (
+  <div
+    key={issue._id}
+    className="bg-white rounded-xl shadow p-6 mb-4 border border-gray-200"
+  >
+    <div className="flex justify-between items-start">
+      <div className="w-full">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-bold">{issue.title ?? 'No Title'}</h2>
+        </div>
+        
+ 
+        <div className="flex justify-end gap-2"> 
+          <span className="px-3 py-1 bg-blue-100 text-sm text-black rounded-full border border-blue-300">
+            {issue.issueCategory ?? 'N/A'}
+          </span>
+          <span className="px-3 py-1 bg-blue-100 text-sm text-black rounded-full border border-blue-300">
+            {issue?.rentalId ?? 'N.A'}
+          </span>
+        </div>
+               <div className="flex justify-end gap-2"><span className="text-sm text-gray-500">{new Date(issue.createdDate).toISOString().split('T')[0]}</span></div>
+        
+        <p className="text-gray-500 mb-2">{issue.issueContent ?? 'No content'}</p>
 
-            <div className="mt-2">
-              <button
-                onClick={() => handleMarkDone(issue._id)}
-                className="mr-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-              >
-                Mark done
-              </button>
-            </div>
-          </div>
-        );
+        <div className="text-sm text-gray-700">
+          <p>Sender: {sender ? sender.name : 'Visitor'}</p>
+          <p>email:  {sender?.email ?? 'N/A'}</p>
+          <p>Tel: {sender?.phoneNumber ?? 'N/A'}</p>
+        </div>
+      </div>
+      
+    </div>
+    <div className="mt-4 text-right">
+      <button
+          onClick={() => handleMarkDone(issue._id)}
+          disabled={issue.issueStatus === 'completed'}
+          className={`px-6 py-2 rounded ${
+            issue.issueStatus === 'completed'
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-purple-600 text-white hover:bg-purple-700'
+          }`}
+        >
+          {issue.issueStatus === 'completed' ? 'Done' : 'Mark Done'}
+        </button>
+    </div>
+  </div>
+);
+
+
       })}
   </div>
 );
+
 
 
 

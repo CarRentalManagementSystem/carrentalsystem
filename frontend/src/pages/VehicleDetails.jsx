@@ -76,25 +76,25 @@ const VehicleDetails = () => {
         <h2 className='mb-4 text-xl font-semibold'>Technical Specification</h2>
           <ItemBox>
             <SpecItem
-              // title='Transmission'
-              // value={vehicle.techSpecs.transmission}
+              title='Transmission'
+              value={vehicle.techSpecs.transmission}
               icon='gear'
               />
             <SpecItem
               title='Fuel'
-              // value={vehicle.techSpecs.fuelType}
+              value={vehicle.techSpecs.fuelType}
               icon='fuel'
               />
-            {/* <SpecItem title='Type' value={vehicle.techSpecs.type} icon='car' /> */}
+            <SpecItem title='Type' value={vehicle.techSpecs.type} icon='car' />
             <SpecItem title='Air Conditioner' value="Yes" icon='aircon' />
             <SpecItem
-              // title='Seats'
-              // value={vehicle.techSpecs.seats}
-              // icon='seats'
+              title='Seats'
+              value={vehicle.techSpecs.seats}
+              icon='seats'
               />
             <SpecItem
               title='Doors'
-              // value={vehicle.techSpecs.doors}
+              value={vehicle.techSpecs.doors}
               icon='distance'
               />
             </ItemBox>

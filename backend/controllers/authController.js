@@ -38,7 +38,6 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
         if (user && (await bcrypt.compare(password, user.password))) {
             res.json({ role: user.role, id: user.id, name: user.name, email: user.email, token: generateToken(user.id) });
-            console.log('bbbbb',user.role);
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
         }
@@ -66,7 +65,7 @@ const getProfile = async (req, res) => {
 };
 const getAllNames = async (req, res) => {
     try {
-        const users = await User.find({}, 'name _id'); 
+        const users = await User.find({}, 'email phoneNumber name _id'); 
 
         if (!users || users.length === 0) {
             return res.status(404).json({ message: 'No users found' });
