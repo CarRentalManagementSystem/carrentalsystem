@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import Report from './pages/Report';
 import AddVehiclePage from './pages/ManageVehiclePage';
 import ManageVehiclePage from './pages/ManageVehiclePage';
+import AboutUs from './pages/AboutUs';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/manage-vehicle" element={<ManageVehiclePage />} />
         <Route path="/payment" element={<Payment/>} />
         <Route path="/rental-form/:carId" element={<RentalForm />} />
+        <Route paht="/about" element={<AboutUs/>} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/report" element={<Report />} />
       </Routes>
