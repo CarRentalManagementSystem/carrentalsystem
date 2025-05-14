@@ -1,7 +1,10 @@
 import { Fuel, Settings2 } from 'lucide-react';
 
-const VehicleCard = ({ vehicle, onClickDetails }) => {
+import { useAuth } from '../context/AuthContext';
 
+const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) => {
+
+  const { user } = useAuth();
   
   return (
     <div
@@ -9,7 +12,11 @@ const VehicleCard = ({ vehicle, onClickDetails }) => {
       className='overflow-hidden bg-white border border-gray-100 rounded shadow-sm'
     >
       <div className='flex items-center justify-center h-48 bg-secondary'>
-        <img src={`/images/${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}.png`} alt='CarImage' className='object-contain' />
+        <img
+          src={`/images/${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}.png`}
+          alt='CarImage'
+          className='object-contain'
+        />
       </div>
       <div className='p-4'>
         <div className='flex items-start justify-between mb-1'>
@@ -37,12 +44,35 @@ const VehicleCard = ({ vehicle, onClickDetails }) => {
             <span className='text-xs'>{vehicle?.techSpecs.fuelType}</span>
           </div>
         </div>
-        <button
-          className='w-full bg-primary text-white py-2 hover:bg-[#4a2dc0] transition-colors rounded'
-          onClick={() => onClickDetails(vehicle?.vehicleId)}
-        >
-          View Details
-        </button>
+        {user?.role === 'admin' ? (
+          <div className='grid grid-cols-3 gap-2'>
+            <button
+              className='w-full bg-primary text-white py-2 hover:bg-[#4a2dc0] transition-colors rounded'
+              onClick={() => onClickDetails(vehicle?._id)}
+            >
+              View Details
+            </button>
+            <button
+              className='w-full py-2 text-white transition-colors bg-orange-500 rounded hover:bg-orange-700'
+              onClick={() => onClickUpdate(vehicle?._id)}
+            >
+              Update Vehicle
+            </button>
+            <button
+              className='w-full py-2 text-white transition-colors bg-red-600 rounded hover:bg-red-700'
+              onClick={() => onClickDelete(vehicle?._id)}
+            >
+              Delete Vehicle
+            </button>
+          </div>
+        ) : (
+          <button
+            className='w-full bg-primary text-white py-2 hover:bg-[#4a2dc0] transition-colors rounded'
+            onClick={() => onClickDetails(vehicle?._id)}
+          >
+            View Details
+          </button>
+        )}
       </div>
     </div>
   );
