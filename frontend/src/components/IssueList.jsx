@@ -1,61 +1,148 @@
-
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
+import { useNavigate } from 'react-router-dom';
 
-const RentalList = ({ rentals, setRentals, setEditingRental }) => {
+const RentalList = ({ issues, setIssues, setEditingIssue }) => {
   const { user } = useAuth();
+  const [names, setNames] = useState([]);
+  const navigate = useNavigate();
+  const [selectedCate, setSelectedCate] = useState('');
+  const cateList = ["Car Issue", "Lost Item", "Insurance", "Others", "option1", "option2","option3"];
 
-  const handleDelete = async (rentalId) => {
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axiosInstance.get('/api/auth/allName', {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        setNames(response.data);
+      } catch (error) {
+        navigate('/login');
+      }
+    };
+
+    if (user.role === 'admin') {
+      fetchUsers();
+    }
+
+  }, [user, navigate]);
+
+
+
+const handleMarkDone = async (issueId) => {
     try {
-      await axiosInstance.delete(`/api/rentals/${rentalId}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      // setRentals(rentals.filter((rental) => rental._id !== rentalId));
-      const response = await axiosInstance.get("/api/rentals", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      setRentals(response.data);
+      const response = await axiosInstance.put(
+        `/api/issue/${issueId}`,
+        { issueStatus: 'completed' },
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      );
+
+      // Update local state
+      setIssues((prevIssues) =>
+        prevIssues.map((issue) =>
+          issue._id === issueId ? { ...issue, issueStatus: 'completed' } : issue
+        )
+      );
     } catch (error) {
-      alert('Failed to delete rental.');
+      console.error('Failed to update issue status:', error.message);
     }
   };
-  console.log(rentals)
-  return (
-    <div>
-      {rentals.map((rental) => (
-        <div key={rental._id} className="bg-gray-100 p-4 mb-4 rounded shadow">
-          <h2 className="font-bold">{rental.vehicleId ?
-            `${rental.vehicleId.manufacturer} ${rental.vehicleId.model}` :
-            'Car not available'}</h2>
 
-    
 
-          <p className="text-sm text-gray-500">Pickup date: {rental.rentedDate ?? "N/A"}</p>
-          <p className="text-sm text-gray-500">Return date: {rental.returnedDate ?? "N/A"}</p>
-          <p className="text-sm text-gray-500">Return date: {rental.rentalStatus ?? "N/A"}</p>
 
-          <div className="mt-2">
-            <button
-              onClick={() => setEditingRental(rental)}
-              className="mr-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => handleDelete(rental._id)}
-              className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
-            >
-              Cancel Booking
-            </button>
-          </div>
+
+
+return (
+  <div>
+    {/* Category Filter */}
+    <div className="mb-4">
+  <label htmlFor="category" className="block mb-2 font-bold text-lg">Filter:</label>
+  <select
+    id="category"
+    value={selectedCate}
+    onChange={(e) => setSelectedCate(e.target.value)}
+    className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+  >
+    <option value="">All</option>
+    {cateList.map((cate) => (
+      <option key={cate} value={cate}>
+        {cate}
+      </option>
+    ))}
+  </select>
+</div>
+
+    {issues
+      .filter((issue) => selectedCate === '' || issue.issueCategory === selectedCate)
+      .slice()
+      .sort((a, b) => {
+        if (a.issueStatus === 'incomplete' && b.issueStatus === 'completed') return -1;
+        if (a.issueStatus === 'completed' && b.issueStatus === 'incomplete') return 1;
+        return new Date(b.createdDate) - new Date(a.createdDate);
+      })
+      .map((issue) => {
+        const sender = Array.isArray(names)
+          ? names.find((u) => u._id === issue.senderId)
+          : null;
+
+return (
+  <div
+    key={issue._id}
+    className="bg-white rounded-xl shadow p-6 mb-4 border border-gray-200"
+  >
+    <div className="flex justify-between items-start">
+      <div className="w-full">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-bold">{issue.title ?? 'No Title'}</h2>
         </div>
-      ))}
+        
+ 
+        <div className="flex justify-end gap-2"> 
+          <span className="px-3 py-1 bg-blue-100 text-sm text-black rounded-full border border-blue-300">
+            {issue.issueCategory ?? 'N/A'}
+          </span>
+          <span className="px-3 py-1 bg-blue-100 text-sm text-black rounded-full border border-blue-300">
+            {issue?.rentalId ?? 'N.A'}
+          </span>
+        </div>
+               <div className="flex justify-end gap-2"><span className="text-sm text-gray-500">{new Date(issue.createdDate).toISOString().split('T')[0]}</span></div>
+        
+        <p className="text-gray-500 mb-2">{issue.issueContent ?? 'No content'}</p>
+
+        <div className="text-sm text-gray-700">
+          <p>Sender: {sender ? sender.name : 'Visitor'}</p>
+          <p>email:  {sender?.email ?? 'N/A'}</p>
+          <p>Tel: {sender?.phoneNumber ?? 'N/A'}</p>
+        </div>
+      </div>
+      
     </div>
-  );
+    <div className="mt-4 text-right">
+      <button
+          onClick={() => handleMarkDone(issue._id)}
+          disabled={issue.issueStatus === 'completed'}
+          className={`px-6 py-2 rounded ${
+            issue.issueStatus === 'completed'
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-purple-600 text-white hover:bg-purple-700'
+          }`}
+        >
+          {issue.issueStatus === 'completed' ? 'Done' : 'Mark Done'}
+        </button>
+    </div>
+  </div>
+);
+
+
+      })}
+  </div>
+);
+
+
+
+
 };
 
 export default RentalList;
-
-
-
-
