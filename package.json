@@ -16,6 +16,7 @@
   "author": "Car Rental Company",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "mongodb": "^6.16.0"
   }
 }
