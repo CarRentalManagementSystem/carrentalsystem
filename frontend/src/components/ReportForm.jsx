@@ -12,7 +12,6 @@ const RentalForm = ({ rentals, setRentals}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(user);
     if(user){formData.senderId = user.id;} 
     else{formData.rentalId = null;}
     
