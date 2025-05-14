@@ -50,9 +50,10 @@ const RentalForm = ({ rentals, setRentals}) => {
             className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
           >
             <option value="">Select a category</option>
-            <option value="option1">Option 1</option>
+            <option value="option1">Option 1{user.role}</option>
             <option value="option2">Option 2</option>
             <option value="option3">Option 3</option>
+            
           </select>
         </div>
 
@@ -73,7 +74,13 @@ const RentalForm = ({ rentals, setRentals}) => {
             className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
           >
             <option value="">Select Rental Record(Optional)</option>
-            {rentals.map((rental) => (<option value={rental._id}>{rental._id}</option>))}
+            {rentals
+              .filter((rental) => rental.userId === user.id)
+              .map((rental) => (
+                <option key={rental._id} value={rental._id}>
+                  {rental._id}
+                </option>
+              ))}
           </select>
         </div>
 

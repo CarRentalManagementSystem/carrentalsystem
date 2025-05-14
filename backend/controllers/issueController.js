@@ -20,7 +20,6 @@ const addIssue = async (req, res) => {
     const { rentalId, senderId , title, issueCategory, issueContent } = req.body;
 
 
-    console.log("issueController Backend Received 1231312:");
     console.log("issueController Backend Received Issue:", req.body);
 
     if (!rentalId || !senderId || !title|| !issueCategory|| !issueContent) {
@@ -40,7 +39,7 @@ const addIssue = async (req, res) => {
 
         const issue = await Issue.create({
             rentalId: new mongoose.Types.ObjectId(rentalId),
-            senderId: req.user.id,
+            senderId: senderId,
             title: title,
             issueCategory: issueCategory,
             issueContent: issueContent,
