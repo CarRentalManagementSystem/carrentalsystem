@@ -7,6 +7,9 @@ const RentalList = ({ issues, setIssues, setEditingIssue }) => {
   const { user } = useAuth();
   const [names, setNames] = useState([]);
   const navigate = useNavigate();
+  const [selectedCate, setSelectedCate] = useState('');
+  const cateList = ["Car Issue", "Lost Item", "Insurance", "Others", "option1", "option2"];
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -51,16 +54,35 @@ const handleMarkDone = async (issueId) => {
 
 
 
- return (
+return (
   <div>
+    <div className="mb-4">
+      <label className="block mb-2 font-bold">Category:</label>
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setSelectedCate('')}
+          className={`p-2 rounded ${selectedCate === '' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        >
+          All
+        </button>
+        {cateList.map((cate) => (
+          <button
+            key={cate}
+            onClick={() => setSelectedCate(cate)}
+            className={`p-2 rounded ${selectedCate === cate ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            {cate}
+          </button>
+        ))}
+      </div>
+    </div>
+
     {issues
-      .slice() // to avoid mutating original state
+      .filter((issue) => selectedCate === '' || issue.issueCategory === selectedCate) // 🔹 filter by category
+      .slice()
       .sort((a, b) => {
-        // First sort by status
         if (a.issueStatus === 'incomplete' && b.issueStatus === 'completed') return -1;
         if (a.issueStatus === 'completed' && b.issueStatus === 'incomplete') return 1;
-
-        // If same status, sort by date (latest first)
         return new Date(b.createdDate) - new Date(a.createdDate);
       })
       .map((issue) => {
@@ -75,6 +97,9 @@ const handleMarkDone = async (issueId) => {
             </p>
             <p className="text-sm text-gray-500">Title: {issue.title ?? 'N/A'}</p>
             <p className="text-sm text-gray-500">Content: {issue.issueContent ?? 'N/A'}</p>
+            <p className="text-sm text-gray-500">
+              Category: {issue.issueCategory ?? 'N/A'}
+            </p>
             <p className="text-sm text-gray-500">
               Date: {new Date(issue.createdDate).toLocaleString() ?? 'N/A'}
             </p>
@@ -93,6 +118,7 @@ const handleMarkDone = async (issueId) => {
       })}
   </div>
 );
+
 
 
 };
