@@ -2,6 +2,7 @@ import { Fuel, Settings2 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../axiosConfig';
 
 const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) => {
 
@@ -10,11 +11,32 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
   const navigate = useNavigate();
 
   const handleClickDetails = () => {
-    navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle } });
+    try {
+      navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle } });
+    } catch(error){
+      console.error(error);
+    }
   };
 
   const handleClickUpdate = () => {
-    navigate('/manage-vehicle', { state: { vehicle, mode: 'update' } });
+    try {
+      navigate('/manage-vehicle', { state: { vehicle, mode: 'update' } });
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  const handleClickDelete = async () => {
+    try {
+      const confirmed = window.confirm("Are you sure you want to delete this car?");
+     
+      if (confirmed) {
+        axiosInstance.delete(`/api/vehicles/delete/${vehicle._id}`);
+      }
+      
+    } catch(error) {
+      console.error(error);
+    }
   }
   
   return (
@@ -71,7 +93,7 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
             </button>
             <button
               className='w-full py-2 text-white transition-colors bg-red-600 rounded hover:bg-red-700'
-              onClick={() => onClickDelete(vehicle?._id)}
+              onClick={handleClickDelete}
             >
               Delete Vehicle
             </button>

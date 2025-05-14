@@ -46,5 +46,14 @@ const updateVehicle = async (req, res) => {
     }
 }
 
-module.exports = { getAllVehicles, addVehicle, getOneVehicle, updateVehicle };
+const deleteVehicle = async (req,res) => {
+    try {
+        const vehicleId = req.params.id;
+        await Vehicle.findByIdAndDelete(vehicleId);
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+module.exports = { getAllVehicles, addVehicle, getOneVehicle, updateVehicle, deleteVehicle };
 
