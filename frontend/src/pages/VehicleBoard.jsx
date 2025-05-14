@@ -2,19 +2,28 @@ import RentalDateFilter from '../components/RentalDateFilter';
 import VehicleGroupFilter from '../components/VehicleGroupFilter';
 import VehicleCardList from '../components/VehicleCardList';
 import VehicleMakeFilter from '../components/VehicleMakeFilter';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import VehicleFuelFilter from '../components/VehicleFuelFilter';
-import vehicleData from '../realistic_vehicle_data.json';
-
+import axiosInstance from '../axiosConfig';
 
 import { useNavigate } from 'react-router-dom';
 import Toast from '../components/Toast';
 
 const VehicleBoard = () => {
 
-  const vehiclesMock = vehicleData;
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await axiosInstance.get('/api/vehicles');
+        setVehicles(response.data);
+      } catch (error) {
+        alert('Failed to fetch vehicle list.');
+      }
+    };
+    fetchVehicles();
+  }, [])
 
-  const [vehicles, setVehicles] = useState(vehiclesMock);
+  const [vehicles, setVehicles] = useState();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   
@@ -77,7 +86,7 @@ const VehicleBoard = () => {
     applyFilters(selectedGroup, selectedMake, fuelTypeId);}
 
   const applyFilters = (groupId, makeId, fuelId) => {
-    let filteredVehicles = vehiclesMock;
+    let filteredVehicles = vehicles;
 
     if (groupId !== '0') {
       filteredVehicles = filteredVehicles.filter(
