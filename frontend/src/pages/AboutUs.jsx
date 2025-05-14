@@ -51,15 +51,15 @@ const AboutUs = () => {
         {/* Stats */}
         <section className='container grid gap-8 px-4 py-16 mx-auto text-center md:grid-cols-3'>
           <div>
-            <h2 className='mb-2 text-5xl font-bold text-primary'>20k+</h2>
+            <h2 className='mb-2 text-5xl font-bold text-primary'>2k+</h2>
             <p className='text-gray-700'>Happy customers</p>
           </div>
           <div>
-            <h2 className='mb-2 text-5xl font-bold text-primary'>540+</h2>
+            <h2 className='mb-2 text-5xl font-bold text-primary'>250+</h2>
             <p className='text-gray-700'>Count of cars</p>
           </div>
           <div>
-            <h2 className='mb-2 text-5xl font-bold text-primary'>25+</h2>
+            <h2 className='mb-2 text-5xl font-bold text-primary'>2+</h2>
             <p className='text-gray-700'>Years of experince</p>
           </div>
         </section>
