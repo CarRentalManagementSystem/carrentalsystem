@@ -21,7 +21,7 @@ const VehicleBoard = () => {
       }
     };
     fetchVehicles();
-  }, [])
+  }, []);
 
   const [vehicles, setVehicles] = useState();
   const [open, setOpen] = useState(false);
