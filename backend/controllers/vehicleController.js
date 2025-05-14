@@ -3,7 +3,7 @@
 
 const Vehicle = require('../models/Vehicle');
 
-const getVehicles = async (req, res) => {
+const getAllVehicles= async (req, res) => {
     try {
         const vehicles = await Vehicle.find();
         res.json(vehicles);
@@ -12,6 +12,5 @@ const getVehicles = async (req, res) => {
     }
 };
 
-module.exports = { getVehicles };
-
+module.exports = { getAllVehicles };
 

@@ -1,11 +1,11 @@
 
 const express = require('express');
-const { getVehicles } = require('../controllers/vehicleController');
+const { getAllVehicles } = require('../controllers/vehicleController');
 //Create a new router
 const router = express.Router();
 
 //when "/" receive GET request, run getCars
-router.route('/').get(getVehicles)
+router.route('/').get(getAllVehicles)
 
 //allow other files to use this router
 module.exports = router;
