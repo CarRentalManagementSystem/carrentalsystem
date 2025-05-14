@@ -26,12 +26,13 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
     }
   }
 
-  const handleClickDelete = async () => {
+  const handleClickDelete = async (vehicleId) => {
     try {
       const confirmed = window.confirm("Are you sure you want to delete this car?");
      
       if (confirmed) {
         axiosInstance.delete(`/api/vehicles/delete/${vehicle._id}`);
+        alert("Successfully Deleted!");
       }
       
     } catch(error) {
