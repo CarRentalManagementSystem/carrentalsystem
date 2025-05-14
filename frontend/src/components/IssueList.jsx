@@ -1,66 +1,61 @@
-import { useState, useEffect } from 'react';
+
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
-import { useNavigate } from 'react-router-dom';
 
-const RentalList = ({ issues, setIssues, setEditingIssue }) => {
+const RentalList = ({ rentals, setRentals, setEditingRental }) => {
   const { user } = useAuth();
-  const [names, setNames] = useState([]);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axiosInstance.get('/api/auth/allName', {
-          headers: { Authorization: `Bearer ${user.token}` },
-        });
-        setNames(response.data);
-      } catch (error) {
-        navigate('/login');
-      }
-    };
-
-    if (user.role === 'admin') {
-      fetchUsers();
+  const handleDelete = async (rentalId) => {
+    try {
+      await axiosInstance.delete(`/api/rentals/${rentalId}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      // setRentals(rentals.filter((rental) => rental._id !== rentalId));
+      const response = await axiosInstance.get("/api/rentals", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setRentals(response.data);
+    } catch (error) {
+      alert('Failed to delete rental.');
     }
+  };
+  console.log(rentals)
+  return (
+    <div>
+      {rentals.map((rental) => (
+        <div key={rental._id} className="bg-gray-100 p-4 mb-4 rounded shadow">
+          <h2 className="font-bold">{rental.vehicleId ?
+            `${rental.vehicleId.manufacturer} ${rental.vehicleId.model}` :
+            'Car not available'}</h2>
+
     
-  }, [user, navigate]);
 
-      return (
-        
-      <div>
-        {issues.map((issue) => {
-          const sender = Array.isArray(names)
-            ? names.find((u) => u._id === issue.senderId)
-            : null;
+          <p className="text-sm text-gray-500">Pickup date: {rental.rentedDate ?? "N/A"}</p>
+          <p className="text-sm text-gray-500">Return date: {rental.returnedDate ?? "N/A"}</p>
+          <p className="text-sm text-gray-500">Return date: {rental.rentalStatus ?? "N/A"}</p>
 
-          return (
-            <div key={issue._id} className="bg-gray-100 p-4 mb-4 rounded shadow">
-              <p className="text-sm text-gray-500">
-                Sender Name: {sender ? sender.name : 'Visitor'}{}
-              </p>
-
-              <p className="text-sm text-gray-500">
-                Title: {issue.title ?? 'N/A'}
-              </p>
-              <p className="text-sm text-gray-500">
-                Content: {issue.issueContent ?? 'N/A'}
-              </p>
-
-              <div className="mt-2">
-                <button
-                  onClick={() => setEditingIssue(issue)}
-                  className="mr-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                >
-                  Mark done
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-
+          <div className="mt-2">
+            <button
+              onClick={() => setEditingRental(rental)}
+              className="mr-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => handleDelete(rental._id)}
+              className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
+            >
+              Cancel Booking
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default RentalList;
+
+
+
+

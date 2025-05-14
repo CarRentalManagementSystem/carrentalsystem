@@ -31,7 +31,7 @@ const LoggededNavbar = ({ user, logout, navigate }) => {
       <NavLinks />
       <div className='flex items-center gap-4'>
         <Link to='/profile' className='flex items-center gap-2'>
-          <span className='text-sm text-gray-600'>Hello, {user.name || 'User'}{user.role}</span>
+          <span className='text-sm text-gray-600'>Hello, {user.name || 'User'}</span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
             <User className='w-6 h-6' />
           </div>
@@ -44,35 +44,6 @@ const LoggededNavbar = ({ user, logout, navigate }) => {
     </header>
   );
 };
-
-
-// 🔹 Navbar for admin
-const AdminNavbar = ({ user, logout, navigate }) => {
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  return (
-    <header className='container flex items-center justify-between px-6 py-4'>
-      <NavLinks />
-      <div className='flex items-center gap-4'>
-        <Link to='/profile' className='flex items-center gap-2'>
-          <span className='text-sm text-gray-600'>Hello, {user.name || 'User'}{user.role}</span>
-          <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
-            <User className='w-6 h-6' />
-          </div>
-        </Link>
-        <Link to='/issue' className='hover:text-primary'>View Issues</Link>
-        <button onClick={handleLogout} className='px-4 py-2 bg-red-500 rounded hover:bg-red-700 text-white'>
-          Logout
-        </button>
-      </div>
-    </header>
-  );
-};
-
-
 
 // 🔹 Navbar for guests/visitors
 const VisitorNavbar = () => (
@@ -92,17 +63,9 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  if (!user) {
-    return <VisitorNavbar />;
-  }
-
-  // Render Admin Navbar if the user is an admin
-  if (user.role === 'admin') {
-    return <AdminNavbar user={user} logout={logout} navigate={navigate} />;
-  }
-
-  // Render Loggeded Navbar for non-admin users
-  return <LoggededNavbar user={user} logout={logout} navigate={navigate} />;
+  return user
+    ? <LoggededNavbar user={user} logout={logout} navigate={navigate} />
+    : <VisitorNavbar />;
 };
 
 export default Navbar;

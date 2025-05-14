@@ -2,8 +2,8 @@
 const mongoose = require('mongoose');
 
 const issueSchema = new mongoose.Schema({
-    rentalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Rental', required: false},
-    senderId : { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false},
+    rentalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Rental' },
+    senderId : { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     title: { type: String, required: true },
     issueCategory: { type: String, required: true },
     issueContent: { type: String, required: true },

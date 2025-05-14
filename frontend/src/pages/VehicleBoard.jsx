@@ -60,6 +60,7 @@ const VehicleBoard = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
+        alert('1213');
         const response = await axiosInstance.get('/api/vehicles');
         setVehicles(response.data);
       } catch (error) {
