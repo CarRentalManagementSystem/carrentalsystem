@@ -1,26 +1,47 @@
 import { useState } from "react";
 
-const VehicleForm = () => { 
-    const [formData, setFormData] = useState({
-      make: '',
-      model: '',
-      vehicleType: '',
-      transmission: '',
-      distanceDriven: '',
-      price: '',
+const VehicleForm = ({formData, setFormData, onSubmit}) => { 
+    
+
+    const [features, setFeatures] = useState(formData.features || []);
+    const [featureInput, setFeatureInput] = useState('');
+
+    const [optionsOpen, setOptionsOpen] = useState({
+        make: false,
+        type: false,
+        transmission: false,
     });
 
-    const [features, setFeatures] = useState([]);
-    const [featureInput, setFeatureInput] = useState('');
-    const [vehicleTypeOpen, setVehicleTypeOpen] = useState(false);
-    const [transmissionOpen, setTransmissionOpen] = useState(false);
+    console.log(formData);
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
+      if (
+        name === 'fuelType' ) {
+        setFormData((prev) => ({
+          ...prev,
+          techSpecs: {
+            ...prev.techSpecs,
+            [name]: value,
+          },
+        }));
+      }
       setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSelectChange = (name, value) => {
+      if (
+        name === 'transmission' ||
+        name === 'type'
+      ) {
+        setFormData((prev) => ({
+          ...prev,
+          techSpecs: {
+            ...prev.techSpecs,
+            [name]: value
+          }
+        }));
+      }
       setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
@@ -38,24 +59,31 @@ const VehicleForm = () => {
       setFeatures((prev) => prev.filter((f) => f !== feature));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      console.log({ ...formData, features });
-      // Here you would typically send the data to your backend
-      alert('Vehicle submitted successfully!');
+      
+      await onSubmit();
+      
       // Reset form
       setFormData({
-        make: '',
+        manufacturer: '',
         model: '',
-        vehicleType: '',
+        year: '',
+        vehicleStatus: 'available',
+        techSpecs: {
+            fuelType: '',
+            transmission: '',
+            type: '',
+            seats: '',
+            doors: '',
+        },
         transmission: '',
-        distanceDriven: '',
-        price: '',
+        rentalPricePerDay: '',
       });
       setFeatures([]);
     };
 
-    const vehicleMakes = [
+    const manufacturers = [
         "Toyota", 
         "Ford",
         "Hyundai",
@@ -69,9 +97,9 @@ const VehicleForm = () => {
         "Chevrolet",
         "Kia",
         "Mazda",
-    ]
+    ];
 
-    const vehicleTypes = [
+    const types = [
       "Sedan",
       "Compact",
       "SUV",
@@ -86,29 +114,66 @@ const VehicleForm = () => {
     ];
 
     return (
-      <div className='w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded shadow-md'>
-        <div className='p-6 border-b border-gray-200'>
-          <h2 className='text-xl font-semibold'>Add New Rental Vehicle</h2>
-        </div>
         <form onSubmit={handleSubmit}>
           <div className='p-6 space-y-6'>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
               <div className='space-y-2'>
                 <label
-                  htmlFor='make'
+                  htmlFor='manufacturer'
                   className='block text-sm font-medium text-gray-700'
                 >
                   Vehicle Make
                 </label>
-                <input
-                  id='make'
-                  name='make'
-                  placeholder='e.g. Toyota'
-                  value={formData.make}
-                  onChange={handleInputChange}
-                  required
-                  className='w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                />
+                <div className='relative'>
+                  <button
+                    type='button'
+                    id='manufacturer'
+                    className='flex items-center justify-between w-full px-3 py-2 bg-white border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                    onClick={() =>
+                      setOptionsOpen({
+                        ...optionsOpen,
+                        make: !optionsOpen.make,
+                      })
+                    }
+                  >
+                    <span>
+                      {formData.manufacturer
+                        ? manufacturers.find(
+                            (make) => make === formData.manufacturer
+                          )
+                        : 'Select Make'}
+                    </span>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      className='w-5 h-5 text-gray-400'
+                      viewBox='0 0 20 20'
+                      fill='currentColor'
+                    >
+                      <path
+                        fillRule='evenodd'
+                        d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                  </button>
+                  {optionsOpen.make && (
+                    <div className='absolute z-10 w-full py-1 mt-1 bg-white border border-gray-300 rounded shadow-lg'>
+                      {manufacturers.map((make) => (
+                        <div
+                          key={make}
+                          className='px-3 py-2 cursor-pointer hover:bg-gray-100'
+                          name='manufacturer'
+                          onClick={() => {
+                            handleSelectChange('manufacturer', make);
+                            setOptionsOpen(false);
+                          }}
+                        >
+                          {make}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className='space-y-2'>
                 <label
@@ -132,7 +197,7 @@ const VehicleForm = () => {
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
               <div className='space-y-2'>
                 <label
-                  htmlFor='vehicleType'
+                  htmlFor='type'
                   className='block text-sm font-medium text-gray-700'
                 >
                   Vehicle Type
@@ -140,15 +205,18 @@ const VehicleForm = () => {
                 <div className='relative'>
                   <button
                     type='button'
-                    id='vehicleType'
+                    id='type'
                     className='flex items-center justify-between w-full px-3 py-2 bg-white border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                    onClick={() => setVehicleTypeOpen(!vehicleTypeOpen)}
+                    onClick={() =>
+                      setOptionsOpen({
+                        ...optionsOpen,
+                        type: !optionsOpen.type,
+                      })
+                    }
                   >
                     <span>
-                      {formData.vehicleType
-                        ? vehicleTypes.find(
-                            (type) => type === formData.vehicleType
-                          )
+                      {formData.type
+                        ? types.find((type) => type === formData.type)
                         : 'Select type'}
                     </span>
                     <svg
@@ -164,15 +232,18 @@ const VehicleForm = () => {
                       />
                     </svg>
                   </button>
-                  {vehicleTypeOpen && (
+                  {optionsOpen.type && (
                     <div className='absolute z-10 w-full py-1 mt-1 bg-white border border-gray-300 rounded shadow-lg'>
-                      {vehicleTypes.map((type) => (
+                      {types.map((type) => (
                         <div
                           key={type}
                           className='px-3 py-2 cursor-pointer hover:bg-gray-100'
                           onClick={() => {
-                            handleSelectChange('vehicleType', type);
-                            setVehicleTypeOpen(false);
+                            handleSelectChange('type', type);
+                            setOptionsOpen({
+                              ...optionsOpen,
+                              type: false,
+                            });
                           }}
                         >
                           {type}
@@ -194,12 +265,18 @@ const VehicleForm = () => {
                     type='button'
                     id='transmission'
                     className='flex items-center justify-between w-full px-3 py-2 bg-white border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                    onClick={() => setTransmissionOpen(!transmissionOpen)}
+                    onClick={() =>
+                      setOptionsOpen({
+                        ...optionsOpen,
+                        transmission: !optionsOpen.transmission,
+                      })
+                    }
                   >
                     <span>
-                      {formData.transmission
+                      {formData.techSpecs.transmission
                         ? transmissionTypes.find(
-                            (transmission) => transmission === formData.transmission
+                            (transmission) =>
+                              transmission === formData.techSpecs.transmission
                           )
                         : 'Select transmission'}
                     </span>
@@ -216,7 +293,7 @@ const VehicleForm = () => {
                       />
                     </svg>
                   </button>
-                  {transmissionOpen && (
+                  {optionsOpen.transmission && (
                     <div className='absolute z-10 w-full py-1 mt-1 bg-white border border-gray-300 rounded shadow-lg'>
                       {transmissionTypes.map((transmission) => (
                         <div
@@ -224,7 +301,10 @@ const VehicleForm = () => {
                           className='px-3 py-2 cursor-pointer hover:bg-gray-100'
                           onClick={() => {
                             handleSelectChange('transmission', transmission);
-                            setTransmissionOpen(false);
+                            setOptionsOpen({
+                              ...optionsOpen,
+                              transmission: false,
+                            });
                           }}
                         >
                           {transmission}
@@ -236,21 +316,22 @@ const VehicleForm = () => {
               </div>
             </div>
 
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div className='grid grid-cols-3 gap-6'>
               <div className='space-y-2'>
                 <label
-                  htmlFor='distanceDriven'
+                  htmlFor='rentalPricePerDay'
                   className='block text-sm font-medium text-gray-700'
                 >
-                  Distance Driven (miles)
+                  Price ($ per day)
                 </label>
                 <input
-                  id='distanceDriven'
-                  name='distanceDriven'
+                  id='rentalPricePerDay'
+                  name='rentalPricePerDay'
                   type='number'
                   min='0'
-                  placeholder='e.g. 15000'
-                  value={formData.distanceDriven}
+                  step='0.01'
+                  placeholder='e.g. 49.99'
+                  value={formData.rentalPricePerDay}
                   onChange={handleInputChange}
                   required
                   className='w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
@@ -258,19 +339,33 @@ const VehicleForm = () => {
               </div>
               <div className='space-y-2'>
                 <label
-                  htmlFor='price'
+                  htmlFor='fuelType'
                   className='block text-sm font-medium text-gray-700'
                 >
-                  Price ($ per day)
+                  Fuel Type
                 </label>
                 <input
-                  id='price'
-                  name='price'
-                  type='number'
-                  min='0'
-                  step='0.01'
-                  placeholder='e.g. 49.99'
-                  value={formData.price}
+                  id='fuelType'
+                  name='fuelType'
+                  placeholder='e.g. Petrol'
+                  value={formData.techSpecs.fuelType}
+                  onChange={handleInputChange}
+                  required
+                  className='w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                />
+              </div>
+              <div className='space-y-2'>
+                <label
+                  htmlFor='year'
+                  className='block text-sm font-medium text-gray-700'
+                >
+                  Year
+                </label>
+                <input
+                  id='year'
+                  name='year'
+                  placeholder='e.g. 2024'
+                  value={formData.year}
                   onChange={handleInputChange}
                   required
                   className='w-full px-3 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
@@ -329,13 +424,12 @@ const VehicleForm = () => {
           <div className='px-6 py-4 border-t border-gray-200'>
             <button
               type='submit'
-              className='w-full px-4 py-2 font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+              className='w-full px-4 py-2 font-medium text-white rounded bg-primary hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
             >
-              Submit Vehicle
+              Submit Vehicle Information
             </button>
           </div>
         </form>
-      </div>
     );
 };
 

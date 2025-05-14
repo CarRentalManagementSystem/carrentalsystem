@@ -20,7 +20,7 @@ const Reports = () => {
         // navigate('/login');
       }
     };
-    if (user.role != 'agent'){
+    if (user?.role != 'agent'){
       navigate('/');
     }
     fetchIssues();
@@ -29,7 +29,7 @@ const Reports = () => {
 
 
     return (
-    <div className="max-w-xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
+    <div className="max-w-xl p-8 mx-auto mt-16 bg-white shadow-lg rounded-xl">
 
       <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">Customer Issue</h1>
       <IssueList/>

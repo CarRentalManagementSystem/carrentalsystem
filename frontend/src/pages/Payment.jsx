@@ -47,8 +47,8 @@ const Payment = () => {
             </p>
           </div>
           <ImageBox
-            // imageUrl={`/images/${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}.png`}
-            // altText={`${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}`}
+            imageUrl={`/images/${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}.png`}
+            altText={`${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}`}
           />
           <ItemBox>
             <SpecItem

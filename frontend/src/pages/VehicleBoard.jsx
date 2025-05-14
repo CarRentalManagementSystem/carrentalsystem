@@ -4,9 +4,10 @@ import RentalDateFilter from '../components/RentalDateFilter';
 import VehicleGroupFilter from '../components/VehicleGroupFilter';
 import VehicleCardList from '../components/VehicleCardList';
 import VehicleMakeFilter from '../components/VehicleMakeFilter';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import VehicleFuelFilter from '../components/VehicleFuelFilter';
 import axiosInstance from '../axiosConfig';
+import { useAuth } from '../context/AuthContext';
 
 // Strategy Classes
 class FilterStrategy {
@@ -60,7 +61,6 @@ const VehicleBoard = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        alert('1213');
         const response = await axiosInstance.get('/api/vehicles');
         setVehicles(response.data);
       } catch (error) {
@@ -73,7 +73,9 @@ const VehicleBoard = () => {
   const [vehicles, setVehicles] = useState();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
-  
+
+  const {user} = useAuth();
+   
   const [vehicleGroups, setVehicleGroups] = useState([
     { id: '0', name: 'All vehicles' },
     { id: '1', name: 'Sedan' },
@@ -108,10 +110,6 @@ const VehicleBoard = () => {
   const groupFilter = new GroupFilterStrategy(vehicleGroups);
   const makeFilter = new MakeFilterStrategy(vehicleMakes);
   const fuelFilter = new FuelFilterStrategy(vehicleFuelTypes);
-
-
-
-
 
   const handleSelectVehicleGroup = (groupId) => {
     setSelectedGroup(groupId);
@@ -152,19 +150,58 @@ const VehicleBoard = () => {
   }
 
   const handleClickDetails = (vehicleId) => {
-    const vehicle = vehicles.find(vehicle => vehicle.vehicleId === vehicleId);
-    navigate(`/vehicle-details/${vehicleId}`, { state: { vehicle } });
+    const vehicle = vehicles.find(vehicle => vehicle._id === vehicleId);
+    navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle } });
   };
 
+  const handleClickUpdate = async (vehicleId) => {
+    
+    try {
+      const response = await axiosInstance.get(`/api/vehicles/${vehicleId}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      const vehicle = response.data;
+      navigate('/manage-vehicle', { state : { vehicle, mode: 'update' }})
+
+    } catch (error) {
+      console.log({ message: error.message });
+    }
+  };
 
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
       <h1 className='text-center'>Select a vehicle group</h1>
-      <VehicleGroupFilter vehicleGroups={vehicleGroups} selectedVehicleGroup={selectedGroup} onSelectVehicleGroup={handleSelectVehicleGroup}/>
-      <VehicleFuelFilter vehicleFuelTypes={vehicleFuelTypes} selectedFuelType={selectedFuelType} onSelectFuelType={handleSelectFuelType}/>
-      <VehicleMakeFilter vehicleMakes={vehicleMakes} selectedMake={selectedMake} onSelectVehicleMake={handleSelectVehicleMake}/>
+      <VehicleGroupFilter
+        vehicleGroups={vehicleGroups}
+        selectedVehicleGroup={selectedGroup}
+        onSelectVehicleGroup={handleSelectVehicleGroup}
+      />
+      <VehicleFuelFilter
+        vehicleFuelTypes={vehicleFuelTypes}
+        selectedFuelType={selectedFuelType}
+        onSelectFuelType={handleSelectFuelType}
+      />
+      <VehicleMakeFilter
+        vehicleMakes={vehicleMakes}
+        selectedMake={selectedMake}
+        onSelectVehicleMake={handleSelectVehicleMake}
+      />
       <RentalDateFilter />
-      <VehicleCardList vehicles={vehicles} onClickDetails={handleClickDetails} />
+      {user?.role === 'admin' && (
+        <div className='flex justify-end mb-4'>
+          <button
+            className='px-4 py-2 text-white rounded bg-primary'
+            onClick={() => navigate('/manage-vehicle', {state: {mode: 'add'}})}
+          >
+            Add More Vehicle
+          </button>
+        </div>
+      )}
+      <VehicleCardList
+        vehicles={vehicles}
+        onClickDetails={handleClickDetails}
+        onClickUpdate={handleClickUpdate}
+      />
     </div>
   );
 };
