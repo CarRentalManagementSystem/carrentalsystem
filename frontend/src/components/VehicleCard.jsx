@@ -9,7 +9,7 @@ const VehicleCard = ({ vehicle, onClickDetails }) => {
       className='overflow-hidden bg-white border border-gray-100 rounded shadow-sm'
     >
       <div className='flex items-center justify-center h-48 bg-secondary'>
-        <img src={`/images/${vehicle.manufacturer}-${vehicle.model}-${vehicle.techSpecs.type}.png`} alt='CarImage' className='object-contain' />
+        <img src='#' alt='CarImage' className='object-contain' />
       </div>
       <div className='p-4'>
         <div className='flex items-start justify-between mb-1'>
@@ -17,7 +17,7 @@ const VehicleCard = ({ vehicle, onClickDetails }) => {
             <h3 className='text-lg font-semibold'>
               {vehicle.manufacturer} {vehicle.model}
             </h3>
-            <p className='text-sm text-gray-500'>{vehicle.techSpecs.type}</p>
+            <p className='text-sm text-gray-500'>{vehicle.vehicleType}</p>
           </div>
           <div className='text-right'>
             <p className='text-xl font-bold text-primary'>
@@ -30,11 +30,11 @@ const VehicleCard = ({ vehicle, onClickDetails }) => {
         <div className='flex justify-between mt-4 mb-4'>
           <div className='flex items-center gap-1'>
             <Settings2 className='w-4 h-4 text-gray-500' />
-            <span className='text-xs'>{vehicle.techSpecs.transmission}</span>
+            <span className='text-xs'>{vehicle.transmissionType}</span>
           </div>
           <div className='flex items-center gap-1'>
             <Fuel className='w-4 h-4 text-gray-500' />
-            <span className='text-xs'>{vehicle.techSpecs.fuelType}</span>
+            <span className='text-xs'>{vehicle.fuelType}</span>
           </div>
         </div>
         <button

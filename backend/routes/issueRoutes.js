@@ -9,7 +9,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.route('/').get(protect, getIssues).post(protect, addIssue);
+router.route('/').get(protect, getIssues).post( addIssue);
 //router.route('/:id').put(protect, updateIssue).delete(protect, deleteIssue);
 
 
