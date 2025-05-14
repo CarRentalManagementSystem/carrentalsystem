@@ -12,8 +12,9 @@ const RentalForm = ({ rentals, setRentals}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    formData.senderId = user.id;
-
+    if(user){formData.senderId = user.id;} 
+    else{formData.rentalId = null;}
+    
     console.log('Form submitted');
     console.log(formData);
 
@@ -50,9 +51,10 @@ const RentalForm = ({ rentals, setRentals}) => {
             className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
           >
             <option value="">Select a category</option>
-            <option value="option1">Option 1{user.role}</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="Car Issue">Car Issue</option>
+            <option value="Lost Item">Lost Item</option>
+            <option value="Insurance">Insurance</option>
+            <option value="Others">Others</option>
             
           </select>
         </div>

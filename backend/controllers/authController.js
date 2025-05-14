@@ -37,7 +37,7 @@ const loginUser = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (user && (await bcrypt.compare(password, user.password))) {
-            res.json({ id: user.id, role: user.role, name: user.name, email: user.email, token: generateToken(user.id) });
+            res.json({ role: user.role, id: user.id, name: user.name, email: user.email, token: generateToken(user.id) });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
         }
@@ -63,6 +63,22 @@ const getProfile = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+const getAllNames = async (req, res) => {
+    try {
+        const users = await User.find({}, 'email phoneNumber name _id'); 
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: 'No users found' });
+        }
+
+        res.status(200).json(users); // Return list of users with names and ids
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+
 
 const updateUserProfile = async (req, res) => {
     console.log('Received update request:', req.body);
@@ -104,4 +120,4 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, getProfile };
+module.exports = { registerUser, loginUser, updateUserProfile, getProfile , getAllNames};
