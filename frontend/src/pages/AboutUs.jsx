@@ -51,15 +51,15 @@ const AboutUs = () => {
         {/* Stats */}
         <section className='container grid gap-8 px-4 py-16 mx-auto text-center md:grid-cols-3'>
           <div>
-            <h2 className='text-5xl font-bold text-[#5937e0] mb-2'>20k+</h2>
+            <h2 className='mb-2 text-5xl font-bold text-primary'>2k+</h2>
             <p className='text-gray-700'>Happy customers</p>
           </div>
           <div>
-            <h2 className='text-5xl font-bold text-[#5937e0] mb-2'>540+</h2>
+            <h2 className='mb-2 text-5xl font-bold text-primary'>250+</h2>
             <p className='text-gray-700'>Count of cars</p>
           </div>
           <div>
-            <h2 className='text-5xl font-bold text-[#5937e0] mb-2'>25+</h2>
+            <h2 className='mb-2 text-5xl font-bold text-primary'>2+</h2>
             <p className='text-gray-700'>Years of experince</p>
           </div>
         </section>
@@ -79,7 +79,7 @@ const AboutUs = () => {
 
             <div className='grid gap-6'>
               <div className='flex gap-3'>
-                <div className='bg-[#5937e0] rounded-full p-1 h-6 w-6 flex items-center justify-center mt-0.5'>
+                <div className='bg-primary rounded-full p-1 h-6 w-6 flex items-center justify-center mt-0.5'>
                   <Check className='w-4 h-4 text-white' />
                 </div>
                 <p className='text-gray-600'>
@@ -89,7 +89,7 @@ const AboutUs = () => {
               </div>
 
               <div className='flex gap-3'>
-                <div className='bg-[#5937e0] rounded-full p-1 h-6 w-6 flex items-center justify-center mt-0.5'>
+                <div className='bg-primary rounded-full p-1 h-6 w-6 flex items-center justify-center mt-0.5'>
                   <Check className='w-4 h-4 text-white' />
                 </div>
                 <p className='text-gray-600'>
@@ -98,7 +98,7 @@ const AboutUs = () => {
               </div>
 
               <div className='flex gap-3'>
-                <div className='bg-[#5937e0] rounded-full p-1 h-6 w-6 flex items-center justify-center mt-0.5'>
+                <div className='bg-primary rounded-full p-1 h-6 w-6 flex items-center justify-center mt-0.5'>
                   <Check className='w-4 h-4 text-white' />
                 </div>
                 <p className='text-gray-600'>
@@ -108,7 +108,7 @@ const AboutUs = () => {
               </div>
 
               <div className='flex gap-3'>
-                <div className='bg-[#5937e0] rounded-full p-1 h-6 w-6 flex items-center justify-center mt-0.5'>
+                <div className='bg-primary rounded-full p-1 h-6 w-6 flex items-center justify-center mt-0.5'>
                   <Check className='w-4 h-4 text-white' />
                 </div>
                 <p className='text-gray-600'>
@@ -136,7 +136,7 @@ const AboutUs = () => {
 
           <div className='grid gap-6 md:grid-cols-3'>
             <div className='p-8 rounded-lg bg-gray-50'>
-              <div className='text-[#5937e0] text-xl font-serif mb-4'>"The smoothest process"</div>
+              <div className='mb-4 font-serif text-xl text-primary'>"The smoothest process"</div>
               <p className='mb-8 text-gray-700'>
                 “Everything about the rental process was smooth and
                 straightforward. The car was clean, efficient, and exactly what
@@ -151,7 +151,7 @@ const AboutUs = () => {
             </div>
 
             <div className='p-8 rounded-lg bg-gray-50'>
-              <div className='text-[#5937e0] text-xl font-serif mb-4'>"Phenomenal Service"</div>
+              <div className='mb-4 font-serif text-xl text-primary'>"Phenomenal Service"</div>
               <p className='mb-8 text-gray-700'>
                 “Customer service was phenomenal! They helped us choose the
                 right car for our road trip and even offered great travel tips.
@@ -166,7 +166,7 @@ const AboutUs = () => {
             </div>
 
             <div className='p-8 rounded-lg bg-gray-50'>
-              <div className='text-[#5937e0] text-xl font-serif mb-4'>"Booking rental cars. Easily done!"</div>
+              <div className='mb-4 font-serif text-xl text-primary'>"Booking rental cars. Easily done!"</div>
               <p className='mb-8 text-gray-700'>
                 “The app made everything so easy. Picked up the car in minutes,
                 and drop-off was just as fast. A perfect experience from start
@@ -183,7 +183,7 @@ const AboutUs = () => {
         </section>
 
         {/* CTA Section */}
-        <section className='bg-[#5937e0] py-12 px-4 mt-12 relative overflow-hidden'>
+        <section className='relative px-4 py-12 mt-12 overflow-hidden bg-primary'>
           <div className='container grid items-center gap-8 mx-auto md:grid-cols-2'>
             <div className='text-white'>
               <h2 className='mb-4 text-3xl font-bold'>Looking for a car?</h2>
