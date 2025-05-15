@@ -5,10 +5,15 @@ import RecommendedVehicles from '../components/RecommendedVehicles';
 import HeroSection from '../components/HeroSection';
 import { useNavigate } from 'react-router-dom';
 
+import { useAuth } from '../context/AuthContext';
+import Dashboard from '../components/Dashboard';
+
 const Home = () => {
   const [vehicles, setVehicles] = useState([]);
   const [setRentingVehicle] = useState(null);
   const navigate = useNavigate();
+
+  const {user} = useAuth();
 
   
   useEffect(() => {
@@ -28,58 +33,62 @@ const Home = () => {
 
   return (
     <>
-      <HeroSection />
-      <section className="bg-white py-16 px-6 sm:px-12 max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+      {user?.role === 'admin' ? (
+        <Dashboard />
+      ) : (
+        <>
+          <HeroSection />
+          <section className='grid max-w-screen-xl grid-cols-1 gap-12 px-6 py-16 mx-auto bg-white sm:px-12 md:grid-cols-3'>
+            <div className='flex flex-col items-center gap-6 text-center'>
+              {/* Icon placeholder */}
+              <div className='flex items-center justify-center w-16 h-16'>
+                <img src='/images/homePage-location.png' />
+                <div className='w-8 h-8 bg-white' />
+              </div>
+              <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+                Availability
+              </h4>
+              <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
+                Always find a car when you need it. Our wide selection ensures
+                vehicle availability even during peak times.
+              </p>
+            </div>
 
-        <div className="flex flex-col items-center text-center gap-6">
-          {/* Icon placeholder */}
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-location.png"
-            />
-            <div className="w-8 h-8 bg-white" />
-          </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Availability</h4>
-          <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Always find a car when you need it. Our wide selection ensures vehicle availability even during peak times.
-          </p>
-        </div>
+            {/* Feature 2 */}
+            <div className='flex flex-col items-center gap-6 text-center'>
+              <div className='flex items-center justify-center w-16 h-16'>
+                <img src='/images/homePage-car.png' />
+                <div className='w-8 h-8 bg-white' />
+              </div>
+              <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+                Comfort
+              </h4>
+              <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
+                Enjoy a smooth and relaxing ride with vehicles designed for
+                comfort, convenience, and a better driving experience.
+              </p>
+            </div>
 
-        {/* Feature 2 */}
-        <div className="flex flex-col items-center text-center gap-6">
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-car.png"
-            />
-            <div className="w-8 h-8 bg-white" />
-          </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Comfort</h4>
-          <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Enjoy a smooth and relaxing ride with vehicles designed for comfort, convenience, and a better driving experience.
-          </p>
-        </div>
+            {/* Feature 3 */}
+            <div className='flex flex-col items-center gap-6 text-center'>
+              <div className='flex items-center justify-center w-16 h-16'>
+                <img src='/images/homePage-wallet.png' />
+                <div className='w-8 h-8 bg-white' />
+              </div>
+              <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+                Savings
+              </h4>
+              <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
+                Get the best value with competitive pricing, no hidden fees, and
+                flexible rental options tailored to your budget.
+              </p>
+            </div>
+          </section>
 
-        {/* Feature 3 */}
-        <div className="flex flex-col items-center text-center gap-6">
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-wallet.png"
-            />
-            <div className="w-8 h-8 bg-white" />
-          </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Savings</h4>
-          <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Get the best value with competitive pricing, no hidden fees, and flexible rental options tailored to your budget.
-          </p>
-        </div>
-      </section>
-
-      <RecommendedVehicles
-        vehicles={vehicles}
-        showViewAll={true}
-      />
+          <RecommendedVehicles vehicles={vehicles} showViewAll={true} />
+        </>
+      )}
     </>
-
   );
 };
 

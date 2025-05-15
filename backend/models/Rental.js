@@ -6,7 +6,7 @@ const rentalSchema = new mongoose.Schema({
     vehicleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
     rentedDate: { type: Date, required: true },
     returnedDate: { type: Date, required: true },
-    rentalStatus: { type: String, enum: ['available', 'booked', 'inuse', 'cancelled'], default: 'available' }
+    rentalStatus: { type: String, enum: ['booked', 'inuse', 'cancelled'], default: 'booked' }
 });
 /*
 //fix issue, to avoid conflict
