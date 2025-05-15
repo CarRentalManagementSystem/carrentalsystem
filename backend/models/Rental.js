@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const rentalSchema = new mongoose.Schema({
     customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    vehicleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
+    vehicleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle' },
     rentedDate: { type: Date, required: true },
     returnedDate: { type: Date, required: true },
     totalRentalFee: { type: Number, required: true },

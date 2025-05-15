@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
-import RentalList from '../components/RentalList';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import MyBookingsContainer from '../components/bookings/MyBookingsContainer';
 
 const Rentals = () => {
     const { user } = useAuth();
