@@ -4,10 +4,15 @@ import VehicleCardList from '../components/VehicleCardList';
 import RecommendedVehicles from '../components/RecommendedVehicles';
 import HeroSection from '../components/HeroSection';
 import { useNavigate } from 'react-router-dom';
+import Toast from '../components/Toast';
 
 const Home = () => {
   const [vehicles, setVehicles] = useState([]);
   const [setRentingVehicle] = useState(null);
+
+  const [message, setMessage] = useState('');
+  const [open, setOpen] = useState(false);
+
   const navigate = useNavigate();
 
   
@@ -24,62 +29,95 @@ const Home = () => {
     fetchVehicles();
   }, []);
 
+  const [rentedDate, setRentedDate] = useState(
+    new Date().toISOString().split('T')[0]
+  );
+
+  const defaultReturnDate = (() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  })();
+
+  const [returnedDate, setReturnedDate] = useState(defaultReturnDate);
+
+
+  const handleChangeRentedDate = (date) => {
+    if (new Date(date) > new Date(returnedDate)) {
+      setMessage('Rental date cannot be after return date');
+      setOpen(true);
+      return;
+    }
+    setRentedDate(date);
+  };
+
+  const handleChangeReturnedDate = (date) => {
+    if (new Date(date) < new Date(rentedDate)) {
+      setMessage('Return date cannot be before rental date');
+      setOpen(true);
+      return;
+    }
+    setReturnedDate(date);
+  };
 
 
   return (
     <>
-      <HeroSection />
-      <section className="bg-white py-16 px-6 sm:px-12 max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-
-        <div className="flex flex-col items-center text-center gap-6">
+      <HeroSection
+        rentedDate={rentedDate}
+        returnedDate={returnedDate}
+        onChangeRentedDate={handleChangeRentedDate}
+        onChangeReturnedDate={handleChangeReturnedDate}
+      />
+      <section className='grid max-w-screen-xl grid-cols-1 gap-12 px-6 py-16 mx-auto bg-white sm:px-12 md:grid-cols-3'>
+        <div className='flex flex-col items-center gap-6 text-center'>
           {/* Icon placeholder */}
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-location.png"
-            />
-            <div className="w-8 h-8 bg-white" />
+          <div className='flex items-center justify-center w-16 h-16'>
+            <img src='/images/homePage-location.png' />
+            <div className='w-8 h-8 bg-white' />
           </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Availability</h4>
+          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+            Availability
+          </h4>
           <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Always find a car when you need it. Our wide selection ensures vehicle availability even during peak times.
+            Always find a car when you need it. Our wide selection ensures
+            vehicle availability even during peak times.
           </p>
         </div>
 
         {/* Feature 2 */}
-        <div className="flex flex-col items-center text-center gap-6">
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-car.png"
-            />
-            <div className="w-8 h-8 bg-white" />
+        <div className='flex flex-col items-center gap-6 text-center'>
+          <div className='flex items-center justify-center w-16 h-16'>
+            <img src='/images/homePage-car.png' />
+            <div className='w-8 h-8 bg-white' />
           </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Comfort</h4>
+          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+            Comfort
+          </h4>
           <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Enjoy a smooth and relaxing ride with vehicles designed for comfort, convenience, and a better driving experience.
+            Enjoy a smooth and relaxing ride with vehicles designed for comfort,
+            convenience, and a better driving experience.
           </p>
         </div>
 
         {/* Feature 3 */}
-        <div className="flex flex-col items-center text-center gap-6">
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-wallet.png"
-            />
-            <div className="w-8 h-8 bg-white" />
+        <div className='flex flex-col items-center gap-6 text-center'>
+          <div className='flex items-center justify-center w-16 h-16'>
+            <img src='/images/homePage-wallet.png' />
+            <div className='w-8 h-8 bg-white' />
           </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Savings</h4>
+          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+            Savings
+          </h4>
           <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Get the best value with competitive pricing, no hidden fees, and flexible rental options tailored to your budget.
+            Get the best value with competitive pricing, no hidden fees, and
+            flexible rental options tailored to your budget.
           </p>
         </div>
       </section>
-
-      <RecommendedVehicles
-        vehicles={vehicles}
-        showViewAll={true}
-      />
+      <RecommendedVehicles vehicles={vehicles} showViewAll={true} />
+      <Toast open={open} setOpen={setOpen} message={message}/>
     </>
-
   );
 };
 
