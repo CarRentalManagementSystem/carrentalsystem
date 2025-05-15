@@ -9,20 +9,20 @@ import ItemBox from '../components/ItemBox';
 const VehicleDetails = () => {
 
   let navigate = useNavigate();
-    
+
   const location = useLocation();
-  const { vehicle, rentalDate, returnDate } = location.state || {};
+  const { vehicle, rentedDate, returnedDate } = location.state || {};
 
-  const [open,setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleClick =()=> {
+  const handleClick = () => {
     navigate('/payment', {
       state: {
-        vehicleId: vehicle.vehicleId,
+        vehicleId: vehicle._id,
         vehicle,
         rentalPricePerDay: vehicle.rentalPricePerDay,
-        rentalDate,
-        returnDate
+        rentedDate,
+        returnedDate
       },
     });
   }
@@ -51,36 +51,36 @@ const VehicleDetails = () => {
       </div>
       <div>
         <h2 className='mb-4 text-xl font-semibold'>Technical Specification</h2>
-          <ItemBox>
-            <SpecItem
-              title='Transmission'
-              value={vehicle.techSpecs.transmission}
-              icon='gear'
-              />
-            <SpecItem
-              title='Fuel'
-              value={vehicle.techSpecs.fuelType}
-              icon='fuel'
-              />
-            <SpecItem title='Type' value={vehicle.techSpecs.type} icon='car' />
-            <SpecItem title='Air Conditioner' value="Yes" icon='aircon' />
-            <SpecItem
-              title='Seats'
-              value={vehicle.techSpecs.seats}
-              icon='seats'
-              />
-            <SpecItem
-              title='Doors'
-              value={vehicle.techSpecs.doors}
-              icon='distance'
-              />
-            </ItemBox>
-          <button
-            className='w-full bg-primary text-white py-3 rounded hover:bg-[#4a2dc0] transition-colors'
-            onClick={handleClick}
-          >
-            Rent a car
-          </button>
+        <ItemBox>
+          <SpecItem
+            title='Transmission'
+            value={vehicle.techSpecs.transmission}
+            icon='gear'
+          />
+          <SpecItem
+            title='Fuel'
+            value={vehicle.techSpecs.fuelType}
+            icon='fuel'
+          />
+          <SpecItem title='Type' value={vehicle.techSpecs.type} icon='car' />
+          <SpecItem title='Air Conditioner' value="Yes" icon='aircon' />
+          <SpecItem
+            title='Seats'
+            value={vehicle.techSpecs.seats}
+            icon='seats'
+          />
+          <SpecItem
+            title='Doors'
+            value={vehicle.techSpecs.doors}
+            icon='distance'
+          />
+        </ItemBox>
+        <button
+          className='w-full bg-primary text-white py-3 rounded hover:bg-[#4a2dc0] transition-colors'
+          onClick={handleClick}
+        >
+          Rent a car
+        </button>
         <div className='mt-8'>
           <h2 className='mb-4 text-xl font-semibold'>Car Features</h2>
 

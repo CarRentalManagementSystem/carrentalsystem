@@ -74,8 +74,8 @@ const VehicleBoard = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
 
-  const {user} = useAuth();
-   
+  const { user } = useAuth();
+
   const [vehicleGroups, setVehicleGroups] = useState([
     { id: '0', name: 'All vehicles' },
     { id: '1', name: 'Sedan' },
@@ -123,7 +123,8 @@ const VehicleBoard = () => {
 
   const handleSelectFuelType = (fuelTypeId) => {
     setSelectedFuelType(fuelTypeId);
-    applyFilters(selectedGroup, selectedMake, fuelTypeId);}
+    applyFilters(selectedGroup, selectedMake, fuelTypeId);
+  }
 
   const applyFilters = (groupId, makeId, fuelId) => {
     let filteredVehicles = vehicles;
@@ -133,13 +134,13 @@ const VehicleBoard = () => {
         (vehicle) => vehicle.techSpecs.type === vehicleGroups.find(group => group.id === groupId).name
       );
     }
-    
+
     if (fuelId !== '0') {
       filteredVehicles = filteredVehicles.filter(
         (vehicle) => vehicle.techSpecs.fuelType === vehicleFuelTypes.find(fuel => fuel.id === fuelId).name
       );
     }
-  
+
     if (makeId !== '0') {
       filteredVehicles = filteredVehicles.filter(
         (vehicle) => vehicle.manufacturer === vehicleMakes.find(make => make.id === makeId).name
@@ -155,7 +156,7 @@ const VehicleBoard = () => {
   // };
 
   // const handleClickUpdate = async (vehicleId) => {
-    
+
   //   try {
   //     const response = await axiosInstance.get(`/api/vehicles/${vehicleId}`, {
   //       headers: { Authorization: `Bearer ${user.token}` },
@@ -187,17 +188,18 @@ const VehicleBoard = () => {
         onSelectVehicleMake={handleSelectVehicleMake}
       />
       <RentalDateFilter />
+
       {user?.role === 'admin' && (
         <div className='flex justify-end mb-4'>
           <button
             className='px-4 py-2 text-white rounded bg-primary'
-            onClick={() => navigate('/manage-vehicle', {state: {mode: 'add'}})}
+            onClick={() => navigate('/manage-vehicle', { state: { mode: 'add' } })}
           >
             Add More Vehicle
           </button>
         </div>
       )}
-      <VehicleCardList
+      List<VehicleCardList
         vehicles={vehicles}
       />
     </div>

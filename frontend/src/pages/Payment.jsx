@@ -1,5 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
+import axiosInstance from "../axiosConfig";
+import { useAuth } from '../context/AuthContext';
 
 import CardDetailForm from "../components/CardDetailForm";
 import ItemBox from "../components/ItemBox";
@@ -9,88 +11,118 @@ import Toast from "../components/Toast";
 
 const Payment = () => {
 
-    let location = useLocation();
-    let navigate = useNavigate();
+  let location = useLocation();
+  let navigate = useNavigate();
 
-    const { vehicleId, vehicle, rentalPricePerDay, rentalDate, returnDate } = location.state || {};
+  const { user } = useAuth();
 
-    const [cardDetails, setCardDetails] = useState({
-        cardNumber: "",
-        cardHolderName: "",
-        expirationDate: "",
-        cvv: "",
-    });
+  const { vehicleId, vehicle, rentalPricePerDay, rentedDate, returnedDate, totalRentalFee } = location.state || {};
 
-    const duration = Math.ceil((new Date(returnDate) - new Date(rentalDate)) / (1000 * 60 * 60 * 24))
+  const [cardDetails, setCardDetails] = useState({
+    cardNumber: "",
+    cardHolderName: "",
+    expirationDate: "",
+    cvv: "",
+  });
 
-    const [open, setOpen] = useState(false);
+  const duration = Math.ceil((new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24))
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setCardDetails({ ...cardDetails, [name]: value });
-    };
+  const [open, setOpen] = useState(false);
 
-    const handleSubmit = () => {
-        setOpen(true);
-        setTimeout(() => {
-          navigate('/');
-        }, 1500);
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCardDetails({ ...cardDetails, [name]: value });
+  };
 
-    return (
-      <div className='flex items-center justify-center min-h-screen bg-gray-100'>
-        <div className='w-1/3 p-6 m-12'>
-          <div className='mb-6'>
-            <h2 className='text-lg font-semibold'>Vehicle Details</h2>
-            <p>
-              {vehicle?.manufacturer} {vehicle?.model}
-            </p>
-          </div>
-          <ImageBox
-            imageUrl={`/images/${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}.png`}
-            altText={`${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}`}
-          />
-          <ItemBox>
-            <SpecItem
-              title='Vehicle Type'
-              value={vehicle?.techSpecs?.type}
-              icon='car'
-            />
-            <SpecItem
-              title='Transmission'
-              value={vehicle?.techSpecs?.transmission}
-              icon='gear'
-            />
-            <SpecItem title='Air Conditioning' value='Yes' icon='aircon' />
-            <SpecItem
-              title='Fuel Type'
-              value={vehicle?.techSpecs?.fuelType}
-              icon='fuel'
-            />
-            <SpecItem
-              title='Number of seats'
-              value={vehicle?.techSpecs?.seats}
-              icon='seats'
-            />
-            <SpecItem
-              title='Number of doors'
-              value={vehicle?.techSpecs?.doors}
-              icon='doors'
-            />
-          </ItemBox>
-          <div className='grid items-center grid-cols-2 gap-4 p-4 mt-4 mb-4 rounded bg-secondary'>
-            <span>
-              <strong>Pick up on:</strong> {rentalDate}
-            </span>
-            <span><strong>Return on:</strong> {returnDate}</span>
-            <span><strong>Renting for:</strong> {duration} days</span>
-            <span><strong>Total Cost:</strong> ${rentalPricePerDay * duration}</span>
-          </div>
+  /*const handleSubmit = () => {
+      setOpen(true);
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
+  };*/
+
+  const handleSubmit = async () => {
+    try {
+      await axiosInstance.post('/api/rentals', {
+        customerId: user._id,
+        vehicleId: vehicle?._id,
+        rentedDate: rentedDate,
+        returnedDate: returnedDate,
+        totalRentalFee: rentalPricePerDay * duration,
+        rentalStatus: 'booked',
+        paymentStatus: 'paid',
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+      setOpen(true);
+      setTimeout(() => {
+        navigate('/rentals');
+      }, 1500);
+    } catch (error) {
+      console.error('Failed to save rental:', error);
+      alert('Booking failed. Please try again.');
+    }
+  };
+
+
+  return (
+    <div className='flex items-center justify-center min-h-screen bg-gray-100'>
+      <div className='w-1/3 p-6 m-12'>
+        <div className='mb-6'>
+          <h2 className='text-lg font-semibold'>Vehicle Details</h2>
+          <p>
+            {vehicle?.manufacturer} {vehicle?.model}
+          </p>
         </div>
-        <CardDetailForm onSubmit={handleSubmit} />
-        <Toast message='Payment was successful' open={open} setOpen={setOpen} />
+        <ImageBox
+          imageUrl={`/images/${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}.png`}
+          altText={`${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}`}
+        />
+        <ItemBox>
+          <SpecItem
+            title='Vehicle Type'
+            value={vehicle?.techSpecs?.type}
+            icon='car'
+          />
+          <SpecItem
+            title='Transmission'
+            value={vehicle?.techSpecs?.transmission}
+            icon='gear'
+          />
+          <SpecItem title='Air Conditioning' value='Yes' icon='aircon' />
+          <SpecItem
+            title='Fuel Type'
+            value={vehicle?.techSpecs?.fuelType}
+            icon='fuel'
+          />
+          <SpecItem
+            title='Number of seats'
+            value={vehicle?.techSpecs?.seats}
+            icon='seats'
+          />
+          <SpecItem
+            title='Number of doors'
+            value={vehicle?.techSpecs?.doors}
+            icon='doors'
+          />
+        </ItemBox>
+        <div className='grid items-center grid-cols-2 gap-4 p-4 mt-4 mb-4 rounded bg-secondary'>
+          <span>
+            <strong>Pick up on:</strong> {rentedDate}
+          </span>
+          <span><strong>Return on:</strong> {returnedDate}</span>
+          <span><strong>Renting for:</strong> {duration} days</span>
+          <span><strong>Total Cost:</strong> ${rentalPricePerDay * duration}</span>
+        </div>
       </div>
-    );
+      <CardDetailForm onSubmit={handleSubmit} />
+      <Toast message='Payment was successful' open={open} setOpen={setOpen} />
+    </div>
+  );
 }
 
 export default Payment;

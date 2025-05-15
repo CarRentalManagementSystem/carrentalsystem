@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
-import RentalForm from '../components/RentalForm';
 import RentalList from '../components/RentalList';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -28,12 +27,6 @@ const Rentals = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <RentalForm
-        rentals={rentals}
-        setRentals={setRentals}
-        editingRental={editingRental}
-        setEditingRental={setEditingRental}
-      />
       <RentalList rentals={rentals} setRentals={setRentals} setEditingRental={setEditingRental} />
     </div>
   );

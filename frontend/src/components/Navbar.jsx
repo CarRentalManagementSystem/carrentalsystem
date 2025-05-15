@@ -36,7 +36,7 @@ const LoggededNavbar = ({ user, logout, navigate }) => {
             <User className='w-6 h-6' />
           </div>
         </Link>
-        <Link to='/bookings' className='hover:text-primary'>My Bookings</Link>
+        <Link to='/rentals' className='hover:text-primary'>My Bookings</Link>
         <button onClick={handleLogout} className='px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700'>
           Logout
         </button>
