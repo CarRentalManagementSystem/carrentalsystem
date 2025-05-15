@@ -32,7 +32,7 @@ const RentalForm = ({ rentals, setRentals}) => {
       alert('Issue report successful! Our staff will contact you as soon as possible.');
       await NotificationSender({
         targetRole: 'admin',
-        title: 'New Report',
+        title: 'New Report about:' + formData.title,
         content: 'Please contact related customer as soon as possible',
       });
     } catch (error) {
