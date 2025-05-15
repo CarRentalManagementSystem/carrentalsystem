@@ -26,7 +26,7 @@ const getRentalStatistics = async (req, res) => {
 
     // Calculate revenue statistics
     const completedRentals = await Rental.find({
-      rentalStatus: '', // assuming 'available' means returned and completed
+      rentalStatus: 'available', // assuming 'available' means returned and completed
       returnedDate: { $exists: true, $ne: null },
     }).populate('vehicleId');
 
@@ -233,6 +233,79 @@ const getRentalStatistics = async (req, res) => {
             $sort: { totalRevenue: -1 },
           },
         ]);
+
+    const dailyStats = await Rental.aggregate([
+      // Match rentals from the last 7 days
+      {
+        $match: {
+          rentedDate: {
+            $gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+          },
+        },
+      },
+      // Lookup vehicle information to get price data
+      {
+        $lookup: {
+          from: 'vehicles',
+          localField: 'vehicleId',
+          foreignField: '_id',
+          as: 'vehicle',
+        },
+      },
+      // Unwind the vehicle array to get a single vehicle document
+      {
+        $unwind: '$vehicle',
+      },
+      // Group by day of week
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: '%Y-%m-%d', date: '$rentedDate' },
+          },
+          dayOfWeek: {
+            $first: { $dayOfWeek: '$rentedDate' }, // 1 for Sunday, 2 for Monday, etc.
+          },
+          numberOfRentals: { $sum: 1 },
+          // Calculate total revenue based on rental duration and daily price
+          totalRevenue: {
+            $sum: {
+              $multiply: [
+                '$vehicle.rentalPricePerDay',
+                {
+                  $divide: [
+                    { $subtract: ['$returnedDate', '$rentedDate'] },
+                    1000 * 60 * 60 * 24, // Convert milliseconds to days
+                  ],
+                },
+              ],
+            },
+          },
+          // Count unique customers
+          uniqueCustomers: { $addToSet: '$customerId' },
+        },
+      },
+      // Add a field for number of unique customers
+      {
+        $addFields: {
+          numberOfCustomers: { $size: '$uniqueCustomers' },
+        },
+      },
+      // Project the fields we need
+      {
+        $project: {
+          _id: 0,
+          date: '$_id',
+          dayOfWeek: 1,
+          numberOfRentals: 1,
+          totalRevenue: 1,
+          numberOfCustomers: 1,
+        },
+      },
+      // Sort by date
+      {
+        $sort: { date: 1 },
+      },
+    ]);
     
 
     // Compile all statistics
@@ -262,6 +335,7 @@ const getRentalStatistics = async (req, res) => {
         projectedMonthlyRevenue: projectedMonthlyRevenue.toFixed(2),
         revenueByVehicleType: revenueByVehicleType,
       },
+      dailyStats
     };
 
     res.status(200).json(statistics);
@@ -270,5 +344,6 @@ const getRentalStatistics = async (req, res) => {
     throw error;
   }
 };
+
 
 module.exports = { getRentalStatistics };

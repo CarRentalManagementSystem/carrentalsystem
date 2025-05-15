@@ -1,205 +1,221 @@
 const Rental = require('../models/Rental');
 const Vehicle = require('../models/Vehicle');
+const moment = require('moment');
 
 const getDashboardStatistics = async (req, res) => {
   try {
+    // Define time ranges
+    const today = moment().startOf('day');
+    const weekStart = moment().startOf('week');
+    const monthStart = moment().startOf('month');
 
-    const rentalCounts = await Rental.count();
-    
-    const rentalByStatus = await Rental.aggregate([
-      {
-        $group: {
-          _id: "$rentalStatus",
-          count: { $sum: 1 }
-        }
-      },
-      {
-        $sort: { count: -1 }
-      } 
-    ]);
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const day = moment().subtract(i, 'days').startOf('day');
+      return {
+        date: day.toDate(),
+        label: day.format('ddd'),
+      };
+    }).reverse();
 
-    const customerCount = await Rental.aggregate([
-      {
-        $group: {
-          _id: '$customerId',
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $count: 'uniqueCustomers',
-      },
-    ]);
-
-    const vehiclesBySpecs = await Vehicle.aggregate([
-      {
-        $group: {
-          _id: '$techSpecs.type', // Using the techSpecs.type field from your schema
-          count: { $sum: 1 },
-        },
-      },
-      {
-        $sort: { count: -1 },
-      },
-    ]);
-
-    const mostRentedVehicles = await Rental.aggregate([
-      {
-        $group: {
-          _id: '$vehicleId',
-          rentCount: { $sum: 1 },
-        },
-      },
-      { $sort: { rentCount: -1 } },
-      { $limit: 5 },
-      {
-        $lookup: {
-          from: 'vehicles',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'vehicleDetails',
-        },
-      },
-      { $unwind: '$vehicleDetails' },
-      {
-        $project: {
-          _id: 0,
-          vehicleId: '$_id',
-          manufacturer: '$vehicleDetails.manufacturer',
-          model: '$vehicleDetails.model',
-          rentCount: 1,
-        },
-      },
-    ]);
-
-    const revenueByVehicleType = await Rental.aggregate([
-      // Only consider completed or active rentals
-      {
-        $match: {
-          rentalStatus: { $in: ['available', 'booked', 'inuse'] },
-        },
-      },
-      // Lookup vehicle details
-      {
-        $lookup: {
-          from: 'vehicles',
-          localField: 'vehicleId',
-          foreignField: '_id',
-          as: 'vehicleDetails',
-        },
-      },
-      {
-        $unwind: '$vehicleDetails',
-      },
-      // Calculate rental duration in days
-      {
-        $addFields: {
-          rentalDays: {
-            $cond: {
-              if: { $eq: ['$returnedDate', null] },
-              then: {
-                $ceil: {
-                  $divide: [
-                    { $subtract: [new Date(), '$rentedDate'] },
-                    1000 * 60 * 60 * 24, // Convert ms to days
-                  ],
-                },
-              },
-              else: {
-                $ceil: {
-                  $divide: [
+    const rentalsByDay = await Promise.all(
+      last7Days.map(async ({ date, label }) => {
+        const nextDay = moment(date).add(1, 'day').toDate();
+        const rentals = await Rental.countDocuments({
+          rentedDate: { $gte: date, $lt: nextDay },
+        });
+        const revenue = await Rental.aggregate([
+          {
+            $match: {
+              rentedDate: { $gte: date, $lt: nextDay },
+            },
+          },
+          {
+            $lookup: {
+              from: 'vehicles',
+              localField: 'vehicleId',
+              foreignField: '_id',
+              as: 'vehicle',
+            },
+          },
+          {
+            $unwind: '$vehicle',
+          },
+          {
+            $group: {
+              _id: null,
+              totalRevenue: {
+                $sum: {
+                  $multiply: [
                     { $subtract: ['$returnedDate', '$rentedDate'] },
-                    1000 * 60 * 60 * 24, // Convert ms to days
+                    '$vehicle.rentalPricePerDay',
                   ],
                 },
               },
             },
           },
-        },
-      },
-      // Calculate rental cost
+        ]);
+        return {
+          name: label,
+          rentals,
+          revenue: revenue[0]?.totalRevenue || 0,
+        };
+      })
+    );
+
+    // 2. Rentals by Car Type
+    const rentalsByCarType = await Rental.aggregate([
       {
-        $addFields: {
-          revenue: {
-            $multiply: ['$rentalDays', '$vehicleDetails.rentalPricePerDay'],
-          },
+        $lookup: {
+          from: 'vehicles',
+          localField: 'vehicleId',
+          foreignField: '_id',
+          as: 'vehicle',
         },
       },
-      // Group by vehicle type
+      {
+        $unwind: '$vehicle',
+      },
       {
         $group: {
-          _id: '$vehicleDetails.techSpecs.type',
-          totalRevenue: { $sum: '$revenue' },
+          _id: '$vehicle.vehicleType',
           count: { $sum: 1 },
         },
       },
-      // Sort by revenue
+    ]);
+
+    const pieData = rentalsByCarType.map((type) => ({
+      name: type._id || 'Unknown',
+      value: type.count,
+    }));
+
+    // 3. Cancellation Reasons
+    const cancellations = await Rental.aggregate([
       {
-        $sort: { totalRevenue: -1 },
+        $match: { rentalStatus: 'cancelled' },
+      },
+      {
+        $group: {
+          _id: '$cancellationReason',
+          count: { $sum: 1 },
+        },
       },
     ]);
 
-    const totalRevenue = await Rental.aggregate([
-      { $match: { status: 'completed' } },
-      { $group: { _id: null, totalRevenue: { $sum: '$totalCost' } } },
+    const cancelData = cancellations.map((reason) => ({
+      name: reason._id || 'Other',
+      value: reason.count,
+    }));
+
+    // 4. Revenue by Rental Duration
+    const revenueByDuration = await Rental.aggregate([
+      {
+        $lookup: {
+          from: 'vehicles',
+          localField: 'vehicleId',
+          foreignField: '_id',
+          as: 'vehicle',
+        },
+      },
+      {
+        $unwind: '$vehicle',
+      },
+      {
+        $project: {
+          duration: {
+            $ceil: {
+              $divide: [
+                { $subtract: ['$returnedDate', '$rentedDate'] },
+                1000 * 60 * 60 * 24, // Convert milliseconds to days
+              ],
+            },
+          },
+          revenue: {
+            $multiply: [
+              {
+                $ceil: {
+                  $divide: [
+                    { $subtract: ['$returnedDate', '$rentedDate'] },
+                    1000 * 60 * 60 * 24,
+                  ],
+                },
+              },
+              '$vehicle.rentalPricePerDay',
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $cond: [
+              { $lte: ['$duration', 1] },
+              'Daily',
+              { $lte: ['$duration', 7] },
+              'Weekly',
+              'Monthly',
+            ],
+          },
+          totalRevenue: { $sum: '$revenue' },
+        },
+      },
     ]);
 
-    // // const popularCars = await Rental.aggregate([
-    // //   { $group: { _id: '$vehicle', rentalCount: { $sum: 1 } } },
-    // //   { $sort: { rentalCount: -1 } },
-    // //   { $limit: 5 },
-    // //   {
-    // //     $lookup: {
-    // //       from: 'vehicles',
-    // //       localField: '_id',
-    // //       foreignField: '_id',
-    // //       as: 'vehicleInfo',
-    // //     },
-    // //   },
-    // //   { $unwind: $vehicleInfo },
-    // //   {
-    // //     $project: {
-    // //       vehicleId: '$vehicleInfo.vehicleId',
-    // //       model: '$vehicleInfo.model',
-    // //       manufacturer: '$vehicleInfo.manufacturer',
-    // //       rentalCount: 1,
-    // //     },
-    // //   },
-    // // ]);
+    const revenueData = revenueByDuration.map((duration) => ({
+      name: duration._id,
+      value: duration.totalRevenue,
+    }));
 
-    // const dailyRevenue = await Rental.aggregate([
-    //   {
-    //     $group: {
-    //       _id: {
-    //         year: { $year: '$rentalDate' },
-    //         month: { $month: '$rentalDate' },
-    //         day: { $dayOfMonth: '$rentalDate' },
-    //       },
-    //       totalRevenue: { $sum: '$totalAmount' },
-    //       rentalCount: { $sum: 1 },
-    //     },
-    //   },
-    //   {
-    //     $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 },
-    //   },
-    // ]);
-
-    // const formattedRevenue = dailyRevenue.map((item) => ({
-    //   date: `${item._id.year}-${String(item._id.month).padStart(
-    //     2,
-    //     '0'
-    //   )}-${String(item._id.day).padStart(2, '0')}`,
-    //   totalRevenue: item.totalRevenue,
-    //   rentalCount: item.rentalCount,
-    // }));
+    // 5. Today's Summary
+    const todayStats = {
+      totalRentals: await Rental.countDocuments({
+        rentedDate: { $gte: today.toDate() },
+      }),
+      totalCancelled: await Rental.countDocuments({
+        rentalStatus: 'cancelled',
+        rentedDate: { $gte: today.toDate() },
+      }),
+      totalRevenue: await Rental.aggregate([
+        {
+          $match: { rentedDate: { $gte: today.toDate() } },
+        },
+        {
+          $lookup: {
+            from: 'vehicles',
+            localField: 'vehicleId',
+            foreignField: '_id',
+            as: 'vehicle',
+          },
+        },
+        {
+          $unwind: '$vehicle',
+        },
+        {
+          $group: {
+            _id: null,
+            totalRevenue: {
+              $sum: {
+                $multiply: [
+                  { $subtract: ['$returnedDate', '$rentedDate'] },
+                  '$vehicle.rentalPricePerDay',
+                ],
+              },
+            },
+          },
+        },
+      ]),
+      totalCustomers: await Rental.distinct('customerId', {
+        rentedDate: { $gte: today.toDate() },
+      }).then((customers) => customers.length),
+    };
 
     res.json({
-      rentalCounts,
-      rentalByStatus,
-      customerCount,
-      vehiclesBySpecs,
-      revenueByVehicleType,
-      mostRentedVehicles
+      rentalsByDay,
+      pieData,
+      cancelData,
+      revenueData,
+      todayStats,
     });
+    
   } catch (error) {
     console.error('Error getting dashboard data', error);
     res.status(500).json({ error: error.messsage });
