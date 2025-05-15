@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Car, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-// 🔹 Common navigation links
-const NavLinks = () => (
+
+const GeneralNavbar = () => (
   <nav className='flex items-center gap-8'>
     <div className='flex items-center gap-2'>
       <div className='p-2 rounded-full bg-primary'>
@@ -19,8 +19,8 @@ const NavLinks = () => (
   </nav>
 );
 
-// 🔹 Navbar for authenticated users
-const LoggededNavbar = ({ user, logout, navigate }) => {
+
+const CustimerNavbar = ({ user, logout, navigate }) => {
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -28,7 +28,7 @@ const LoggededNavbar = ({ user, logout, navigate }) => {
 
   return (
     <header className='container flex items-center justify-between px-6 py-4'>
-      <NavLinks />
+      <GeneralNavbar />
       <div className='flex items-center gap-4'>
         <Link to='/profile' className='flex items-center gap-2'>
           <span className='text-sm text-gray-600'>Hello, {user.id || 'User'}{user.role}</span>
@@ -47,7 +47,6 @@ const LoggededNavbar = ({ user, logout, navigate }) => {
 };
 
 
-// 🔹 Navbar for admin
 const AdminNavbar = ({ user, logout, navigate }) => {
   const handleLogout = () => {
     logout();
@@ -56,7 +55,7 @@ const AdminNavbar = ({ user, logout, navigate }) => {
 
   return (
     <header className='container flex items-center justify-between px-6 py-4'>
-      <NavLinks />
+      <GeneralNavbar />
       <div className='flex items-center gap-4'>
         <Link to='/profile' className='flex items-center gap-2'>
           <span className='text-sm text-gray-600'>Hello, {user.id || 'User'}({user.role})</span>
@@ -75,11 +74,9 @@ const AdminNavbar = ({ user, logout, navigate }) => {
 };
 
 
-
-// 🔹 Navbar for guests/visitors
 const VisitorNavbar = () => (
   <header className='container flex items-center justify-between px-6 py-4'>
-    <NavLinks />
+    <GeneralNavbar />
     <div className='flex items-center gap-4'>
       <Link to='/login' className='hover:text-primary'>Login</Link>
       <Link to='/register' className='px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700'>
@@ -89,20 +86,23 @@ const VisitorNavbar = () => (
   </header>
 );
 
-// 🔹 Wrapper component that selects which navbar to render
+
+const NavbarMaker = ({ user, logout, navigate }) => {
+  if (!user) {
+    return <VisitorNavbar />;
+  } else if (user?.role === 'admin') {
+    return <AdminNavbar user={user} logout={logout} navigate={navigate} />;
+  } else return <CustimerNavbar user={user} logout={logout} navigate={navigate} />;
+};
+
+
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  if (!user) {
-    return <VisitorNavbar />;
-  }
-
-  if (user?.role === 'admin') {
-    return <AdminNavbar user={user} logout={logout} navigate={navigate} />;
-  }
-
-  return <LoggededNavbar user={user} logout={logout} navigate={navigate} />;
+  return (
+    <NavbarMaker user={user} logout={logout} navigate={navigate} />
+  );
 };
 
 export default Navbar;
