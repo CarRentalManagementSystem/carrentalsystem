@@ -2,14 +2,18 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import IssueCard from './IssueCard';
+import { filterByCategory, sortByStatusAndDate } from './issueFilter';
 
-const RentalList = ({ issues, setIssues, setEditingIssue }) => {
+const IssueList = ({ issues, setIssues }) => {
   const { user } = useAuth();
   const [names, setNames] = useState([]);
-  const navigate = useNavigate();
   const [selectedCate, setSelectedCate] = useState('');
-  const cateList = ["Car Issue", "Lost Item", "Insurance", "Others", "option1", "option2","option3"];
+  const navigate = useNavigate();
 
+  const cateList = [
+    "Car Issue", "Lost Item", "Insurance", "Others", "option1", "option2", "option3"
+  ];
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -26,20 +30,16 @@ const RentalList = ({ issues, setIssues, setEditingIssue }) => {
     if (user.role === 'admin') {
       fetchUsers();
     }
-
   }, [user, navigate]);
 
-
-
-const handleMarkDone = async (issueId) => {
+  const handleMarkDone = async (issueId) => {
     try {
-      const response = await axiosInstance.put(
+      await axiosInstance.put(
         `/api/issue/${issueId}`,
         { issueStatus: 'completed' },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
 
-      // Update local state
       setIssues((prevIssues) =>
         prevIssues.map((issue) =>
           issue._id === issueId ? { ...issue, issueStatus: 'completed' } : issue
@@ -50,99 +50,44 @@ const handleMarkDone = async (issueId) => {
     }
   };
 
+  const filteredSortedIssues = sortByStatusAndDate(
+    filterByCategory(issues, selectedCate)
+  );
 
-
-
-
-return (
-  <div>
-    {/* Category Filter */}
-    <div className="mb-4">
-  <label htmlFor="category" className="block mb-2 font-bold text-lg">Filter:</label>
-  <select
-    id="category"
-    value={selectedCate}
-    onChange={(e) => setSelectedCate(e.target.value)}
-    className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-  >
-    <option value="">All</option>
-    {cateList.map((cate) => (
-      <option key={cate} value={cate}>
-        {cate}
-      </option>
-    ))}
-  </select>
-</div>
-
-    {issues
-      .filter((issue) => selectedCate === '' || issue.issueCategory === selectedCate)
-      .slice()
-      .sort((a, b) => {
-        if (a.issueStatus === 'incomplete' && b.issueStatus === 'completed') return -1;
-        if (a.issueStatus === 'completed' && b.issueStatus === 'incomplete') return 1;
-        return new Date(b.createdDate) - new Date(a.createdDate);
-      })
-      .map((issue) => {
-        const sender = Array.isArray(names)
-          ? names.find((u) => u._id === issue.senderId)
-          : null;
-
-return (
-  <div
-    key={issue._id}
-    className="bg-white rounded-xl shadow p-6 mb-4 border border-gray-200"
-  >
-    <div className="flex justify-between items-start">
-      <div className="w-full">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="text-lg font-bold">{issue.title ?? 'No Title'}</h2>
-        </div>
-        
- 
-        <div className="flex justify-end gap-2"> 
-          <span className="px-3 py-1 bg-blue-100 text-sm text-black rounded-full border border-blue-300">
-            {issue.issueCategory ?? 'N/A'}
-          </span>
-          <span className="px-3 py-1 bg-blue-100 text-sm text-black rounded-full border border-blue-300">
-            {issue?.rentalId ?? 'N.A'}
-          </span>
-        </div>
-               <div className="flex justify-end gap-2"><span className="text-sm text-gray-500">{new Date(issue.createdDate).toISOString().split('T')[0]}</span></div>
-        
-        <p className="text-gray-500 mb-2">{issue.issueContent ?? 'No content'}</p>
-
-        <div className="text-sm text-gray-700">
-          <p>Sender: {sender ? sender.name : 'Visitor'}</p>
-          <p>email:  {sender?.email ?? 'N/A'}</p>
-          <p>Tel: {sender?.phoneNumber ?? 'N/A'}</p>
-        </div>
-      </div>
-      
-    </div>
-    <div className="mt-4 text-right">
-      <button
-          onClick={() => handleMarkDone(issue._id)}
-          disabled={issue.issueStatus === 'completed'}
-          className={`px-6 py-2 rounded ${
-            issue.issueStatus === 'completed'
-              ? 'bg-gray-400 text-white cursor-not-allowed'
-              : 'bg-purple-600 text-white hover:bg-purple-700'
-          }`}
+  return (
+    <div>
+      {/* Filter Dropdown */}
+      <div className="mb-4">
+        <label htmlFor="category" className="block mb-2 font-bold text-lg">Filter:</label>
+        <select
+          id="category"
+          value={selectedCate}
+          onChange={(e) => setSelectedCate(e.target.value)}
+          className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
         >
-          {issue.issueStatus === 'completed' ? 'Done' : 'Mark Done'}
-        </button>
-    </div>
-  </div>
-);
+          <option value="">All</option>
+          {cateList.map((cate) => (
+            <option key={cate} value={cate}>
+              {cate}
+            </option>
+          ))}
+        </select>
+      </div>
 
-
+      {/* Render Issues */}
+      {filteredSortedIssues.map((issue) => {
+        const sender = names.find((u) => u._id === issue.senderId);
+        return (
+          <IssueCard
+            key={issue._id}
+            issue={issue}
+            sender={sender}
+            onMarkDone={handleMarkDone}
+          />
+        );
       })}
-  </div>
-);
-
-
-
-
+    </div>
+  );
 };
 
-export default RentalList;
+export default IssueList;

@@ -15,6 +15,7 @@ import Report from './pages/Report';
 import AddVehiclePage from './pages/ManageVehiclePage';
 import ManageVehiclePage from './pages/ManageVehiclePage';
 import Issue from './pages/Issue';
+import Notification from './pages/Notification';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/report" element={<Report />} />
         <Route path="/issue" element={<Issue />} />
+        <Route path="/notification" element={<Notification />} />
       </Routes>
     </Router>
   );
