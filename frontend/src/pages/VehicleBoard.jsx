@@ -1,10 +1,10 @@
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import RentalDateFilter from '../components/RentalDateFilter';
 import VehicleGroupFilter from '../components/VehicleGroupFilter';
 import VehicleCardList from '../components/VehicleCardList';
 import VehicleMakeFilter from '../components/VehicleMakeFilter';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import VehicleFuelFilter from '../components/VehicleFuelFilter';
 import axiosInstance from '../axiosConfig';
 import { useAuth } from '../context/AuthContext';
@@ -69,6 +69,32 @@ const VehicleBoard = () => {
     };
     fetchVehicles();
   }, []);
+
+  const location = useLocation()
+
+  const { rentedDate, returnedDate } = location.state || {}
+
+  const [editRentedDate, setEditRentedDate] = useState(rentedDate);
+  const [editReturnedDate, setEditReturnedDate] = useState(returnedDate);
+
+  const handleChangeEditRentedDate = (date) => {
+    if (new Date(date) > new Date(returnedDate)) {
+      setMessage('Rental date cannot be after return date');
+      setOpen(true);
+      return;
+    }
+    setEditRentedDate(date);
+  };
+
+  const handleChangeEditReturnedDate = (date) => {
+    if (new Date(date) < new Date(rentedDate)) {
+      setMessage('Return date cannot be before rental date');
+      setOpen(true);
+      return;
+    }
+    setEditReturnedDate(date);
+  };
+
 
   const [vehicles, setVehicles] = useState();
   const [open, setOpen] = useState(false);
@@ -187,21 +213,26 @@ const VehicleBoard = () => {
         selectedMake={selectedMake}
         onSelectVehicleMake={handleSelectVehicleMake}
       />
-      <RentalDateFilter />
-
+      <RentalDateFilter
+        rentedDate={editRentedDate}
+        returnedDate={editReturnedDate}
+        onChangeRentedDate={handleChangeEditRentedDate}
+        onChangeReturnedDate={handleChangeEditReturnedDate}
+      />
       {user?.role === 'admin' && (
         <div className='flex justify-end mb-4'>
           <button
             className='px-4 py-2 text-white rounded bg-primary'
-            onClick={() => navigate('/manage-vehicle', { state: { mode: 'add' } })}
+            onClick={() =>
+              navigate('/manage-vehicle', { state: { mode: 'add' } })
+            }
           >
             Add More Vehicle
           </button>
         </div>
       )}
-      List<VehicleCardList
-        vehicles={vehicles}
-      />
+      List
+      <VehicleCardList vehicles={vehicles} dates={{rentedDate: editRentedDate, returnedDate: editReturnedDate}}/>
     </div>
   );
 };

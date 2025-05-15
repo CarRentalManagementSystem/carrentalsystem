@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
-const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) => {
+const VehicleCard = ({ vehicle, dates }) => {
 
   const { user } = useAuth();
 
@@ -12,7 +12,7 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
 
   const handleClickDetails = () => {
     try {
-      navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle } });
+      navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle, dates } });
     } catch(error){
       console.error(error);
     }

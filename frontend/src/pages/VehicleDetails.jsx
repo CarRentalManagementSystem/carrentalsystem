@@ -11,7 +11,7 @@ const VehicleDetails = () => {
   let navigate = useNavigate();
 
   const location = useLocation();
-  const { vehicle, rentedDate, returnedDate } = location.state || {};
+  const { vehicle, dates: { rentedDate, returnedDate } } = location.state || {};
 
   const [open, setOpen] = useState(false);
 
@@ -27,6 +27,9 @@ const VehicleDetails = () => {
     });
   }
 
+  const duration = Math.ceil((new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24))
+  const totalPrice = vehicle.rentalPricePerDay * duration
+
   return (
     <div className='grid gap-8 m-20 md:grid-cols-2'>
       <div>
@@ -35,9 +38,9 @@ const VehicleDetails = () => {
         </h1>
         <div className='flex items-center mb-6'>
           <span className='text-2xl font-bold text-primary'>
-            Total price - ${vehicle.rentalPricePerDay}
+            Total price - ${totalPrice}
           </span>
-          <span className='ml-1 text-sm text-gray-500'>/ day</span>
+          <span className='ml-1 text-sm text-gray-500'>/ {duration} day</span>
         </div>
 
         <div className='mb-6'>
@@ -48,6 +51,17 @@ const VehicleDetails = () => {
           />
         </div>
 
+        <div className='grid items-center grid-cols-3 gap-4 p-4 mt-4 mb-4 rounded bg-secondary'>
+          <span>
+            <strong>Pick up on:</strong> {rentedDate}
+          </span>
+          <span>
+            <strong>Return on:</strong> {returnedDate}
+          </span>
+          <span>
+            <strong>Renting for:</strong> {duration} days
+          </span>
+        </div>
       </div>
       <div>
         <h2 className='mb-4 text-xl font-semibold'>Technical Specification</h2>
@@ -63,7 +77,7 @@ const VehicleDetails = () => {
             icon='fuel'
           />
           <SpecItem title='Type' value={vehicle.techSpecs.type} icon='car' />
-          <SpecItem title='Air Conditioner' value="Yes" icon='aircon' />
+          <SpecItem title='Air Conditioner' value='Yes' icon='aircon' />
           <SpecItem
             title='Seats'
             value={vehicle.techSpecs.seats}
