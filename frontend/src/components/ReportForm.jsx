@@ -20,7 +20,7 @@ const RentalForm = ({ rentals, setRentals}) => {
     console.log('Form submitted');
     console.log(formData);
 
-    if (!formData.senderId  || !formData.title || !formData.issueCategory || !formData.issueContent) {
+    if (  !formData.title || !formData.issueCategory || !formData.issueContent) {
       
       alert('Please fill out all fields.');
       return;
@@ -28,7 +28,7 @@ const RentalForm = ({ rentals, setRentals}) => {
     
 
     try {
-      await axiosInstance.post('/api/issue',formData,{headers: {Authorization: `Bearer ${user.token}`}});
+      await axiosInstance.post('/api/issue',formData);
       alert('Issue report successful! Our staff will contact you as soon as possible.');
       await NotificationSender({
         targetRole: 'admin',
