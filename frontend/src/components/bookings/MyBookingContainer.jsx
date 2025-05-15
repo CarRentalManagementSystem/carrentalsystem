@@ -3,18 +3,27 @@ import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import BookingCard from './BookingCard';
 
-const MyBookingsContainer = () => {
-    const [bookings, setBookings] = useState([]);
+const MyBookingsContainer = ({ bookings }) => {
+    const [rentals, setRentals] = useState([]);
+    const [editingRental, setEditingRental] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchBookings = async () => {
-            const response = await fetch('/api/rentals');
-            const data = await response.json();
-            setBookings(data);
+        const fetchRentals = async () => {
+            try {
+                const response = await axiosInstance.get('/api/rentals', {
+                    headers: { Authorization: `Bearer ${user.token}` },
+                });
+                setRentals(response.data);
+            } catch (error) {
+                navigate('/login');
+            }
         };
 
         fetchBookings();
-    }, []);
+    }, [user, navigate]);
+
+
 
     // Observer pattern for reminders
     useEffect(() => {
@@ -24,10 +33,10 @@ const MyBookingsContainer = () => {
                 alert(`Reminder: Your pickup for ${b.vehicleId.manufacturer}${b.vehicleId.model} is tomorrow!`);
             }
         });
-    }, [bookings]);
+    }, [rentals]);
 
     // Hide past bookings
-    const visibleBookings = bookings.filter(b =>
+    const visibleRentals = rentals.filter(b =>
         dayjs(b.returnedDate).isSame(dayjs(), 'day') || dayjs(b.returnedDate).isAfter(dayjs())
     );
 
@@ -35,9 +44,9 @@ const MyBookingsContainer = () => {
         <section className="p-6 max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold mb-6">My Bookings</h1>
 
-            {visibleBookings.length > 0 ? (
-                visibleBookings.map(booking => (
-                    <BookingCard key={booking.rentalId} booking={booking} />
+            {visibleRentals.length > 0 ? (
+                visibleRentals.map(booking => (
+                    <BookingCard key={booking._Id} booking={booking} />
                 ))
             ) : (
                 <p className="text-gray-500">No upcoming bookings.</p>

@@ -7,7 +7,7 @@ const Rental = require('../models/Rental');
 const getRentals = async (req, res) => {
     try {
 
-        const rentals = await Rental.find({ customerId: req.user.id }).populate("vehicleId"); //  Populate car details
+        const rentals = await Rental.find({ customerId: req.user._id }).populate("vehicleId"); //  Populate car details
         console.log("rentalController API returning Rentals:", JSON.stringify(rentals, null, 2)); //  check whether return rentals
         res.json(rentals);
     } catch (error) {

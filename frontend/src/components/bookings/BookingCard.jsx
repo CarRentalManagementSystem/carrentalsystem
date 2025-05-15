@@ -23,7 +23,7 @@ const BookingCard = ({ booking }) => {
 
                             <p className="text-sm text-gray-500">Pickup date: {rental.rentedDate ?? "N/A"}</p>
                             <p className="text-sm text-gray-500">Return date: {rental.returnedDate ?? "N/A"}</p>
-                            <p className="text-sm text-gray-500">Return date: {rental.rentalStatus ?? "N/A"}</p>
+                            <p className="text-sm text-gray-500">Rental status: {rental.rentalStatus ?? "N/A"}</p>
 
 
                             <div className="flex flex-col justify-between">

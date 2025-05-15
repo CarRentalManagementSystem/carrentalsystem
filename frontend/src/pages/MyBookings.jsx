@@ -27,13 +27,8 @@ const Rentals = () => {
 
     return (
         <div className="container mx-auto p-6">
-            <RentalForm
-                rentals={rentals}
-                setRentals={setRentals}
-                editingRental={editingRental}
-                setEditingRental={setEditingRental}
-            />
-            <RentalList rentals={rentals} setRentals={setRentals} setEditingRental={setEditingRental} />
+
+            <MyBookingsContainer bookings={rentals} />
         </div>
     );
 };
