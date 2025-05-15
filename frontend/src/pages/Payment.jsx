@@ -17,7 +17,7 @@ const Payment = () => {
   const { user } = useAuth();
 
   const { vehicleId, vehicle, rentalPricePerDay, rentedDate, returnedDate, totalRentalFee } = location.state || {};
-
+  const customerId = user.id
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
     cardHolderName: "",
@@ -43,8 +43,10 @@ const Payment = () => {
 
   const handleSubmit = async () => {
     try {
+      alert(user.id);
       await axiosInstance.post('/api/rentals', {
-        customerId: user._id,
+        customerId: user.id,
+
         vehicleId: vehicle?._id,
         rentedDate: rentedDate,
         returnedDate: returnedDate,

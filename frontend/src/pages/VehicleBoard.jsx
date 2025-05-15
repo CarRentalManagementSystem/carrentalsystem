@@ -57,6 +57,7 @@ class FuelFilterStrategy extends FilterStrategy {
 
 const VehicleBoard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -100,7 +101,6 @@ const VehicleBoard = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
 
-  const { user } = useAuth();
 
   const [vehicleGroups, setVehicleGroups] = useState([
     { id: '0', name: 'All vehicles' },
@@ -232,7 +232,7 @@ const VehicleBoard = () => {
         </div>
       )}
       List
-      <VehicleCardList vehicles={vehicles} dates={{rentedDate: editRentedDate, returnedDate: editReturnedDate}}/>
+      <VehicleCardList vehicles={vehicles} dates={{ rentedDate: editRentedDate, returnedDate: editReturnedDate }} />
     </div>
   );
 };

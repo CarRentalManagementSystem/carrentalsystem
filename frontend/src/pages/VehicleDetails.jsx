@@ -16,6 +16,7 @@ const VehicleDetails = () => {
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
+
     navigate('/payment', {
       state: {
         vehicleId: vehicle._id,

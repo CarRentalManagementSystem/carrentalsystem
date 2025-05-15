@@ -7,7 +7,7 @@ const Rental = require('../models/Rental');
 const getRentals = async (req, res) => {
     try {
 
-        const rentals = await Rental.find({ userId: req.user.id }).populate("vehicleId"); //  Populate car details
+        const rentals = await Rental.find({ customerId: req.user.id }).populate("vehicleId"); //  Populate car details
         console.log("rentalController API returning Rentals:", JSON.stringify(rentals, null, 2)); //  check whether return rentals
         res.json(rentals);
     } catch (error) {
@@ -19,21 +19,21 @@ const getRentals = async (req, res) => {
 
 // Add Rental Function:
 const addRental = async (req, res) => {
-    const { customerId, vehicleId, rentedDate, returnedDate, totalRentalFee, paymentStatus } = req.body;
-
+    const { customerId, vehicleId, rentedDate, returnedDate, totalRentalFee, rentalStatus, paymentStatus } = req.body;
+    //const customerId = req.user.id;
     // Map the frontend field names to your backend names
     //const vehicleId = carId;
     //const rentedDate = pickupDate;
     //const returnedDate = returnDate;
 
     console.log("Backend Received Rental:", req.body);
-    if (!vehicleId || !rentedDate || !returnedDate) {
-        console.error("Missing required fields:", { vehicleId, rentedDate, returnedDate });
-        return res.status(400).json({ message: 'There are missing required fields: vehicleId, rentedDate, returnedDate' });
+    if (!customerId || !vehicleId || !rentedDate || !returnedDate || !totalRentalFee || !rentalStatus || !paymentStatus) {
+        console.error("Missing required fields:", { customerId, vehicleId, rentedDate, returnedDate, totalRentalFee, rentalStatus, paymentStatus });
+        return res.status(400).json({ message: 'There are missing required fields: customerId, vehicleId, rentedDate, returnedDate, totalRentalFee, rentalStatus, paymentStatus' });
     }
     try {
-        const newental = await Rental.create({
-            customerId: req.user.id,
+        const rental = await Rental.create({
+            customerId: new mongoose.Types.ObjectId(customerId),
             vehicleId: new mongoose.Types.ObjectId(vehicleId),
             rentedDate: new Date(rentedDate),
             returnedDate: new Date(returnedDate),
@@ -53,9 +53,8 @@ const addRental = async (req, res) => {
 
 // Update Rental Booking:
 const updateRental = async (req, res) => {
-    const { customerId, vehicleId, rentedDate, returnedDate, totalRentalFee, paymentStatus } = req.body;
-    const userId = req.user.id;
-
+    const { vehicleId, rentedDate, returnedDate, totalRentalFee, paymentStatus } = req.body;
+    const customerId = req.user.id;
     //const vehicleId = carId;
     //const rentedDate = pickupDate;
     //const returnedDate = returnDate;
@@ -82,8 +81,8 @@ const updateRental = async (req, res) => {
 
 // Delete Rental Booking:
 const deleteRental = async (req, res) => {
-    const { customerId, vehicleId, rentedDate, returnedDate, totalRentalFee, paymentStatus } = req.body;
-    const userId = req.user.id;
+    const { vehicleId, rentedDate, returnedDate, totalRentalFee, paymentStatus } = req.body;
+    const customerId = req.user.id;
     const userRole = req.user.role;
     //const vehicleId = carId;
     //const rentedDate = pickupDate;
