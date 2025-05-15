@@ -51,8 +51,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const Dashboard = () => {
-  const [timeframe, setTimeframe] = useState('today');
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  // const [timeframe, setTimeframe] = useState('today');
+  // const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const [stats, setStats] = useState({});
@@ -71,9 +71,10 @@ const Dashboard = () => {
     fetchDashboardStats();
   }, []);
 
-  const rentalByStatus = stats?.rental?.byStatus?.map((status) =>
-    Object.assign({}, { name: status._id, value: status.count })
-  ) || []; 
+  const rentalByStatus =
+    stats?.rental?.byStatus?.map((status) =>
+      Object.assign({}, { name: status._id || 'other', value: status.count })
+    ) || []; 
 
   const rentalsByVehicleType = stats?.financial?.revenueByVehicleType?.map((type) => Object.assign({}, {name: type._id, value: type.count})) || [];
 
@@ -87,7 +88,7 @@ const Dashboard = () => {
   
   const dailyRentals = lastSevenDays.map((stat) => 
     Object.assign({}, {
-      name: dayNames[stat.dayOfWeek], 
+      name: dayNames[stat.dayOfWeek-1], 
       rentals: stat.numberOfRentals, 
       revenue: stat.totalRevenue, 
       customers: stat.numberOfCustomers
@@ -116,8 +117,10 @@ const Dashboard = () => {
   // };
 
   return (
-      <div className='flex flex-col min-h-screen'>
-      { isLoading ? <div> Loading... Please Wait</div> :
+    <div className='flex flex-col min-h-screen'>
+      {isLoading ? (
+        <div> Loading... Please Wait</div>
+      ) : (
         <main className='flex-1 p-6 space-y-6'>
           <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
             <h2 className='text-2xl font-bold tracking-tight'>Dashboard</h2>
@@ -239,40 +242,6 @@ const Dashboard = () => {
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
             <div className='col-span-1 bg-white border rounded-lg shadow'>
               <div className='p-4 border-b'>
-                <h3 className='text-lg font-medium'>Rentals by Vehicle Type</h3>
-                <p className='text-sm text-gray-500'>
-                  Distribution of rentals by vehicle category
-                </p>
-              </div>
-              <div className='p-4 h-[300px]'>
-                <ResponsiveContainer width='100%' height='100%'>
-                  <PieChart>
-                    <Pie
-                      data={rentalsByVehicleType}
-                      cx='50%'
-                      cy='50%'
-                      labelLine={false}
-                      outerRadius={90}
-                      innerRadius={70}
-                      paddingAngle={2}
-                      dataKey='value'
-                      nameKey='name'
-                    >
-                      {rentalsByVehicleType.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className='col-span-1 bg-white border rounded-lg shadow'>
-              <div className='p-4 border-b'>
                 <h3 className='text-lg font-medium'>Rental Status</h3>
                 <p className='text-sm text-gray-500'>
                   Distribution of Rental Status
@@ -307,7 +276,44 @@ const Dashboard = () => {
             </div>
             <div className='col-span-1 bg-white border rounded-lg shadow'>
               <div className='p-4 border-b'>
-                <h3 className='text-lg font-medium'>Rentals by Rental Duration</h3>
+                <h3 className='text-lg font-medium'>Rentals by Vehicle Type</h3>
+                <p className='text-sm text-gray-500'>
+                  Distribution of rentals by vehicle category
+                </p>
+              </div>
+              <div className='p-4 h-[300px]'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <PieChart>
+                    <Pie
+                      data={rentalsByVehicleType}
+                      cx='50%'
+                      cy='50%'
+                      labelLine={false}
+                      outerRadius={90}
+                      innerRadius={70}
+                      paddingAngle={2}
+                      dataKey='value'
+                      nameKey='name'
+                    >
+                      {rentalsByVehicleType.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className='col-span-1 bg-white border rounded-lg shadow'>
+              <div className='p-4 border-b'>
+                <h3 className='text-lg font-medium'>
+                  Rentals by Rental Duration
+                </h3>
                 <p className='text-sm text-gray-500'>
                   Distribution of rental by rental duration
                 </p>
@@ -363,8 +369,16 @@ const Dashboard = () => {
                         x2='0'
                         y2='1'
                       >
-                        <stop offset='5%' stopColor='#8884d8' stopOpacity={0.8} />
-                        <stop offset='95%' stopColor='#8884d8' stopOpacity={0} />
+                        <stop
+                          offset='5%'
+                          stopColor='#8884d8'
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset='95%'
+                          stopColor='#8884d8'
+                          stopOpacity={0}
+                        />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray='3 3' />
@@ -427,14 +441,18 @@ const Dashboard = () => {
                   <XAxis dataKey='name' />
                   <YAxis />
                   <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey='customers' fill='#413ea0' radius={[4, 4, 0, 0]} />
+                  <Bar
+                    dataKey='customers'
+                    fill='#413ea0'
+                    radius={[4, 4, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
         </main>
-      }
-      </div>
+      )}
+    </div>
   );
 }
 
