@@ -33,22 +33,6 @@ const COLORS = [
   '#fee08b',
 ];
 
-// Custom tooltip component
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className='p-2 bg-white border rounded shadow-md'>
-        <p className='font-bold'>{`${label || payload[0].name}`}</p>
-        {payload.map((entry, index) => (
-          <p key={`item-${index}`} className='text-gray-700'>
-            {`${entry.name}: ${entry.value}`}
-          </p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-};
 
 const Dashboard = () => {
   // const [timeframe, setTimeframe] = useState('today');
@@ -124,6 +108,9 @@ const Dashboard = () => {
         <main className='flex-1 p-6 space-y-6'>
           <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
             <h2 className='text-2xl font-bold tracking-tight'>Dashboard</h2>
+
+          {/* TBD */}
+
             {/* <div className='flex items-center gap-2 mt-2 sm:mt-0'>
               <div className='flex items-center gap-2'>
                 <svg
@@ -455,5 +442,22 @@ const Dashboard = () => {
     </div>
   );
 }
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className='p-2 bg-white border rounded shadow-md'>
+        <p className='font-bold'>{`${label || payload[0].name}`}</p>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} className='text-gray-700'>
+            {`${entry.name}: ${entry.value}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
 
 export default Dashboard;
