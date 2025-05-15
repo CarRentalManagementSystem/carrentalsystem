@@ -1,14 +1,34 @@
 
-const NotificationList = ({ notifications, setNotifications }) => {
+const NotificationList = ({ userNotifications, roleNotifications }) => {
 
 
   return (
     <div>
       
-      <div className="mb-4">
-        <label htmlFor="category" className="block mb-2 font-bold text-lg">123</label>
-        <p>details:{notifications.content}</p>
+      {userNotifications.length === 0 && roleNotifications.length === 0 ? (
+      <p className="text-center text-gray-500">No notifications.</p>
+    ) : (
+      <div>
+        {userNotifications.map((notification) => (
+          <div
+            key={`user-${notification._id}`}
+            className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded"
+          >
+            <h3 className="text-lg font-semibold">{notification.title}</h3>
+            <p>{notification.content}</p>
+          </div>
+        ))}
+        {roleNotifications.map((notification) => (
+          <div
+            key={`role-${notification._id}`}
+            className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded"
+          >
+            <h3 className="text-lg font-semibold">{notification.title}</h3>
+            <p>{notification.content}</p>
+          </div>
+        ))}
       </div>
+    )}
 
     </div>
   );

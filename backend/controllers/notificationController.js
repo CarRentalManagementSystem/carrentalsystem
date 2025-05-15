@@ -1,5 +1,7 @@
 
 //Only allow user to view notification
+
+const mongoose = require('mongoose');
 const Notification = require('../models/Notification');
 
 const getNotifications = async (req, res) => {
@@ -13,12 +15,20 @@ const getNotifications = async (req, res) => {
 
 
 const addNotification = async (req, res) => {
-    const { receiverId, title , content} = req.body;
+    const { receiverId, receiverRole , title , content} = req.body;
     console.log("notificationController Backend Received Issue:", req.body);
+
+        let receiverIdObj = null;
+        if (receiverId && receiverId.trim() !== '') {
+          receiverIdObj = new mongoose.Types.ObjectId(receiverId);
+        }
+
+    
 
     try {
         const notification = await Notification.create({
-            receiverId: new mongoose.Types.ObjectId(receiverId),
+            receiverRole: receiverRole,
+            receiverId: receiverIdObj,
             title: title,
             content: content,
             createdDate: new Date()

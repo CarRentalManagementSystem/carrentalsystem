@@ -27,7 +27,7 @@ const IssueList = ({ issues, setIssues }) => {
       }
     };
 
-    if (user.role === 'admin') {
+    if (user?.role === 'admin') {
       fetchUsers();
     }
   }, [user, navigate]);

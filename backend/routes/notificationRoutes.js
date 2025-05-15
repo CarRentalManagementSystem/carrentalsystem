@@ -4,7 +4,7 @@ const { getNotifications, addNotification } = require('../controllers/notificati
 const router = express.Router();
 
 router.use((req, res, next) => {
-    console.log(`issueRoutes.js received a ${req.method} request to ${req.originalUrl}`);
+    console.log(`notificationRoutes.js received a ${req.method} request to ${req.originalUrl}`);
     next();
 });
 

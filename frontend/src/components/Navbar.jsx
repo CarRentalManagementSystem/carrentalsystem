@@ -82,7 +82,7 @@ const VisitorNavbar = () => (
     <NavLinks />
     <div className='flex items-center gap-4'>
       <Link to='/login' className='hover:text-primary'>Login</Link>
-      <Link to='/register' className='px-4 py-2 bg-green-500 rounded hover:bg-green-700 text-white'>
+      <Link to='/register' className='px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700'>
         Register
       </Link>
     </div>
@@ -98,7 +98,7 @@ const Navbar = () => {
     return <VisitorNavbar />;
   }
 
-  if (user.role === 'admin') {
+  if (user?.role === 'admin') {
     return <AdminNavbar user={user} logout={logout} navigate={navigate} />;
   }
 

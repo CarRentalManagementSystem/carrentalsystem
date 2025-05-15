@@ -52,32 +52,23 @@ const Notifications = () => {
   // setNotifications(mockNotifications);
 
   }, [user, navigate]);
+const userNotifications = notifications.filter(
+  (n) => String(n.receiverId) === String(user.id)
+);
+const roleNotifications = notifications.filter(
+  (n) => String(n.receiverRole) === String(user.role)
+);
 
-  const userNotifications = notifications.filter(
-    (n) => String(n.receiverId) === String(user.id)
-  );
+return (
+  <div className="max-w-xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
+    <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">
+      Notification
+    </h1>
+    <NotificationList userNotifications={userNotifications} roleNotifications={roleNotifications}/>
+    
+  </div>
+);
 
-
-    return (
-    <div className="max-w-xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
-      <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">Notification</h1>
-
-
-      {userNotifications.length === 0 ? (
-        <p className="text-center text-gray-500">No notifications.</p>
-      ) : (
-        userNotifications.map((notification) => (
-          <div key={notification._id} className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded">
-            <h3 className="text-lg font-semibold">{notification.title}</h3>
-            <p>{notification.content}</p>
-            
-          </div>
-        ))
-      )}
-
-
-    </div>
-  );
  
   
 

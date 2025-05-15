@@ -15,6 +15,7 @@ import Report from './pages/Report';
 import AddVehiclePage from './pages/ManageVehiclePage';
 import ManageVehiclePage from './pages/ManageVehiclePage';
 import Issue from './pages/Issue';
+import AboutUs from './pages/AboutUs';
 import Notification from './pages/Notification';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
         <Route path="/rental-form/:carId" element={<RentalForm />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/report" element={<Report />} />
+        <Route path="/about" element={<AboutUs/>} />
         <Route path="/issue" element={<Issue />} />
         <Route path="/notification" element={<Notification />} />
       </Routes>
