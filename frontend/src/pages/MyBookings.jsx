@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import MyBookingsContainer from '../components/bookings/MyBookingsContainer';
+import MyBookingContainer from '../components/bookings/MyBookingContainer';
 
 const Rentals = () => {
     const { user } = useAuth();
@@ -11,6 +11,8 @@ const Rentals = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        console.log("Bookings received:", rentals);
+        alert(user.id);
         const fetchRentals = async () => {
             try {
                 const response = await axiosInstance.get('/api/rentals', {
@@ -18,17 +20,19 @@ const Rentals = () => {
                 });
                 setRentals(response.data);
             } catch (error) {
+                console.error("Error fetching rentals:", error);
                 navigate('/login');
             }
         };
 
         fetchRentals();
-    }, [user, navigate]);
+    }, [user]);
 
     return (
         <div className="container mx-auto p-6">
+            <h1 className="text-3xl font-bold mb-6">My Bookings</h1>
 
-            <MyBookingsContainer bookings={rentals} />
+            <MyBookingContainer bookings={rentals} />
         </div>
     );
 };

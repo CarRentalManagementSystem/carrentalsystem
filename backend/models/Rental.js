@@ -8,7 +8,7 @@ const rentalSchema = new mongoose.Schema({
     returnedDate: { type: Date, required: true },
     totalRentalFee: { type: Number, required: true },
     paymentStatus: { type: String, enum: ['paid'], default: 'paid' },
-    rentalStatus: { type: String, enum: ['booked', 'inuse', 'cancelled'], default: 'booked' },
+    rentalStatus: { type: String, enum: ['booked', 'inuse', 'cancelled', 'completed'], default: 'booked' },
 
 },
     { timestamps: true } // add timestamps to record time
