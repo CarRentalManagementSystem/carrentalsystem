@@ -115,9 +115,6 @@ const BookingCard = ({ booking, onCancelled }) => {
                         >
                             Cancel Booking
                         </button>
-                        <button className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 text-sm">
-                            Details
-                        </button>
                     </div>
                 </div>
             </div>

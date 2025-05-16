@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 //Get Rental Function:
 const Rental = require('../models/Rental');
+const Vehicle = require('../models/Vehicle');
 
 
 const getRentals = async (req, res) => {
@@ -40,8 +41,13 @@ const addRental = async (req, res) => {
             rentedDate: new Date(rentedDate),
             returnedDate: new Date(returnedDate),
             totalRentalFee: new Number(totalRentalFee),
-            rentalStatus: 'booked', // set booked as default
-            paymentStatus: new String(paymentStatus),
+            rentalStatus: rentalStatus || 'booked',
+            paymentStatus: paymentStatus || 'paid',
+        });
+
+        //mark vehicle as booked
+        await Vehicle.findByIdAndUpdate(vehicleId, {
+            vehicleStatus: 'rented',
         });
 
         console.log("Successfully stored rental data in DB:", rental);
@@ -81,14 +87,26 @@ const updateRental = async (req, res) => {
 
 //cancel rental, keep it in db and change status to cancelled
 const cancelRental = async (req, res) => {
+    const { vehicleId } = req.body;
     try {
         const rental = await Rental.findById(req.params.id);
         if (!rental) {
             return res.status(404).json({ message: 'Rental not found' });
         }
 
+        // update rentalStatus
         rental.rentalStatus = 'cancelled';
         const updatedRental = await rental.save();
+
+        // update vehicleStatus
+        if (rental.vehicleId) {
+            await Vehicle.findByIdAndUpdate(
+                rental.vehicleId,
+                { vehicleStatus: 'available' },
+                { new: true }
+            );
+        }
+
         res.json(updatedRental);
     } catch (err) {
         res.status(500).json({ message: 'Failed to cancel rental' });
