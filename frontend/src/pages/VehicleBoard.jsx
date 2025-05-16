@@ -7,8 +7,7 @@ import VehicleMakeFilter from '../components/VehicleMakeFilter';
 import { useState, useEffect } from 'react';
 import VehicleFuelFilter from '../components/VehicleFuelFilter';
 import axiosInstance from '../axiosConfig';
-
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const VehicleBoard = () => {
   const navigate = useNavigate();
@@ -32,8 +31,14 @@ const VehicleBoard = () => {
 
   const { rentedDate, returnedDate } = location.state || {}
 
-  const [editRentedDate, setEditRentedDate] = useState(rentedDate);
-  const [editReturnedDate, setEditReturnedDate] = useState(returnedDate);
+  const defaultReturnDate = (() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  })();
+
+  const [editRentedDate, setEditRentedDate] = useState(rentedDate || new Date().toISOString().split('T')[0]);
+  const [editReturnedDate, setEditReturnedDate] = useState(returnedDate || defaultReturnDate);
 
   const handleChangeEditRentedDate = (date) => {
     if (new Date(date) > new Date(returnedDate)) {
@@ -53,8 +58,6 @@ const VehicleBoard = () => {
     setEditReturnedDate(date);
   };
 
-
-  const [vehicles, setVehicles] = useState();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -110,8 +113,6 @@ const VehicleBoard = () => {
     { id: '26', name: 'Lexus' },
   ]);
 
-  const navigate = useNavigate();
-
   const [selectedGroup, setSelectedGroup] = useState('0');
   const [selectedMake, setSelectedMake] = useState('0');
   const [selectedFuelType, setSelectedFuelType] = useState('0');
@@ -164,11 +165,32 @@ const applyFilters = (groupId, makeId, fuelId) => {
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
       <h1 className='text-center'>Select a vehicle group</h1>
-      <VehicleGroupFilter vehicleGroups={vehicleGroups} selectedVehicleGroup={selectedGroup} onSelectVehicleGroup={handleSelectVehicleGroup}/>
-      <VehicleFuelFilter vehicleFuelTypes={vehicleFuelTypes} selectedFuelType={selectedFuelType} onSelectFuelType={handleSelectFuelType}/>
-      <VehicleMakeFilter vehicleMakes={vehicleMake} selectedMake={selectedMake} onSelectVehicleMake={handleSelectVehicleMake}/>
-      <RentalDateFilter/>
-      <VehicleCardList vehicles={vehicles} onClickDetails={handleClickDetails} />
+      <VehicleGroupFilter
+        vehicleGroups={vehicleGroups}
+        selectedVehicleGroup={selectedGroup}
+        onSelectVehicleGroup={handleSelectVehicleGroup}
+      />
+      <VehicleFuelFilter
+        vehicleFuelTypes={vehicleFuelTypes}
+        selectedFuelType={selectedFuelType}
+        onSelectFuelType={handleSelectFuelType}
+      />
+      <VehicleMakeFilter
+        vehicleMakes={vehicleMake}
+        selectedMake={selectedMake}
+        onSelectVehicleMake={handleSelectVehicleMake}
+      />
+      <RentalDateFilter
+        rentedDate={editRentedDate}
+        returnedDate={editReturnedDate}
+        onChangeRentedDate={handleChangeEditRentedDate}
+        onChangeReturnedDate={handleChangeEditReturnedDate}
+      />
+      <VehicleCardList
+        vehicles={vehicles}
+        dates={{rentedDate: editRentedDate, returnedDate: editReturnedDate}}
+        onClickDetails={handleClickDetails}
+      />
     </div>
   );
 };

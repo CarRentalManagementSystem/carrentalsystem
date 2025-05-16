@@ -37,12 +37,12 @@ const BookingCard = ({ booking, onCancelled }) => {
 
 
     return (
-        <div className="bg-white rounded-xl shadow-md p-10 flex flex-col gap-3 mb-8">
-            <div className="text-sm text-gray-400 font-medium">Rental ID: {_id}</div>
+        <div className="flex flex-col gap-3 p-10 mb-8 bg-white shadow-md rounded-xl">
+            <div className="text-sm font-medium text-gray-400">Rental ID: {_id}</div>
 
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
                 {/* Left: Vehicle Info + Dates */}
-                <div className="flex gap-6 items-start">
+                <div className="flex items-start gap-6">
                     <div className="w-35">
                         <h2 className="font-bold">
                             {vehicleId
@@ -50,9 +50,9 @@ const BookingCard = ({ booking, onCancelled }) => {
                                 : 'Car not available'}
                         </h2>
                         <img
-                            src={`/images/${booking.vehicleId?.manufacturer}-${booking.vehicleId?.model}-${booking.vehicleId?.techSpecs.type}.png`}
+                            src={`/images/${booking.vehicleId?.manufacturer}-${booking.vehicleId?.model}.png`}
                             alt='CarImage'
-                            className='object-contain'
+                            className='object-contain h-20'
                         />
                     </div>
 
@@ -60,11 +60,11 @@ const BookingCard = ({ booking, onCancelled }) => {
 
                         <div className="flex flex-col gap-2 mt-2 text-sm font-semibold">
                             <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-gray-400" />
+                                <span className="w-2 h-2 bg-gray-400 rounded-full" />
                                 From {dayjs(rentedDate).format('DD/MM/YYYY')}
                             </div>
-                            <div className="flex mt-4 items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-purple-600" />
+                            <div className="flex items-center gap-2 mt-4">
+                                <span className="w-2 h-2 bg-purple-600 rounded-full" />
                                 To {dayjs(returnedDate).format('DD/MM/YYYY')}
                             </div>
                         </div>
@@ -76,26 +76,26 @@ const BookingCard = ({ booking, onCancelled }) => {
                 </div>
 
                 {/* Right: Tags, Price, Buttons */}
-                <div className="flex flex-col items-end gap-6 w-full sm:w-auto">
-                    <div className="flex gap-2 flex-wrap">
+                <div className="flex flex-col items-end w-full gap-6 sm:w-auto">
+                    <div className="flex flex-wrap gap-2">
                         {/* Pickup Tag */}
                         {daysToPickup >= 0 && daysToPickup <= 2 && (
-                            <span className="px-3 py-1 text-xs rounded-full border border-blue-500 bg-blue-200 text-blue-600">
+                            <span className="px-3 py-1 text-xs text-blue-600 bg-blue-200 border border-blue-500 rounded-full">
                                 Pick-up
                             </span>)}
                         {daysToPickup >= 0 && daysToPickup <= 2 && (
-                            <span className="px-3 py-1 text-xs rounded-full text-white font-medium bg-red-500">
+                            <span className="px-3 py-1 text-xs font-medium text-white bg-red-500 rounded-full">
                                 Pickup in {daysToPickup} {daysToPickup === 1 ? 'day' : 'days'}
                             </span>
                         )}
 
                         {/* Return Tag */}
                         {daysToReturn >= 0 && daysToReturn <= 2 && (
-                            <span className="px-3 py-1 text-xs rounded-full border border-orange-500 bg-orange-200 text-orange-600">
+                            <span className="px-3 py-1 text-xs text-orange-600 bg-orange-200 border border-orange-500 rounded-full">
                                 Return
                             </span>)}
                         {daysToReturn >= 0 && daysToReturn <= 2 && (
-                            <span className="px-3 py-1 text-xs rounded-full text-white font-medium bg-red-500">
+                            <span className="px-3 py-1 text-xs font-medium text-white bg-red-500 rounded-full">
                                 Return in {daysToReturn} {daysToReturn === 1 ? 'day' : 'days'}
                             </span>
                         )}
@@ -103,14 +103,14 @@ const BookingCard = ({ booking, onCancelled }) => {
 
 
                     {/* Price */}
-                    <div className="text-md font-medium text-gray-800">
+                    <div className="font-medium text-gray-800 text-md">
                         Price: ${totalRentalFee}
                     </div>
 
                     {/* Cancel booking and view details */}
                     <div className="flex gap-2 mt-1">
                         <button
-                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
+                            className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
                             onClick={handleCancel}
                         >
                             Cancel Booking

@@ -11,6 +11,8 @@ const VehicleCard = ({ vehicle, dates }) => {
   const navigate = useNavigate();
 
   const handleClickDetails = () => {
+
+    
     try {
       navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle, dates } });
     } catch (error) {

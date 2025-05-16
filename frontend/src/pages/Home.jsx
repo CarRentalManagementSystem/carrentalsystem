@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
-import VehicleCardList from '../components/VehicleCardList';
 import RecommendedVehicles from '../components/RecommendedVehicles';
 import HeroSection from '../components/HeroSection';
-import { useNavigate } from 'react-router-dom';
 import Toast from '../components/Toast';
-
 import { useAuth } from '../context/AuthContext';
 import Dashboard from '../components/Dashboard';
 
@@ -13,26 +10,19 @@ const Home = () => {
   const [vehicles, setVehicles] = useState([]);
   const [setRentingVehicle] = useState(null);
 
-  const [message, setMessage] = useState('');
-  const [open, setOpen] = useState(false);
-
-  const navigate = useNavigate();
-
-  const {user} = useAuth();
-
-  
-  useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const response = await axiosInstance.get('/api/vehicles');
-        setVehicles(response.data);
-      } catch (error) {
-        alert('Failed to fetch vehicle list.');
-      }
-    };
-
-    fetchVehicles();
-  }, []);
+  const [vehicleGroups, setVehicleGroups] = useState([
+    { id: '0', name: 'All vehicles' },
+    { id: '1', name: 'Sedan' },
+    { id: '2', name: 'Compact' },
+    { id: '3', name: 'SUV' },
+    { id: '4', name: 'Convertible' },
+    { id: '5', name: 'Hatchback' },
+    { id: '6', name: 'Van' },
+    { id: '7', name: 'Truck' },
+    { id: '8', name: 'Wagon' },
+    { id: '9', name: 'Luxury' },
+    { id: '10', name: 'Sports' },
+  ]);
 
   const [rentedDate, setRentedDate] = useState(
     new Date().toISOString().split('T')[0]
@@ -45,7 +35,8 @@ const Home = () => {
   })();
 
   const [returnedDate, setReturnedDate] = useState(defaultReturnDate);
-
+  const [message, setMessage] = useState('');
+  const [open, setOpen] = useState(false);
 
   const handleChangeRentedDate = (date) => {
     if (new Date(date) > new Date(returnedDate)) {
@@ -64,6 +55,24 @@ const Home = () => {
     }
     setReturnedDate(date);
   };
+
+
+  const {user} = useAuth();
+
+  
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await axiosInstance.get('/api/vehicles');
+        setVehicles(response.data);
+      } catch (error) {
+        alert('Failed to fetch vehicle list.');
+      }
+    };
+
+    fetchVehicles();
+  }, []);
+
 
 
   return (
@@ -104,8 +113,8 @@ const Home = () => {
                 Comfort
               </h4>
               <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-                Enjoy a smooth and relaxing ride with vehicles designed for comfort,
-                convenience, and a better driving experience.
+                Enjoy a smooth and relaxing ride with vehicles designed for
+                comfort, convenience, and a better driving experience.
               </p>
             </div>
 
@@ -125,7 +134,7 @@ const Home = () => {
             </div>
           </section>
           <RecommendedVehicles vehicles={vehicles} showViewAll={true} />
-          <Toast open={open} setOpen={setOpen} message={message}/>
+          <Toast open={open} setOpen={setOpen} message={message} />
         </>
       )}
     </>

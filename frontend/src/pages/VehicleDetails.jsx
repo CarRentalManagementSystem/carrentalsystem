@@ -28,17 +28,18 @@ const VehicleDetails = () => {
 
       navigate('/payment', {
         state: {
-          vehicleId: vehicle.vehicleId,
+          vehicleId: vehicle._id,
           vehicle,
           rentalPricePerDay: vehicle.rentalPricePerDay,
-          rentalDate,
-          returnDate
+          rentedDate,
+          returnedDate,
+          totalRentalFee,
         },
       });
   }
 
   const duration = Math.ceil((new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24))
-  const totalPrice = vehicle.rentalPricePerDay * duration
+  const totalRentalFee = vehicle.rentalPricePerDay * duration
 
   return (
     <div className='grid gap-8 m-20 md:grid-cols-2'>
@@ -48,7 +49,7 @@ const VehicleDetails = () => {
         </h1>
         <div className='flex items-center mb-6'>
           <span className='text-2xl font-bold text-primary'>
-            Total price - ${totalPrice}
+            Total price - ${totalRentalFee}
           </span>
           <span className='ml-1 text-sm text-gray-500'>/ {duration} day</span>
         </div>

@@ -16,7 +16,7 @@ const Payment = () => {
 
   const { user } = useAuth();
 
-  const { vehicleId, vehicle, rentalPricePerDay, rentedDate, returnedDate, totalRentalFee } = location.state || {};
+  const { vehicleId, vehicle, rentedDate, returnedDate, totalRentalFee } = location.state || {};
   const customerId = user.id
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
@@ -37,21 +37,24 @@ const Payment = () => {
 
   const handleSubmit = async () => {
     try {
-      await axiosInstance.post('/api/rentals', {
-        customerId: user.id,
+      await axiosInstance.post(
+        '/api/rentals',
+        {
+          customerId: user.id,
 
-        vehicleId: vehicle?._id,
-        rentedDate: rentedDate,
-        returnedDate: returnedDate,
-        totalRentalFee: rentalPricePerDay * duration,
-        rentalStatus: 'booked',
-        paymentStatus: 'paid',
-      },
+          vehicleId: vehicle?._id,
+          rentedDate: rentedDate,
+          returnedDate: returnedDate,
+          totalRentalFee: totalRentalFee,
+          rentalStatus: 'booked',
+          paymentStatus: 'paid',
+        },
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
-        });
+        }
+      );
 
       setOpen(true);
       setTimeout(() => {
@@ -109,9 +112,15 @@ const Payment = () => {
           <span>
             <strong>Pick up on:</strong> {rentedDate}
           </span>
-          <span><strong>Return on:</strong> {returnedDate}</span>
-          <span><strong>Renting for:</strong> {duration} days</span>
-          <span><strong>Total Cost:</strong> ${rentalPricePerDay * duration}</span>
+          <span>
+            <strong>Return on:</strong> {returnedDate}
+          </span>
+          <span>
+            <strong>Renting for:</strong> {duration} days
+          </span>
+          <span>
+            <strong>Total Cost:</strong> ${totalRentalFee}
+          </span>
         </div>
       </div>
       <CardDetailForm onSubmit={handleSubmit} />
