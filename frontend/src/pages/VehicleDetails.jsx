@@ -5,26 +5,38 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SpecItem from '../components/SpecItem';
 import ItemBox from '../components/ItemBox';
+import { useAuth } from '../context/AuthContext';
+import Toast from '../components/Toast';
 
 const VehicleDetails = () => {
 
   let navigate = useNavigate();
+  
+  const {user} = useAuth();
     
   const location = useLocation();
   const { vehicle, rentalDate, returnDate } = location.state || {};
 
   const [open,setOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleClick =()=> {
-    navigate('/payment', {
-      state: {
-        vehicleId: vehicle.vehicleId,
-        vehicle,
-        rentalPricePerDay: vehicle.rentalPricePerDay,
-        rentalDate,
-        returnDate
-      },
-    });
+
+    if (!user) {
+      setMessage('You need to log in to book a car');
+      setOpen(true);
+      return;
+    }
+
+      navigate('/payment', {
+        state: {
+          vehicleId: vehicle.vehicleId,
+          vehicle,
+          rentalPricePerDay: vehicle.rentalPricePerDay,
+          rentalDate,
+          returnDate
+        },
+      });
   }
 
   return (
@@ -91,6 +103,7 @@ const VehicleDetails = () => {
           </div>
         </div>
       </div>
+      <Toast open={open} setOpen={setOpen} message={message} />
     </div>
   );
 }
