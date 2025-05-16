@@ -54,7 +54,7 @@ const addRental = async (req, res) => {
 
 
 // Update Rental Booking:
-/*const updateRental = async (req, res) => {
+const updateRental = async (req, res) => {
     const { vehicleId, rentedDate, returnedDate, totalRentalFee, paymentStatus } = req.body;
     const customerId = req.user.id;
     //const vehicleId = carId;
@@ -77,7 +77,7 @@ const addRental = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-*/
+
 
 //cancel rental, keep it in db and change status to cancelled
 const cancelRental = async (req, res) => {

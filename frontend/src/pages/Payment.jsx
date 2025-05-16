@@ -37,7 +37,6 @@ const Payment = () => {
 
   const handleSubmit = async () => {
     try {
-      alert(user.id);
       await axiosInstance.post('/api/rentals', {
         customerId: user.id,
 

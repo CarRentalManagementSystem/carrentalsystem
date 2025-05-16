@@ -19,7 +19,7 @@ const BookingCard = ({ booking, onCancelled }) => {
             const confirmed = window.confirm("Are you sure you want to cancel this booking?");
             if (!confirmed) return;
 
-            await axiosInstance.patch(`/api/rentals/cancel/${id}`, null, {
+            await axiosInstance.patch(`/api/rentals/cancel/${id}`, {}, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
 
