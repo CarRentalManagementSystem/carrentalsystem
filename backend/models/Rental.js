@@ -13,6 +13,7 @@ const rentalSchema = new mongoose.Schema({
 },
     { timestamps: true } // add timestamps to record time
 );
+
 /*
 //fix issue, to avoid conflict
 delete mongoose.models['Rental'];

@@ -47,7 +47,7 @@ const VehicleCard = ({ vehicle, dates }) => {
     >
       <div className='flex items-center justify-center h-48 bg-secondary'>
         <img
-          src={`/images/${vehicle?.manufacturer}-${vehicle?.model}-${vehicle?.techSpecs.type}.png`}
+          src={`/images/${vehicle?.manufacturer}-${vehicle?.model}.png`}
           alt='CarImage'
           className='object-contain'
         />

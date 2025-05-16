@@ -5,27 +5,36 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SpecItem from '../components/SpecItem';
 import ItemBox from '../components/ItemBox';
+import { useAuth } from '../context/AuthContext';
+import Toast from '../components/Toast';
 
 const VehicleDetails = () => {
 
   let navigate = useNavigate();
-
+  const {user} = useAuth();
+    
   const location = useLocation();
   const { vehicle, dates: { rentedDate, returnedDate } } = location.state || {};
+  const [open,setOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const [open, setOpen] = useState(false);
+  const handleClick =()=> {
 
-  const handleClick = () => {
+    if (!user) {
+      setMessage('You need to log in to book a car');
+      setOpen(true);
+      return;
+    }
 
-    navigate('/payment', {
-      state: {
-        vehicleId: vehicle._id,
-        vehicle,
-        rentalPricePerDay: vehicle.rentalPricePerDay,
-        rentedDate,
-        returnedDate
-      },
-    });
+      navigate('/payment', {
+        state: {
+          vehicleId: vehicle.vehicleId,
+          vehicle,
+          rentalPricePerDay: vehicle.rentalPricePerDay,
+          rentalDate,
+          returnDate
+        },
+      });
   }
 
   const duration = Math.ceil((new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24))
@@ -46,8 +55,8 @@ const VehicleDetails = () => {
 
         <div className='mb-6'>
           <img
-            src={`/images/${vehicle.manufacturer}-${vehicle.model}-${vehicle.techSpecs.type}.png`}
-            alt={`${vehicle.manufacturer}-${vehicle.model}-${vehicle.techSpecs.type}`}
+            src={`/images/${vehicle.manufacturer}-${vehicle.model}.png`}
+            alt={`${vehicle.manufacturer}-${vehicle.model}`}
             className='object-contain w-full bg-gray-200 rounded'
           />
         </div>
@@ -106,6 +115,7 @@ const VehicleDetails = () => {
           </div>
         </div>
       </div>
+      <Toast open={open} setOpen={setOpen} message={message} />
     </div>
   );
 }

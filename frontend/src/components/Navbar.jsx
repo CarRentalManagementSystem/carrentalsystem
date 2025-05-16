@@ -31,13 +31,14 @@ const LoggededNavbar = ({ user, logout, navigate }) => {
       <NavLinks />
       <div className='flex items-center gap-4'>
         <Link to='/profile' className='flex items-center gap-2'>
-          <span className='text-sm text-gray-600'>Hello, {user.name || 'User'}{user.role}</span>
+          <span className='text-sm text-gray-600'>Hello, {user.id || 'User'}{user.role}</span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
             <User className='w-6 h-6' />
           </div>
         </Link>
-        <Link to='/rentals' className='hover:text-primary'>My Bookings</Link>
-        <button onClick={handleLogout} className='px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700'>
+        <Link to='/bookings' className='hover:text-primary'>My Bookings</Link>
+        <Link to='/notification' className='hover:text-primary'>Notification</Link>
+        <button onClick={handleLogout} className='px-4 py-2 bg-red-500 rounded hover:bg-red-700 text-white'>
           Logout
         </button>
       </div>
@@ -58,13 +59,14 @@ const AdminNavbar = ({ user, logout, navigate }) => {
       <NavLinks />
       <div className='flex items-center gap-4'>
         <Link to='/profile' className='flex items-center gap-2'>
-          <span className='text-sm text-gray-600'>Hello, {user.name || 'User'}({user.role})</span>
+          <span className='text-sm text-gray-600'>Hello, {user.id || 'User'}({user.role})</span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
             <User className='w-6 h-6' />
           </div>
         </Link>
         <Link to='/issue' className='hover:text-primary'>View Issues</Link>
-        <button onClick={handleLogout} className='px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700'>
+        <Link to='/notification' className='hover:text-primary'>Notification</Link>
+        <button onClick={handleLogout} className='px-4 py-2 bg-red-500 rounded hover:bg-red-700 text-white'>
           Logout
         </button>
       </div>
