@@ -14,7 +14,6 @@ import Contact from './pages/Contact';
 import Report from './pages/Report';
 import AddVehiclePage from './pages/ManageVehiclePage';
 import ManageVehiclePage from './pages/ManageVehiclePage';
-import AboutUs from './pages/AboutUs';
 import Issue from './pages/Issue';
 import AboutUs from './pages/AboutUs';
 import Notification from './pages/Notification';
