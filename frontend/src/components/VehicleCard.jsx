@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
-const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) => {
+const VehicleCard = ({ vehicle, dates }) => {
 
   const { user } = useAuth();
 
@@ -12,8 +12,8 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
 
   const handleClickDetails = () => {
     try {
-      navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle } });
-    } catch(error){
+      navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle, dates } });
+    } catch (error) {
       console.error(error);
     }
   };
@@ -21,7 +21,7 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
   const handleClickUpdate = () => {
     try {
       navigate('/manage-vehicle', { state: { vehicle, mode: 'update' } });
-    } catch(error) {
+    } catch (error) {
       console.error(error);
     }
   }
@@ -29,17 +29,17 @@ const VehicleCard = ({ vehicle, onClickDetails, onClickUpdate, onClickDelete }) 
   const handleClickDelete = async (vehicleId) => {
     try {
       const confirmed = window.confirm("Are you sure you want to delete this car?");
-     
+
       if (confirmed) {
         axiosInstance.delete(`/api/vehicles/delete/${vehicle._id}`);
         alert("Successfully Deleted!");
       }
-      
-    } catch(error) {
+
+    } catch (error) {
       console.error(error);
     }
   }
-  
+
   return (
     <div
       key={vehicle?.vehicleId}

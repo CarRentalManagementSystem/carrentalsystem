@@ -4,6 +4,7 @@ import VehicleCardList from '../components/VehicleCardList';
 import RecommendedVehicles from '../components/RecommendedVehicles';
 import HeroSection from '../components/HeroSection';
 import { useNavigate } from 'react-router-dom';
+import Toast from '../components/Toast';
 
 import { useAuth } from '../context/AuthContext';
 import Dashboard from '../components/Dashboard';
@@ -11,6 +12,10 @@ import Dashboard from '../components/Dashboard';
 const Home = () => {
   const [vehicles, setVehicles] = useState([]);
   const [setRentingVehicle] = useState(null);
+
+  const [message, setMessage] = useState('');
+  const [open, setOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const {user} = useAuth();
@@ -29,6 +34,36 @@ const Home = () => {
     fetchVehicles();
   }, []);
 
+  const [rentedDate, setRentedDate] = useState(
+    new Date().toISOString().split('T')[0]
+  );
+
+  const defaultReturnDate = (() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  })();
+
+  const [returnedDate, setReturnedDate] = useState(defaultReturnDate);
+
+
+  const handleChangeRentedDate = (date) => {
+    if (new Date(date) > new Date(returnedDate)) {
+      setMessage('Rental date cannot be after return date');
+      setOpen(true);
+      return;
+    }
+    setRentedDate(date);
+  };
+
+  const handleChangeReturnedDate = (date) => {
+    if (new Date(date) < new Date(rentedDate)) {
+      setMessage('Return date cannot be before rental date');
+      setOpen(true);
+      return;
+    }
+    setReturnedDate(date);
+  };
 
 
   return (
@@ -37,7 +72,12 @@ const Home = () => {
         <Dashboard />
       ) : (
         <>
-          <HeroSection />
+          <HeroSection
+            rentedDate={rentedDate}
+            returnedDate={returnedDate}
+            onChangeRentedDate={handleChangeRentedDate}
+            onChangeReturnedDate={handleChangeReturnedDate}
+          />
           <section className='grid max-w-screen-xl grid-cols-1 gap-12 px-6 py-16 mx-auto bg-white sm:px-12 md:grid-cols-3'>
             <div className='flex flex-col items-center gap-6 text-center'>
               {/* Icon placeholder */}
@@ -64,8 +104,8 @@ const Home = () => {
                 Comfort
               </h4>
               <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-                Enjoy a smooth and relaxing ride with vehicles designed for
-                comfort, convenience, and a better driving experience.
+                Enjoy a smooth and relaxing ride with vehicles designed for comfort,
+                convenience, and a better driving experience.
               </p>
             </div>
 
@@ -84,8 +124,8 @@ const Home = () => {
               </p>
             </div>
           </section>
-
           <RecommendedVehicles vehicles={vehicles} showViewAll={true} />
+          <Toast open={open} setOpen={setOpen} message={message}/>
         </>
       )}
     </>

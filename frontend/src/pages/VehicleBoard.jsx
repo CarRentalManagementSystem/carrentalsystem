@@ -1,3 +1,5 @@
+
+import { useLocation, useNavigate } from 'react-router-dom';
 import RentalDateFilter from '../components/RentalDateFilter';
 import VehicleGroupFilter from '../components/VehicleGroupFilter';
 import VehicleCardList from '../components/VehicleCardList';
@@ -9,6 +11,8 @@ import axiosInstance from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 
 const VehicleBoard = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [vehicles, setVehicles] = useState();
   const [allVehicles, setAllVehicles] = useState([]); 
@@ -23,6 +27,36 @@ const VehicleBoard = () => {
     };
     fetchVehicles();
   }, []);
+
+  const location = useLocation()
+
+  const { rentedDate, returnedDate } = location.state || {}
+
+  const [editRentedDate, setEditRentedDate] = useState(rentedDate);
+  const [editReturnedDate, setEditReturnedDate] = useState(returnedDate);
+
+  const handleChangeEditRentedDate = (date) => {
+    if (new Date(date) > new Date(returnedDate)) {
+      setMessage('Rental date cannot be after return date');
+      setOpen(true);
+      return;
+    }
+    setEditRentedDate(date);
+  };
+
+  const handleChangeEditReturnedDate = (date) => {
+    if (new Date(date) < new Date(rentedDate)) {
+      setMessage('Return date cannot be before rental date');
+      setOpen(true);
+      return;
+    }
+    setEditReturnedDate(date);
+  };
+
+
+  const [vehicles, setVehicles] = useState();
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
   const [vehicleGroups, setVehicleGroups] = useState([
     { id: '0', name: 'All vehicles' },
@@ -94,8 +128,9 @@ const VehicleBoard = () => {
 
   const handleSelectFuelType = (fuelTypeId) => {
     setSelectedFuelType(fuelTypeId);
-    applyFilters(selectedGroup, selectedMake, fuelTypeId);}
-
+    applyFilters(selectedGroup, selectedMake, fuelTypeId);
+  }
+  
 const applyFilters = (groupId, makeId, fuelId) => {
   let filteredVehicles = allVehicles;
 
@@ -124,6 +159,7 @@ const applyFilters = (groupId, makeId, fuelId) => {
     const vehicle = vehicles.find(vehicle => vehicle.vehicleId === vehicleId);
     navigate(`/vehicle-details/${vehicleId}`, { state: { vehicle } });
   }
+
 
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
