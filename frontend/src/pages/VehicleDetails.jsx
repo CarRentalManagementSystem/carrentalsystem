@@ -42,8 +42,8 @@ const VehicleDetails = () => {
 
         <div className='mb-6'>
           <img
-            src={`/images/${vehicle.manufacturer}-${vehicle.model}-${vehicle.techSpecs.type}.png`}
-            alt={`${vehicle.manufacturer}-${vehicle.model}-${vehicle.techSpecs.type}`}
+            src={`/images/${vehicle.manufacturer}-${vehicle.model}.png`}
+            alt={`${vehicle.manufacturer}-${vehicle.model}`}
             className='object-contain w-full bg-gray-200 rounded'
           />
         </div>
