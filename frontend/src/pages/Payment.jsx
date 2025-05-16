@@ -34,12 +34,6 @@ const Payment = () => {
     setCardDetails({ ...cardDetails, [name]: value });
   };
 
-  /*const handleSubmit = () => {
-      setOpen(true);
-      setTimeout(() => {
-        navigate('/');
-      }, 1500);
-  };*/
 
   const handleSubmit = async () => {
     try {

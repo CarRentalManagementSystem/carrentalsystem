@@ -12,7 +12,6 @@ const Rentals = () => {
 
     useEffect(() => {
         console.log("Bookings received:", rentals);
-        alert(user.id);
         const fetchRentals = async () => {
             try {
                 const response = await axiosInstance.get('/api/rentals', {

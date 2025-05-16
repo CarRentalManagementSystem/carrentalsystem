@@ -1,5 +1,7 @@
 // for user to do CRUD on their rental bookings
 const mongoose = require('mongoose');
+
+
 //Get Rental Function:
 const Rental = require('../models/Rental');
 
@@ -52,7 +54,7 @@ const addRental = async (req, res) => {
 
 
 // Update Rental Booking:
-const updateRental = async (req, res) => {
+/*const updateRental = async (req, res) => {
     const { vehicleId, rentedDate, returnedDate, totalRentalFee, paymentStatus } = req.body;
     const customerId = req.user.id;
     //const vehicleId = carId;
@@ -74,10 +76,26 @@ const updateRental = async (req, res) => {
         console.error("Error updating rental:", error.message);
         res.status(500).json({ message: error.message });
     }
-
-
-
 };
+*/
+
+//cancel rental, keep it in db and change status to cancelled
+const cancelRental = async (req, res) => {
+    try {
+        const rental = await Rental.findById(req.params.id);
+        if (!rental) {
+            return res.status(404).json({ message: 'Rental not found' });
+        }
+
+        rental.rentalStatus = 'cancelled';
+        const updatedRental = await rental.save();
+        res.json(updatedRental);
+    } catch (err) {
+        res.status(500).json({ message: 'Failed to cancel rental' });
+    }
+};
+
+
 
 // Delete Rental Booking:
 const deleteRental = async (req, res) => {
@@ -106,7 +124,6 @@ const deleteRental = async (req, res) => {
 
 
 
-
     // try {
     //     const rental = await Rental.findById(req.params.id);
     //     if (!rental) return res.status(404).json({ message: 'Rental not found' });
@@ -116,4 +133,4 @@ const deleteRental = async (req, res) => {
     //     res.status(500).json({ message: error.message });
     // }
 };
-module.exports = { getRentals, addRental, updateRental, deleteRental };
+module.exports = { getRentals, addRental, updateRental, deleteRental, cancelRental };
