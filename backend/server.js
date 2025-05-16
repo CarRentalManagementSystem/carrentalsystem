@@ -14,7 +14,9 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/rentals', require('./routes/rentalRoutes'));
 app.use('/api/issue', require('./routes/issueRoutes'));
 app.use('/api/vehicles', require('./routes/vehicleRoutes'));
+app.use('/api/notification', require('./routes/notificationRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
+
 
 // Export the app object for testing
 if (require.main === module) {

@@ -17,6 +17,7 @@ import ManageVehiclePage from './pages/ManageVehiclePage';
 import AboutUs from './pages/AboutUs';
 import Issue from './pages/Issue';
 import AboutUs from './pages/AboutUs';
+import Notification from './pages/Notification';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path="/report" element={<Report />} />
         <Route path="/about" element={<AboutUs/>} />
         <Route path="/issue" element={<Issue />} />
+        <Route path="/notification" element={<Notification />} />
       </Routes>
     </Router>
   );

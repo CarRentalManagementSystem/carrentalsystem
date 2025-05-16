@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import { NotificationSender } from './NotificationSender';
 
 const RentalForm = ({ rentals, setRentals}) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({ rentalId: '', senderId: '' , title: '' ,issueCategory: '' ,issueContent: '' ,createdDate: Date() ,issueStatus: 'incomplete'});
+  const [notiFormData, setNotiFormData] = useState({ receiverId: '',receiverRole: '',  title: '', content: '', createdDate:''});
   
 
   const handleSubmit = async (e) => {
@@ -18,17 +20,21 @@ const RentalForm = ({ rentals, setRentals}) => {
     console.log('Form submitted');
     console.log(formData);
 
-    if (!formData.senderId  || !formData.title || !formData.issueCategory || !formData.issueContent) {
-      alert(user.name);
+    if (  !formData.title || !formData.issueCategory || !formData.issueContent) {
+      
       alert('Please fill out all fields.');
       return;
     }
     
 
     try {
-      await axiosInstance.post('/api/issue',formData,{headers: {Authorization: `Bearer ${user.token}`}});
+      await axiosInstance.post('/api/issue',formData);
       alert('Issue report successful! Our staff will contact you as soon as possible.');
-      navigate('/login');
+      await NotificationSender({
+        targetRole: 'admin',
+        title: 'New Report about:' + formData.title,
+        content: 'Please contact related customer as soon as possible',
+      });
     } catch (error) {
       console.error('Issue report failed:', {
         status: error.response?.status,
