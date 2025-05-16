@@ -9,7 +9,6 @@ const Profile = () => {
     name: '',
     email: '',
     phoneNumber: '',
-    address: '',
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -27,7 +26,6 @@ const Profile = () => {
           name: response.data.name,
           email: response.data.email,
           phoneNumber: response.data.phoneNumber,
-          address: response.data.address,
         });
       } catch (error) {
         alert('Failed to fetch profile. Please try again.');
@@ -62,40 +60,51 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20">
-      <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
-        <h1 className="text-2xl font-bold mb-4 text-center">Your Profile</h1>
-        <input
-          type="text"
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="tel"
-          placeholder="Phone Number"
-          value={formData.phoneNumber}
-          onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
+    <div className="max-w-xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
+      <form onSubmit={handleSubmit}>
+        <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">Your Profile</h1>
 
-        <input
-          type="text"
-          placeholder="Address"
-          value={formData.address}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <button type="submit" className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700
-        transform hover:scale-105 transition-transform duration-200">
+        <div className="flex items-center gap-4 mb-4">
+          <label className="text-lg font-medium font-['Work_Sans'] w-48">
+            Name
+          </label>
+          <input
+            type="text"
+            placeholder="Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
+          />
+        </div>
+
+        <div className="flex items-center gap-4 mb-4">
+          <label className="text-lg font-medium font-['Work_Sans'] w-48">
+            Email
+          </label>
+          <input
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
+          />
+        </div>
+
+        <div className="flex items-center gap-4 mb-4">
+          <label className="text-lg font-medium font-['Work_Sans'] w-48">
+            Phone number
+          </label>
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            value={formData.phoneNumber}
+            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+            className="w-full mb-4 p-2 border rounded"
+          />
+        </div>
+
+        <button type="submit"
+          className="w-full bg-primary text-white text-lg font-['Work_Sans'] font-medium p-2 rounded hover:bg-primary-700 transition">
           {loading ? 'Updating...' : 'Update Profile'}
         </button>
       </form>
