@@ -1,35 +1,34 @@
 
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import RentalDateFilter from '../components/RentalDateFilter';
 import VehicleGroupFilter from '../components/VehicleGroupFilter';
 import VehicleCardList from '../components/VehicleCardList';
 import VehicleMakeFilter from '../components/VehicleMakeFilter';
-import { useState, useEffect } from 'react';
 import VehicleFuelFilter from '../components/VehicleFuelFilter';
 import axiosInstance from '../axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import Toast from '../components/Toast';
 
 const VehicleBoard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const location = useLocation();
 
-  const [vehicles, setVehicles] = useState();
-  const [allVehicles, setAllVehicles] = useState([]); 
-    useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const response = await axiosInstance.get('/api/vehicles');
-        setVehicles(response.data);
-        setAllVehicles(response.data); 
-      } catch (error) {
-      }
-    };
-    fetchVehicles();
-  }, []);
+  const {
+    rentedDate: initialRentedDate,
+    returnedDate: initialReturnedDate,
+    selectedGroup: initialGroup,
+  } = location.state || {};
 
-  const location = useLocation()
+  const [vehicles, setVehicles] = useState([]);
+  const [allVehicles, setAllVehicles] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const { rentedDate, returnedDate } = location.state || {}
+  /* Default dates when unselected */
+
+  const defaultRentedDate = new Date().toISOString().split('T')[0];
 
   const defaultReturnDate = (() => {
     const tomorrow = new Date();
@@ -37,11 +36,15 @@ const VehicleBoard = () => {
     return tomorrow.toISOString().split('T')[0];
   })();
 
-  const [editRentedDate, setEditRentedDate] = useState(rentedDate || new Date().toISOString().split('T')[0]);
-  const [editReturnedDate, setEditReturnedDate] = useState(returnedDate || defaultReturnDate);
+  const [editRentedDate, setEditRentedDate] = useState(
+    initialRentedDate || defaultRentedDate
+  );
+  const [editReturnedDate, setEditReturnedDate] = useState(
+    initialReturnedDate || defaultReturnDate
+  );
 
   const handleChangeEditRentedDate = (date) => {
-    if (new Date(date) > new Date(returnedDate)) {
+    if (new Date(date) > new Date(editReturnedDate)) {
       setMessage('Rental date cannot be after return date');
       setOpen(true);
       return;
@@ -50,16 +53,13 @@ const VehicleBoard = () => {
   };
 
   const handleChangeEditReturnedDate = (date) => {
-    if (new Date(date) < new Date(rentedDate)) {
+    if (new Date(date) < new Date(editRentedDate)) {
       setMessage('Return date cannot be before rental date');
       setOpen(true);
       return;
     }
     setEditReturnedDate(date);
   };
-
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
 
   const [vehicleGroups, setVehicleGroups] = useState([
     { id: '0', name: 'All vehicles' },
@@ -76,7 +76,7 @@ const VehicleBoard = () => {
   ]);
 
   const [vehicleFuelTypes, setVehicleFuelTypes] = useState([
-    { id: '0', name: 'All fuel types' },  
+    { id: '0', name: 'All fuel types' },
     { id: '1', name: 'Gasoline' },
     { id: '2', name: 'Diesel' },
     { id: '3', name: 'Electric' },
@@ -113,53 +113,93 @@ const VehicleBoard = () => {
     { id: '26', name: 'Lexus' },
   ]);
 
-  const [selectedGroup, setSelectedGroup] = useState('0');
+  const [selectedGroup, setSelectedGroup] = useState(initialGroup || '0');
   const [selectedMake, setSelectedMake] = useState('0');
   const [selectedFuelType, setSelectedFuelType] = useState('0');
 
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await axiosInstance.get('/api/vehicles');
+        setAllVehicles(response.data);
+
+        // Apply initial filters if they exist
+        if (initialGroup && initialGroup !== '0') {
+          const filteredVehicles = response.data.filter(
+            (vehicle) =>
+              vehicle.techSpecs?.type ===
+              vehicleGroups.find((group) => group.id === initialGroup).name && vehicle.vehicleStatus === 'available'
+          );
+          setVehicles(filteredVehicles);
+        } else {
+          setVehicles(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch the car data.');
+        setMessage('Failed to fetch vehicles. Please try again.');
+        setOpen(true);
+      }
+    };
+
+    fetchVehicles();
+  }, [initialGroup, vehicleGroups]);
+
   const handleSelectVehicleGroup = (groupId) => {
     setSelectedGroup(groupId);
-    applyFilters(groupId, selectedMake, selectedFuelType)
+    applyFilters(groupId, selectedMake, selectedFuelType);
   };
 
   const handleSelectVehicleMake = (makeId) => {
     setSelectedMake(makeId);
     applyFilters(selectedGroup, makeId, selectedFuelType);
-  }
+  };
 
   const handleSelectFuelType = (fuelTypeId) => {
     setSelectedFuelType(fuelTypeId);
     applyFilters(selectedGroup, selectedMake, fuelTypeId);
-  }
-  
-const applyFilters = (groupId, makeId, fuelId) => {
-  let filteredVehicles = allVehicles;
+  };
 
-  if (groupId !== '0') {
-    filteredVehicles = filteredVehicles.filter(
-      (vehicle) => vehicle.techSpecs?.type === vehicleGroups.find(group => group.id === groupId).name
-    );
-  }
+  const applyFilters = (groupId, makeId, fuelId) => {
+    let filteredVehicles = allVehicles;
 
-  if (fuelId !== '0') {
-    filteredVehicles = filteredVehicles.filter(
-      (vehicle) => vehicle.techSpecs?.fuelType === vehicleFuelTypes.find(fuel => fuel.id === fuelId).name
-    );
-  }
+    if (groupId !== '0') {
+      const groupName = vehicleGroups.find(
+        (group) => group.id === groupId
+      )?.name;
+      filteredVehicles = filteredVehicles.filter(
+        (vehicle) => vehicle.techSpecs?.type === groupName
+      );
+    }
 
-  if (makeId !== '0') {
-    filteredVehicles = filteredVehicles.filter(
-      (vehicle) => vehicle.manufacturer === vehicleMake.find(make => make.id === makeId).name
-    );
-  }
+    if (fuelId !== '0') {
+      const fuelName = vehicleFuelTypes.find(
+        (fuel) => fuel.id === fuelId
+      )?.name;
+      filteredVehicles = filteredVehicles.filter(
+        (vehicle) => vehicle.techSpecs?.fuelType === fuelName
+      );
+    }
 
-  setVehicles(filteredVehicles);
-};
+    if (makeId !== '0') {
+      const makeName = vehicleMake.find((make) => make.id === makeId)?.name;
+      filteredVehicles = filteredVehicles.filter(
+        (vehicle) => vehicle.manufacturer === makeName
+      );
+    }
+
+    setVehicles(filteredVehicles);
+  };
 
   const handleClickDetails = (vehicleId) => {
-    const vehicle = vehicles.find(vehicle => vehicle.vehicleId === vehicleId);
-    navigate(`/vehicle-details/${vehicleId}`, { state: { vehicle } });
-  }
+    const vehicle = vehicles.find((vehicle) => vehicle.vehicleId === vehicleId);
+    navigate(`/vehicle-details/${vehicleId}`, {
+      state: {
+        vehicle,
+        rentedDate: editRentedDate,
+        returnedDate: editReturnedDate,
+      },
+    });
+  };
 
 
   return (
@@ -186,11 +226,24 @@ const applyFilters = (groupId, makeId, fuelId) => {
         onChangeRentedDate={handleChangeEditRentedDate}
         onChangeReturnedDate={handleChangeEditReturnedDate}
       />
+      {user?.role === 'admin' && (
+        <div className='flex justify-end mb-4'>
+          <button
+            className='px-4 py-2 text-white rounded bg-primary'
+            onClick={() =>
+              navigate('/manage-vehicle', { state: { mode: 'add' } })
+            }
+          >
+            Add More Vehicle
+          </button>
+        </div>
+      )}
       <VehicleCardList
         vehicles={vehicles}
-        dates={{rentedDate: editRentedDate, returnedDate: editReturnedDate}}
+        dates={{ rentedDate: editRentedDate, returnedDate: editReturnedDate }}
         onClickDetails={handleClickDetails}
       />
+      <Toast open={open} setOpen={setOpen} message={message} />
     </div>
   );
 };

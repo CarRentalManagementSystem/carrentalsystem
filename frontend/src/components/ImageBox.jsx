@@ -1,6 +1,6 @@
 
 
-const ImageBox = ({imageUrl, altText, size}) => {
+const ImageBox = ({imageUrl, altText, onError}) => {
 
     return (
       <div className='mb-6'>
@@ -8,6 +8,7 @@ const ImageBox = ({imageUrl, altText, size}) => {
           src={imageUrl}
           alt={altText}
           className='object-contain w-full bg-gray-200 rounded'
+          onError={onError}
         />
       </div>
     );

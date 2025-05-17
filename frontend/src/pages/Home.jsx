@@ -8,6 +8,21 @@ import Dashboard from '../components/Dashboard';
 
 const Home = () => {
   const [vehicles, setVehicles] = useState([]);
+  const [vehicleGroups, setVehicleGroups] = useState([
+    { id: '0', name: 'All vehicles' },
+    { id: '1', name: 'Sedan' },
+    { id: '2', name: 'Compact' },
+    { id: '3', name: 'SUV' },
+    { id: '4', name: 'Convertible' },
+    { id: '5', name: 'Hatchback' },
+    { id: '6', name: 'Van' },
+    { id: '7', name: 'Truck' },
+    { id: '8', name: 'Wagon' },
+    { id: '9', name: 'Luxury' },
+    { id: '10', name: 'Sports' },
+  ]);
+
+  const [selectedGroup, setSelectedGroup] = useState('0');
 
   const [rentedDate, setRentedDate] = useState(
     new Date().toISOString().split('T')[0]
@@ -20,9 +35,13 @@ const Home = () => {
   })();
 
   const [returnedDate, setReturnedDate] = useState(defaultReturnDate);
-  
+
   const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
+
+  const handleChangeVehicleGroup = (id) => {
+    setSelectedGroup(id);
+  };
 
   const handleChangeRentedDate = (date) => {
     if (new Date(date) > new Date(returnedDate)) {
@@ -42,24 +61,21 @@ const Home = () => {
     setReturnedDate(date);
   };
 
+  const { user } = useAuth();
 
-  const {user} = useAuth();
-
-  
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
         const response = await axiosInstance.get('/api/vehicles');
         setVehicles(response.data);
       } catch (error) {
-        alert('Failed to fetch vehicle list.');
+        setMessage('Failed to fetch vehicle list.');
+        setOpen(true);
       }
     };
 
     fetchVehicles();
   }, []);
-
-
 
   return (
     <>
@@ -70,6 +86,9 @@ const Home = () => {
           <HeroSection
             rentedDate={rentedDate}
             returnedDate={returnedDate}
+            vehicleGroups={vehicleGroups}
+            selectedGroup={selectedGroup}
+            onChangeVehicleGroup={handleChangeVehicleGroup}
             onChangeRentedDate={handleChangeRentedDate}
             onChangeReturnedDate={handleChangeReturnedDate}
           />
@@ -77,7 +96,9 @@ const Home = () => {
             <div className='flex flex-col items-center gap-6 text-center'>
               {/* Icon placeholder */}
               <div className='flex items-center justify-center w-16 h-16'>
+
                 <img src='/images/homePage-location.png' alt='location-icon' />
+
                 <div className='w-8 h-8 bg-white' />
               </div>
               <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
@@ -92,7 +113,9 @@ const Home = () => {
             {/* Feature 2 */}
             <div className='flex flex-col items-center gap-6 text-center'>
               <div className='flex items-center justify-center w-16 h-16'>
+
                 <img src='/images/homePage-car.png' alt='car-icon' />
+
                 <div className='w-8 h-8 bg-white' />
               </div>
               <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
@@ -107,7 +130,9 @@ const Home = () => {
             {/* Feature 3 */}
             <div className='flex flex-col items-center gap-6 text-center'>
               <div className='flex items-center justify-center w-16 h-16'>
+
                 <img src='/images/homePage-wallet.png' alt='wallet-icon' />
+
                 <div className='w-8 h-8 bg-white' />
               </div>
               <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">

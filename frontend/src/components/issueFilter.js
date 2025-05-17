@@ -11,3 +11,7 @@ export const sortByStatusAndDate = (issues) => {
     return new Date(b.createdDate) - new Date(a.createdDate);
   });
 };
+
+export const sortByDate = (issues) => {
+  return issues.slice().sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+};

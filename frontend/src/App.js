@@ -15,6 +15,7 @@ import Issue from './pages/Issue';
 import AboutUs from './pages/AboutUs';
 import MyBookings from './pages/MyBookings'
 import Notification from './pages/Notification';
+import ReturnVehicle from './pages/ReturnVehicle';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/issue" element={<Issue />} />
         <Route path="/notification" element={<Notification />} />
+        <Route path="/returnVehicle" element={<ReturnVehicle />} />
       </Routes>
     </Router>
   );

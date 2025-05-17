@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Car, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-// 🔹 Common navigation links
+//Common navigation links
 const NavLinks = () => (
   <nav className='flex items-center gap-8'>
     <div className='flex items-center gap-2'>
@@ -19,7 +19,7 @@ const NavLinks = () => (
   </nav>
 );
 
-// 🔹 Navbar for authenticated users
+//Navbar for authenticated users
 const LoggededNavbar = ({ user, logout, navigate }) => {
   const handleLogout = () => {
     logout();
@@ -47,7 +47,7 @@ const LoggededNavbar = ({ user, logout, navigate }) => {
 };
 
 
-// 🔹 Navbar for admin
+//Navbar for admin
 const AdminNavbar = ({ user, logout, navigate }) => {
   const handleLogout = () => {
     logout();
@@ -77,7 +77,7 @@ const AdminNavbar = ({ user, logout, navigate }) => {
 
 
 
-// 🔹 Navbar for guests/visitors
+//Navbar for guests/visitors
 const VisitorNavbar = () => (
   <header className='container flex items-center justify-between px-6 py-4'>
     <NavLinks />
@@ -90,7 +90,7 @@ const VisitorNavbar = () => (
   </header>
 );
 
-// 🔹 Wrapper component that selects which navbar to render
+//Wrapper component that selects which navbar to render
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();

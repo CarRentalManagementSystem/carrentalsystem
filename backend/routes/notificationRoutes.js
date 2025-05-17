@@ -1,6 +1,7 @@
 
 const express = require('express');
 const { getNotifications, addNotification } = require('../controllers/notificationController');
+const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.use((req, res, next) => {
@@ -8,7 +9,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.route('/').get( getNotifications).post(addNotification);
+router.route('/').get(protect, getNotifications).post(addNotification);
 // router.route('/:id').put(updateIssueStatus)
 
 

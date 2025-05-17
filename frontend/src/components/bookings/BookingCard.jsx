@@ -36,9 +36,11 @@ const BookingCard = ({ booking, onCancelled }) => {
 
 
 
+
     return (
         <div className="flex flex-col gap-3 p-10 mb-8 bg-white shadow-md rounded-xl">
             <div className="text-sm font-medium text-gray-400">Rental ID: {_id}</div>
+
 
             <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
                 {/* Left: Vehicle Info + Dates */}
@@ -109,12 +111,28 @@ const BookingCard = ({ booking, onCancelled }) => {
 
                     {/* Cancel booking and view details */}
                     <div className="flex gap-2 mt-1">
-                        <button
-                            className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
-                            onClick={handleCancel}
-                        >
-                            Cancel Booking
-                        </button>
+
+                        {user.role === 'admin' ? (
+                            <button
+                                className={`px-3 py-1 text-sm rounded ${
+                                    booking.rentalStatus === 'booked'
+                                        ? 'bg-green-500 text-white hover:bg-green-600'
+                                        : 'bg-gray-400 text-white cursor-not-allowed'
+                                }`}
+                                onClick={booking.rentalStatus === 'booked' ? handleCancel : null}
+                                disabled={booking.rentalStatus !== 'booked'}
+                            >
+                                Complete Booking
+                            </button>
+                        ) : (
+                            <button
+                                className="px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+                                onClick={handleCancel}
+                            >
+                                Cancel Booking
+                            </button>
+                        )}
+
                     </div>
                 </div>
             </div>
