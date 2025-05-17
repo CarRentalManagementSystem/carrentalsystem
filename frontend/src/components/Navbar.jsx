@@ -69,7 +69,6 @@ const AdminNavbar = ({ user, logout, navigate }) => {
         <Link to='/issue' className="hover:text-primary font-['Work_Sans']">View Issues</Link>
       </nav>
       <div className='flex items-center gap-4'>
-
         <Link to='/notification' className="hover:text-primary font-['Work_Sans']">Notification</Link>
         <Link to='/profile' className='flex items-center gap-2'>
           <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'}      ({user.role})</span>
@@ -77,6 +76,7 @@ const AdminNavbar = ({ user, logout, navigate }) => {
             <User className='w-6 h-6' />
           </div>
         </Link>
+
         <button onClick={handleLogout} className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700 font-['Work_Sans']">
 
           Logout

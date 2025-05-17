@@ -4,12 +4,21 @@ const Issue = require('../models/Issue');
 const mongoose = require('mongoose');
 
 const getIssues = async (req, res) => {
+  if(req.user.role === 'admin'){
     try {
         const issues = await Issue.find();
         res.json(issues);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+  } else {
+    try {
+        const issues = await Issue.find( {senderId: req.user.id} );
+        res.json(issues);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+  }
 };
 
 

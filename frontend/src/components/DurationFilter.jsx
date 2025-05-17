@@ -1,15 +1,19 @@
+
 import { Calendar, ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 const DurationFilter = ({ timeframe, setTimeframe, options }) => {
+
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   const selectedOption =
+
     options.find((option) => option.value === timeframe) || options[0];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
+
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
@@ -58,6 +62,7 @@ const DurationFilter = ({ timeframe, setTimeframe, options }) => {
           )}
         </div>
       </div>
+
     </div>
   );
 }
