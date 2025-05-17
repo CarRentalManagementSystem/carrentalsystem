@@ -20,9 +20,11 @@ const MyBookingsContainer = ({ bookings }) => {
     // Reminder notifications
     useEffect(() => {
         visibleBookings.forEach((b) => {
-            const daysToPickup = dayjs(b.rentedDate).diff(dayjs(), 'day');
+            const daysToPickup = dayjs(b.rentedDate).startOf('day').diff(dayjs().startOf('day'), 'day');
+            console.log('Booking:', b._id, 'Days to pickup:', daysToPickup);
             if (daysToPickup === 1) {
                 alert(`Reminder: Your pickup for ${b.vehicleId?.manufacturer} ${b.vehicleId?.model} is tomorrow!`);
+
             }
         });
     }, [visibleBookings]);
