@@ -56,7 +56,7 @@ const addRental = async (req, res) => {
             receiverId: customerId,
             receiverRole: 'customer',
             title: 'Booking Confirmed',
-            content: `Your booking for vehicle ${vehicle.manufacturer} ${vehicle.model} from ${new Date(rentedDate).toLocaleDateString()} to ${new Date(returnedDate).toLocaleDateString()} has been confirmed.`,
+            content: `Your booking for ${vehicle.manufacturer} ${vehicle.model} from ${new Date(rentedDate).toLocaleDateString()} to ${new Date(returnedDate).toLocaleDateString()} has been confirmed.\nRental number: ${vehicleId}`,
         });
 
         console.log("Successfully stored rental data in DB:", rental);
