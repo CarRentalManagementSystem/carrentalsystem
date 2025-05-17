@@ -27,7 +27,7 @@ const NotificationList = ({ userNotifications, roleNotifications }) => {
           {recentUserNotifications.map((notification) => (
             <div
               key={`user-${notification._id}`}
-              className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded"
+              className="mb-4 p-6 bg-blue-50 border border-blue-200 rounded"
             >
               <h3 className="text-lg font-semibold">{notification.title}</h3>
               <p className="text-sm text-gray-600 mb-1">
