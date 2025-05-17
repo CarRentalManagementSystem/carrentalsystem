@@ -7,7 +7,7 @@ const HeroSection = ({ rentedDate, returnedDate, onChangeRentedDate, onChangeRet
     return (
         <section className='relative bg-[#5f3dc4] text-white py-16 px-4 sm:px-6 rounded-[2rem] max-w-screen-xl mx-auto mt-10 overflow-hidden'>
             <img
-                src='/images/landing-background.png'
+                src='/images/landing-background.jpeg'
                 alt='background'
                 className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[420px] sm:w-[460px] md:w-[500px] lg:w-[560px] opacity-40 object-contain z-0 pointer-events-none'
             />
