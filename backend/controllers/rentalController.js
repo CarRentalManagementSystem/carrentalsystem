@@ -50,11 +50,13 @@ const addRental = async (req, res) => {
             vehicleStatus: 'rented',
         });
 
+        const vehicle = await Vehicle.findById(vehicleId);
+
         await Notification.create({
             receiverId: customerId,
             receiverRole: 'customer',
             title: 'Booking Confirmed',
-            content: `Your booking for vehicle ${vehicleId} has been confirmed from ${new Date(rentedDate).toLocaleDateString()} to ${new Date(returnedDate).toLocaleDateString()}.`,
+            content: `Your booking for vehicle ${vehicle.manufacturer} ${vehicle.model} from ${new Date(rentedDate).toLocaleDateString()} to ${new Date(returnedDate).toLocaleDateString()} has been confirmed.`,
         });
 
         console.log("Successfully stored rental data in DB:", rental);
