@@ -30,8 +30,6 @@ const CustimerNavbar = ({ user, logout, navigate }) => {
     <header className='container flex items-center justify-between px-6 py-4'>
       <GeneralNavbar />
       <div className='flex items-center gap-4'>
-        <Link to='/rentals' className="hover:text-primary font-['Work_Sans']">My Bookings</Link>
-        <Link to='/notification' className="hover:text-primary font-['Work_Sans']">Notification</Link>
         <Link to='/profile' className='flex items-center gap-2'>
           <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'} </span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
@@ -60,9 +58,6 @@ const AdminNavbar = ({ user, logout, navigate }) => {
     <header className='container flex items-center justify-between px-6 py-4'>
       <GeneralNavbar />
       <div className='flex items-center gap-4'>
-
-        <Link to='/issue' className="hover:text-primary font-['Work_Sans']">View Issues</Link>
-        <Link to='/notification' className="hover:text-primary font-['Work_Sans']">Notification</Link>
         <Link to='/profile' className='flex items-center gap-2'>
           <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'}      ({user.role})</span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
