@@ -10,13 +10,14 @@ import Toast from '../components/Toast';
 import { buildBookingChain } from '../bookingSteps/bookingChain';
 
 const Payment = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  let location = useLocation();
+  let navigate = useNavigate();
+
   const { user } = useAuth();
 
-  const { vehicleId, vehicle, rentedDate, returnedDate, totalRentalFee } = location.state || {};
-  const duration = Math.ceil((new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24));
-
+  const { vehicleId, vehicle, rentedDate, returnedDate, totalRentalFee } =
+    location.state || {};
+  const customerId = user.id;
   const [cardDetails, setCardDetails] = useState({
     cardNumber: '',
     cardHolderName: '',
@@ -24,6 +25,10 @@ const Payment = () => {
     cvv: '',
   });
 
+  // Convert ms to days
+  const duration = Math.ceil(
+    (new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24)
+  );
   const [open, setOpen] = useState(false);
 
   const handleInputChange = (e) => {
