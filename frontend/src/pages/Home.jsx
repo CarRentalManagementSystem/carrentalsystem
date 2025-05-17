@@ -1,14 +1,63 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
-import VehicleCardList from '../components/VehicleCardList';
 import RecommendedVehicles from '../components/RecommendedVehicles';
 import HeroSection from '../components/HeroSection';
-import { useNavigate } from 'react-router-dom';
+import Toast from '../components/Toast';
+import { useAuth } from '../context/AuthContext';
+import Dashboard from '../components/Dashboard';
 
 const Home = () => {
   const [vehicles, setVehicles] = useState([]);
   const [setRentingVehicle] = useState(null);
-  const navigate = useNavigate();
+
+  const [vehicleGroups, setVehicleGroups] = useState([
+    { id: '0', name: 'All vehicles' },
+    { id: '1', name: 'Sedan' },
+    { id: '2', name: 'Compact' },
+    { id: '3', name: 'SUV' },
+    { id: '4', name: 'Convertible' },
+    { id: '5', name: 'Hatchback' },
+    { id: '6', name: 'Van' },
+    { id: '7', name: 'Truck' },
+    { id: '8', name: 'Wagon' },
+    { id: '9', name: 'Luxury' },
+    { id: '10', name: 'Sports' },
+  ]);
+
+  const [rentedDate, setRentedDate] = useState(
+    new Date().toISOString().split('T')[0]
+  );
+
+  const defaultReturnDate = (() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  })();
+
+  const [returnedDate, setReturnedDate] = useState(defaultReturnDate);
+  const [message, setMessage] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const handleChangeRentedDate = (date) => {
+    if (new Date(date) > new Date(returnedDate)) {
+      setMessage('Rental date cannot be after return date');
+      setOpen(true);
+      return;
+    }
+    setRentedDate(date);
+  };
+
+  const handleChangeReturnedDate = (date) => {
+    if (new Date(date) < new Date(rentedDate)) {
+      setMessage('Return date cannot be before rental date');
+      setOpen(true);
+      return;
+    }
+    setReturnedDate(date);
+  };
+
+
+  const {user} = useAuth();
 
   
   useEffect(() => {
@@ -28,58 +77,67 @@ const Home = () => {
 
   return (
     <>
-      <HeroSection />
-      <section className="bg-white py-16 px-6 sm:px-12 max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+      {user?.role === 'admin' ? (
+        <Dashboard />
+      ) : (
+        <>
+          <HeroSection
+            rentedDate={rentedDate}
+            returnedDate={returnedDate}
+            onChangeRentedDate={handleChangeRentedDate}
+            onChangeReturnedDate={handleChangeReturnedDate}
+          />
+          <section className='grid max-w-screen-xl grid-cols-1 gap-12 px-6 py-16 mx-auto bg-white sm:px-12 md:grid-cols-3'>
+            <div className='flex flex-col items-center gap-6 text-center'>
+              {/* Icon placeholder */}
+              <div className='flex items-center justify-center w-16 h-16'>
+                <img src='/images/homePage-location.png' />
+                <div className='w-8 h-8 bg-white' />
+              </div>
+              <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+                Availability
+              </h4>
+              <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
+                Always find a car when you need it. Our wide selection ensures
+                vehicle availability even during peak times.
+              </p>
+            </div>
 
-        <div className="flex flex-col items-center text-center gap-6">
-          {/* Icon placeholder */}
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-location.png"
-            />
-            <div className="w-8 h-8 bg-white" />
-          </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Availability</h4>
-          <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Always find a car when you need it. Our wide selection ensures vehicle availability even during peak times.
-          </p>
-        </div>
+            {/* Feature 2 */}
+            <div className='flex flex-col items-center gap-6 text-center'>
+              <div className='flex items-center justify-center w-16 h-16'>
+                <img src='/images/homePage-car.png' />
+                <div className='w-8 h-8 bg-white' />
+              </div>
+              <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+                Comfort
+              </h4>
+              <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
+                Enjoy a smooth and relaxing ride with vehicles designed for
+                comfort, convenience, and a better driving experience.
+              </p>
+            </div>
 
-        {/* Feature 2 */}
-        <div className="flex flex-col items-center text-center gap-6">
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-car.png"
-            />
-            <div className="w-8 h-8 bg-white" />
-          </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Comfort</h4>
-          <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Enjoy a smooth and relaxing ride with vehicles designed for comfort, convenience, and a better driving experience.
-          </p>
-        </div>
-
-        {/* Feature 3 */}
-        <div className="flex flex-col items-center text-center gap-6">
-          <div className="w-16 h-16 flex items-center justify-center">
-            <img
-              src="/images/homePage-wallet.png"
-            />
-            <div className="w-8 h-8 bg-white" />
-          </div>
-          <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">Savings</h4>
-          <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
-            Get the best value with competitive pricing, no hidden fees, and flexible rental options tailored to your budget.
-          </p>
-        </div>
-      </section>
-
-      <RecommendedVehicles
-        vehicles={vehicles}
-        showViewAll={true}
-      />
+            {/* Feature 3 */}
+            <div className='flex flex-col items-center gap-6 text-center'>
+              <div className='flex items-center justify-center w-16 h-16'>
+                <img src='/images/homePage-wallet.png' />
+                <div className='w-8 h-8 bg-white' />
+              </div>
+              <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
+                Savings
+              </h4>
+              <p className="text-base font-normal font-['Inter'] text-black leading-normal max-w-xs">
+                Get the best value with competitive pricing, no hidden fees, and
+                flexible rental options tailored to your budget.
+              </p>
+            </div>
+          </section>
+          <RecommendedVehicles vehicles={vehicles} showViewAll={true} />
+          <Toast open={open} setOpen={setOpen} message={message} />
+        </>
+      )}
     </>
-
   );
 };
 
