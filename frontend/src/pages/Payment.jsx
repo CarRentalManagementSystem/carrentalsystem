@@ -10,22 +10,25 @@ import ImageBox from "../components/ImageBox";
 import Toast from "../components/Toast";
 
 const Payment = () => {
-
   let location = useLocation();
   let navigate = useNavigate();
 
   const { user } = useAuth();
 
-  const { vehicleId, vehicle, rentedDate, returnedDate, totalRentalFee } = location.state || {};
-  const customerId = user.id
+  const { vehicleId, vehicle, rentedDate, returnedDate, totalRentalFee } =
+    location.state || {};
+  const customerId = user.id;
   const [cardDetails, setCardDetails] = useState({
-    cardNumber: "",
-    cardHolderName: "",
-    expirationDate: "",
-    cvv: "",
+    cardNumber: '',
+    cardHolderName: '',
+    expirationDate: '',
+    cvv: '',
   });
 
-  const duration = Math.ceil((new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24))
+  // Convert ms to days
+  const duration = Math.ceil(
+    (new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24)
+  );
 
   const [open, setOpen] = useState(false);
 
@@ -33,7 +36,6 @@ const Payment = () => {
     const { name, value } = e.target;
     setCardDetails({ ...cardDetails, [name]: value });
   };
-
 
   const handleSubmit = async () => {
     try {
@@ -65,7 +67,6 @@ const Payment = () => {
       alert('Booking failed. Please try again.');
     }
   };
-
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>

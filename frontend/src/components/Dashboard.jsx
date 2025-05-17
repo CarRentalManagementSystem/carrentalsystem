@@ -17,8 +17,9 @@ import {
   Area,
 } from 'recharts';
 import SummaryFrame from './SummaryFrame';
-import DurationFilter from './DurationFilter';
 import axiosInstance from '../axiosConfig';
+import DurationFilter from './DurationFilter';
+import { CircleDollarSign, CircleX, ClipboardList, Users, X } from 'lucide-react';
 
 const COLORS = [
   '#0088FE',
@@ -33,72 +34,41 @@ const COLORS = [
   '#fee08b',
 ];
 
-
 const Dashboard = () => {
-  // const [timeframe, setTimeframe] = useState('today');
-  // const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
   const [stats, setStats] = useState({});
 
+  const [timeframe, setTimeframe] = useState('weekly');
+
   useEffect(() => {
-    const fetchDashboardStats = async() => {
+    const fetchDashboardStats = async () => {
       try {
         setIsLoading(true);
-        const response  = await axiosInstance.get('/api/dashboard/statistics');
+        const response = await axiosInstance.get(`/api/dashboard/statistics?duration=${timeframe}`);
         setStats(response.data);
         setIsLoading(false);
-      } catch(error) {
+      } catch (error) {
         console.error(error.message);
       }
-    }
+    };
     fetchDashboardStats();
-  }, []);
+  }, [timeframe]);
 
-  const rentalByStatus =
-    stats?.rental?.byStatus?.map((status) =>
-      Object.assign({}, { name: status._id || 'other', value: status.count })
-    ) || []; 
-
-  const rentalsByVehicleType = stats?.financial?.revenueByVehicleType?.map((type) => Object.assign({}, {name: type._id, value: type.count})) || [];
-
-  const rentalsByRentalDuration = Object.keys(stats?.rental || {})?.map((key) => {
-    return {name: key, value: stats?.rental[key]};
-  }).splice(1,3);
-
-  const lastSevenDays = stats?.dailyStats?.sort((a,b) => a.date - b.date) || [];
-
-  const dayNames = ["Sun", "Mon", "Tues", "Weds", "Thur", "Fri", "Sat"];
-  
-  const dailyRentals = lastSevenDays.map((stat) => 
-    Object.assign({}, {
-      name: dayNames[stat.dayOfWeek-1], 
-      rentals: stat.numberOfRentals, 
-      revenue: stat.totalRevenue, 
-      customers: stat.numberOfCustomers
-    }))
-
-    let totalSum = 0;
-  
-    stats?.financial?.revenueByVehicleType.forEach(
-      (item) => {
-        totalSum += item.totalRevenue;
-      }
-    )
-
-  // Today's summary stats
-  const todayStats = {
-    totalRentals: stats?.rental?.total,
-    totalCancelled: stats?.rental?.byStatus.find(
-      (status) => status._id === 'cancelled'
-    ).count,
-    totalRevenue: totalSum.toFixed(2),
-    totalCustomers: stats?.customer?.total,
+  // Today's summary stats - now directly using the data from backend
+  const todayStats = stats?.summaryStats || {
+    totalRentals: 0,
+    totalCancelled: 0,
+    totalRevenue: 0,
+    totalCustomers: 0,
   };
 
-  // const toggleUserMenu = () => {
-  //   setIsUserMenuOpen(!isUserMenuOpen);
-  // };
+  const DURATION_OPTIONS = [
+    { value: 'daily', label: 'Today' },
+    { value: 'weekly', label: 'This Week' },
+    { value: 'monthly', label: 'This Month' },
+    { value: 'yearly', label: 'This Year' },
+    { value: 'all', label: 'All' },
+  ];
 
   return (
     <div className='flex flex-col min-h-screen'>
@@ -107,38 +77,14 @@ const Dashboard = () => {
       ) : (
         <main className='flex-1 p-6 space-y-6'>
           <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
-            <h2 className='text-2xl font-bold tracking-tight'>Dashboard</h2>
-
-          {/* TBD */}
-
-            {/* <div className='flex items-center gap-2 mt-2 sm:mt-0'>
-              <div className='flex items-center gap-2'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='w-4 h-4 text-gray-500'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
-                  />
-                </svg>
-                <DurationFilter
-                  value={timeframe}
-                  onChange={setTimeframe}
-                  options={[
-                    { value: 'today', label: 'Today' },
-                    { value: 'yesterday', label: 'Yesterday' },
-                    { value: 'week', label: 'This Week' },
-                    { value: 'month', label: 'This Month' },
-                  ]}
-                />
-              </div>
-            </div> */}
+            <h2 className='text-2xl font-bold tracking-tight'>
+              Rental Dashboard
+            </h2>
+            <DurationFilter
+              timeframe={timeframe}
+              setTimeframe={setTimeframe}
+              options={DURATION_OPTIONS}
+            />
           </div>
 
           {/* SummaryFrames */}
@@ -147,80 +93,24 @@ const Dashboard = () => {
               title='Total Rentals'
               value={todayStats.totalRentals}
               icon={
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='w-4 h-4 text-gray-500'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'
-                  />
-                </svg>
+                <ClipboardList className='w-4 h-4 text-gray-500' />
               }
             />
             <SummaryFrame
               title='Cancelled Rentals'
               value={todayStats.totalCancelled}
-              icon={
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='w-4 h-4 text-gray-500'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
-                  />
-                </svg>
-              }
+              icon={<CircleX className='w-4 h-4 text-gray-500' />}
             />
             <SummaryFrame
               title='Total Revenue'
               value={`$${todayStats.totalRevenue}`}
-              icon={
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='w-4 h-4 text-gray-500'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-                  />
-                </svg>
-              }
+              icon={<CircleDollarSign className='w-4 h-4 text-gray-500' />}
             />
             <SummaryFrame
               title='Total Customers'
               value={todayStats.totalCustomers}
               icon={
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='w-4 h-4 text-gray-500'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'
-                  />
-                </svg>
+                <Users className='w-4 h-4 text-gray-500' />
               }
             />
           </div>
@@ -238,7 +128,7 @@ const Dashboard = () => {
                 <ResponsiveContainer width='100%' height='100%'>
                   <PieChart>
                     <Pie
-                      data={rentalByStatus}
+                      data={stats.rental.byStatus}
                       cx='50%'
                       cy='50%'
                       labelLine={false}
@@ -248,7 +138,7 @@ const Dashboard = () => {
                       dataKey='value'
                       nameKey='name'
                     >
-                      {rentalByStatus.map((entry, index) => (
+                      {stats.rental.byStatus.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
@@ -272,7 +162,7 @@ const Dashboard = () => {
                 <ResponsiveContainer width='100%' height='100%'>
                   <PieChart>
                     <Pie
-                      data={rentalsByVehicleType}
+                      data={stats.financial.revenueByVehicleType}
                       cx='50%'
                       cy='50%'
                       labelLine={false}
@@ -282,12 +172,14 @@ const Dashboard = () => {
                       dataKey='value'
                       nameKey='name'
                     >
-                      {rentalsByVehicleType.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
+                      {stats.financial.revenueByVehicleType.map(
+                        (entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        )
+                      )}
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
@@ -309,7 +201,11 @@ const Dashboard = () => {
                 <ResponsiveContainer width='100%' height='100%'>
                   <PieChart>
                     <Pie
-                      data={rentalsByRentalDuration}
+                      data={[
+                        { name: 'daily', value: stats.rental.daily },
+                        { name: 'weekly', value: stats.rental.weekly },
+                        { name: 'monthly', value: stats.rental.monthly },
+                      ]}
                       cx='50%'
                       cy='50%'
                       labelLine={false}
@@ -319,7 +215,11 @@ const Dashboard = () => {
                       dataKey='value'
                       nameKey='name'
                     >
-                      {rentalsByRentalDuration.map((entry, index) => (
+                      {[
+                        { name: 'daily', value: stats.rental.daily },
+                        { name: 'weekly', value: stats.rental.weekly },
+                        { name: 'monthly', value: stats.rental.monthly },
+                      ].map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
@@ -338,16 +238,14 @@ const Dashboard = () => {
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
             <div className='col-span-1 bg-white border rounded-lg shadow'>
               <div className='p-4 border-b'>
-                <h3 className='text-lg font-medium'>
-                  Number of Rentals (Last 7 Days)
-                </h3>
+                <h3 className='text-lg font-medium'>Number of Rentals</h3>
                 <p className='text-sm text-gray-500'>
-                  Gradated line chart showing rental trends
+                  Rental trends {timeframe}
                 </p>
               </div>
               <div className='p-4 h-[300px]'>
                 <ResponsiveContainer width='100%' height='100%'>
-                  <AreaChart data={dailyRentals}>
+                  <AreaChart data={stats.timeframeStats}>
                     <defs>
                       <linearGradient
                         id='colorRentals'
@@ -385,16 +283,14 @@ const Dashboard = () => {
             </div>
             <div className='col-span-1 bg-white border rounded-lg shadow'>
               <div className='p-4 border-b'>
-                <h3 className='text-lg font-medium'>
-                  Total Revenue (Last 7 Days)
-                </h3>
+                <h3 className='text-lg font-medium'>Total Revenue</h3>
                 <p className='text-sm text-gray-500'>
-                  Line chart showing revenue trends
+                  Revenue trends {timeframe}
                 </p>
               </div>
               <div className='p-4 h-[300px]'>
                 <ResponsiveContainer width='100%' height='100%'>
-                  <LineChart data={dailyRentals}>
+                  <LineChart data={stats.timeframeStats}>
                     <CartesianGrid strokeDasharray='3 3' />
                     <XAxis dataKey='name' />
                     <YAxis />
@@ -414,16 +310,14 @@ const Dashboard = () => {
           {/* Customer Bar Chart */}
           <div className='bg-white border rounded-lg shadow'>
             <div className='p-4 border-b'>
-              <h3 className='text-lg font-medium'>
-                Number of Customers (Last 7 Days)
-              </h3>
+              <h3 className='text-lg font-medium'>Number of Customers</h3>
               <p className='text-sm text-gray-500'>
-                Vertical bar chart showing daily customer count
+                Customer count {timeframe}
               </p>
             </div>
             <div className='p-4 h-[300px]'>
               <ResponsiveContainer width='100%' height='100%'>
-                <BarChart data={dailyRentals}>
+                <BarChart data={stats.timeframeStats}>
                   <CartesianGrid strokeDasharray='3 3' />
                   <XAxis dataKey='name' />
                   <YAxis />
@@ -441,7 +335,7 @@ const Dashboard = () => {
       )}
     </div>
   );
-}
+};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -458,6 +352,5 @@ const CustomTooltip = ({ active, payload, label }) => {
   }
   return null;
 };
-
 
 export default Dashboard;
