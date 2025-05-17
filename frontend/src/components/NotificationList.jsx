@@ -27,25 +27,25 @@ const NotificationList = ({ userNotifications, roleNotifications }) => {
           {recentUserNotifications.map((notification) => (
             <div
               key={`user-${notification._id}`}
-              className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded"
+              className="max-w-xl mx-auto mt-4 bg-white border border-gray-100 rounded-xl shadow-lg p-8"
             >
               <h3 className="text-lg font-semibold">{notification.title}</h3>
               <p className="text-sm text-gray-600 mb-1">
                 {formatDate(notification.createdAt)}
               </p>
-              <p>{notification.content}</p>
+              <p className="text-gray-800 mb-1">{notification.content}</p>
             </div>
           ))}
           {recentRoleNotifications.map((notification) => (
             <div
               key={`role-${notification._id}`}
-              className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded"
+              className="max-w-xl mx-auto mt-4 bg-white border border-gray-100 rounded-xl shadow-lg p-8"
             >
               <h3 className="text-lg font-semibold">{notification.title}</h3>
               <p className="text-sm text-gray-600 mb-1">
                 {formatDate(notification.createdAt)}
               </p>
-              <p>{notification.content}</p>
+              <p className="text-gray-800 mb-1">{notification.content}</p>
             </div>
           ))}
         </div>

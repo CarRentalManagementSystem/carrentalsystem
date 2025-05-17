@@ -25,15 +25,18 @@ const Reports = () => {
 
 
 
-    return (
-    <div className="max-w-xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Report Issue</h1>
+      <div className="max-w-xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
 
-      <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">Report Issue{rentals.id}</h1>
-      <ReportForm rentals={rentals} setRentals={setRentals} />
+        <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">Tell us about your issue{rentals.id}</h1>
+        <ReportForm rentals={rentals} setRentals={setRentals} />
+      </div>
     </div>
   );
- 
-  
+
+
 
 
 };

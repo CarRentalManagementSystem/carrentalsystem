@@ -22,7 +22,7 @@ const BookingCard = ({ booking, onCancelled }) => {
             await axiosInstance.patch(`/api/rentals/cancel/${id}`, {}, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
-            
+
             // Refresh list
             const response = await axiosInstance.get("/api/rentals", {
                 headers: { Authorization: `Bearer ${user.token}` },
@@ -41,11 +41,6 @@ const BookingCard = ({ booking, onCancelled }) => {
         <div className="flex flex-col gap-3 p-10 mb-8 bg-white shadow-md rounded-xl">
             <div className="text-sm font-medium text-gray-400">Rental ID: {_id}</div>
 
-            {user.role === 'admin' ? (
-                            <div className="text-sm font-medium text-gray-400">Customer ID123: {booking.customerId}</div>
-                        ) : (
-                            <div className="text-sm font-medium text-gray-400">Customer ID456: {booking.customerId}</div>
-                        )}
 
             <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
                 {/* Left: Vehicle Info + Dates */}
@@ -116,6 +111,7 @@ const BookingCard = ({ booking, onCancelled }) => {
 
                     {/* Cancel booking and view details */}
                     <div className="flex gap-2 mt-1">
+
                         {user.role === 'admin' ? (
                             <button
                                 className={`px-3 py-1 text-sm rounded ${
@@ -136,6 +132,7 @@ const BookingCard = ({ booking, onCancelled }) => {
                                 Cancel Booking
                             </button>
                         )}
+
                     </div>
                 </div>
             </div>

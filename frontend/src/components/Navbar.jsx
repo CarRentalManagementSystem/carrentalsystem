@@ -10,12 +10,12 @@ const GeneralNavbar = () => (
       <div className='p-2 rounded-full bg-primary'>
         <Car className='w-6 h-6 text-white' />
       </div>
-      <span className='font-medium'>Best Car Rental</span>
+      <span className="text-lg font-medium font-['Work_Sans'] " >Best Car Rental</span>
     </div>
-    <Link to='/' className='hover:text-primary'>Home</Link>
-    <Link to='/vehicles' className='hover:text-primary'>Vehicles</Link>
-    <Link to='/about' className='hover:text-primary'>About Us</Link>
-    <Link to='/contact' className='hover:text-primary'>Contact Us</Link>
+    <Link to='/' className="hover:text-primary font-['Work_Sans']">Home</Link>
+    <Link to='/vehicles' className="hover:text-primary font-['Work_Sans']">Vehicles</Link>
+    <Link to='/about' className="hover:text-primary font-['Work_Sans']">About Us</Link>
+    <Link to='/contact' className="hover:text-primary font-['Work_Sans']">Contact Us</Link>
   </nav>
 );
 
@@ -30,15 +30,18 @@ const CustimerNavbar = ({ user, logout, navigate }) => {
     <header className='container flex items-center justify-between px-6 py-4'>
       <GeneralNavbar />
       <div className='flex items-center gap-4'>
+        <Link to='/rentals' className="hover:text-primary font-['Work_Sans']">My Bookings</Link>
+        <Link to='/notification' className="hover:text-primary font-['Work_Sans']">Notification</Link>
         <Link to='/profile' className='flex items-center gap-2'>
-          <span className='text-sm text-gray-600'>Hello, {user.id || 'User'}{user.role}</span>
+          <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'} </span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
             <User className='w-6 h-6' />
           </div>
         </Link>
         <Link to='/rentals' className='hover:text-primary'>My Bookings</Link>
         <Link to='/notification' className='hover:text-primary'>Notification</Link>
-        <button onClick={handleLogout} className='px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700'>
+        <button onClick={handleLogout} className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700 font-['Work_Sans']">
+
           Logout
         </button>
       </div>
@@ -57,8 +60,11 @@ const AdminNavbar = ({ user, logout, navigate }) => {
     <header className='container flex items-center justify-between px-6 py-4'>
       <GeneralNavbar />
       <div className='flex items-center gap-4'>
+
+        <Link to='/issue' className="hover:text-primary font-['Work_Sans']">View Issues</Link>
+        <Link to='/notification' className="hover:text-primary font-['Work_Sans']">Notification</Link>
         <Link to='/profile' className='flex items-center gap-2'>
-          <span className='text-sm text-gray-600'>Hello, {user.id || 'User'}({user.role})</span>
+          <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'}      ({user.role})</span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
             <User className='w-6 h-6' />
           </div>
@@ -66,7 +72,8 @@ const AdminNavbar = ({ user, logout, navigate }) => {
         <Link to='/returnVehicle' className='hover:text-primary'>View Rental</Link>
         <Link to='/issue' className='hover:text-primary'>View Issues</Link>
         <Link to='/notification' className='hover:text-primary'>Notification</Link>
-        <button onClick={handleLogout} className='px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700'>
+        <button onClick={handleLogout} className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700 font-['Work_Sans']">
+
           Logout
         </button>
       </div>
@@ -79,8 +86,8 @@ const VisitorNavbar = () => (
   <header className='container flex items-center justify-between px-6 py-4'>
     <GeneralNavbar />
     <div className='flex items-center gap-4'>
-      <Link to='/login' className='hover:text-primary'>Login</Link>
-      <Link to='/register' className='px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700'>
+      <Link to='/login' className="hover:text-primary font-['Work_Sans']">Login</Link>
+      <Link to='/register' className="px-4 py-2 text-white bg-primary rounded hover:bg-primary-700 font-['Work_Sans']">
         Register
       </Link>
     </div>

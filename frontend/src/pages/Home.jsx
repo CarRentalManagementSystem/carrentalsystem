@@ -8,6 +8,7 @@ import Dashboard from '../components/Dashboard';
 
 const Home = () => {
   const [vehicles, setVehicles] = useState([]);
+
   const [setRentingVehicle] = useState(null);
 
   const [vehicleGroups, setVehicleGroups] = useState([
@@ -24,6 +25,7 @@ const Home = () => {
     { id: '10', name: 'Sports' },
   ]);
 
+
   const [rentedDate, setRentedDate] = useState(
     new Date().toISOString().split('T')[0]
   );
@@ -35,6 +37,7 @@ const Home = () => {
   })();
 
   const [returnedDate, setReturnedDate] = useState(defaultReturnDate);
+
   const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -91,7 +94,9 @@ const Home = () => {
             <div className='flex flex-col items-center gap-6 text-center'>
               {/* Icon placeholder */}
               <div className='flex items-center justify-center w-16 h-16'>
-                <img src='/images/homePage-location.png' />
+
+                <img src='/images/homePage-location.png' alt='location-icon' />
+
                 <div className='w-8 h-8 bg-white' />
               </div>
               <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
@@ -106,7 +111,9 @@ const Home = () => {
             {/* Feature 2 */}
             <div className='flex flex-col items-center gap-6 text-center'>
               <div className='flex items-center justify-center w-16 h-16'>
-                <img src='/images/homePage-car.png' />
+
+                <img src='/images/homePage-car.png' alt='car-icon' />
+
                 <div className='w-8 h-8 bg-white' />
               </div>
               <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">
@@ -121,7 +128,9 @@ const Home = () => {
             {/* Feature 3 */}
             <div className='flex flex-col items-center gap-6 text-center'>
               <div className='flex items-center justify-center w-16 h-16'>
-                <img src='/images/homePage-wallet.png' />
+
+                <img src='/images/homePage-wallet.png' alt='wallet-icon' />
+
                 <div className='w-8 h-8 bg-white' />
               </div>
               <h4 className="text-2xl font-semibold font-['Work_Sans'] text-black">

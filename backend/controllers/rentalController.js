@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 //Get Rental Function:
 const Rental = require('../models/Rental');
 const Vehicle = require('../models/Vehicle');
-
+const Notification = require('../models/Notification');
 
 const getRentals = async (req, res) => {
     if(req.user.role === 'admin'){
@@ -20,6 +20,7 @@ const getRentals = async (req, res) => {
         const rentals = await Rental.find({ customerId: req.user._id }).populate("vehicleId"); //  Populate car details
         // console.log("Sample Rentals (Customer):", rentals.slice(0, 3));
         // console.log("rentalController API returning Rentals:", JSON.stringify(rentals, null, 2)); //  check whether return rentals
+
         res.json(rentals);
     } catch (error) {
         console.error("rentalController Error fetching rentals:", error.message);
@@ -58,6 +59,17 @@ const addRental = async (req, res) => {
         //mark vehicle as booked
         await Vehicle.findByIdAndUpdate(vehicleId, {
             vehicleStatus: 'rented',
+
+        });
+
+        const vehicle = await Vehicle.findById(vehicleId);
+
+        await Notification.create({
+            receiverId: customerId,
+            receiverRole: 'customer',
+            title: 'Booking Confirmed',
+            content: `Your booking for ${vehicle.manufacturer} ${vehicle.model} from ${new Date(rentedDate).toLocaleDateString()} to ${new Date(returnedDate).toLocaleDateString()} has been confirmed.\nRental number: ${vehicleId}`,
+
         });
 
         console.log("Successfully stored rental data in DB:", rental);
@@ -100,7 +112,7 @@ const cancelRental = async (req, res) => {
     const { vehicleId } = req.body;
     try {
         const rental = await Rental.findById(req.params.id);
-        console.log("reach here:", rental);
+
         if (!rental) {
             return res.status(404).json({ message: 'Rental not found' });
         }
@@ -113,7 +125,7 @@ const cancelRental = async (req, res) => {
             rental.rentalStatus = 'cancelled';
             console.log("rentalaaaaa:", rental);
         }
-        
+       
 
         const updatedRental = await rental.save();
 
@@ -170,4 +182,6 @@ const deleteRental = async (req, res) => {
     //     res.status(500).json({ message: error.message });
     // }
 };
-module.exports = { getRentals, addRental, updateRental, deleteRental, cancelRental};
+
+module.exports = { getRentals, addRental, updateRental, deleteRental, cancelRental };
+

@@ -1,245 +1,197 @@
 const Rental = require('../models/Rental');
 const Vehicle = require('../models/Vehicle');
 const User = require('../models/User');
-
 const moment = require('moment');
 
-const getRentalStatistics = async (req, res) => {
-  try {
+/**
+ * Duration Filter -> Strategy Pattern
+ * Defines different strategies for filtering data by duration
+ */
+class DurationFilterStrategy {
+  static getDateRange(duration) {
+    const now = moment();
 
-    // Current time periods
-    const today = moment().startOf('day');
-    const thisWeekStart = moment().startOf('week');
-    const thisMonthStart = moment().startOf('month');
+    switch (duration) {
+      case 'daily':
+        return {
+          start: now.clone().startOf('day').toDate(),
+          end: now.clone().endOf('day').toDate(),
+        };
+      case 'weekly':
+        return {
+          start: now.clone().startOf('week').toDate(),
+          end: now.clone().endOf('week').toDate(),
+        };
+      case 'monthly':
+        return {
+          start: now.clone().startOf('month').toDate(),
+          end: now.clone().endOf('month').toDate(),
+        };
+      case 'yearly':
+        return {
+          start: now.clone().startOf('year').toDate(),
+          end: now.clone().endOf('year').toDate(),
+        };
+      case 'all':
+      default:
+        return {
+          start: new Date(0), // The beginning of the business time
+          end: now.toDate(),
+        };
+    }
+  }
+}
 
-    // 1. RENTAL STATISTICS
+/**
+ * Dashboard Statistics ->  Facade Pattern
+ * - Simplify data access and formatting for frontend charts
+ */
+class DashboardStatisticsFacade {
+  /**
+   * Get rental statistics by status formatted for Pie chart
+   * Filter by duration (daily, weekly, monthly, etc.)
+   */
+  static async getRentalsByStatus(duration = 'all') {
+    const dateRange = DurationFilterStrategy.getDateRange(duration);
 
-    // Count rentals by status
-    const rentalsByStatus = await Rental.aggregate([
+    return await Rental.aggregate([
+      {
+        $match: {
+          rentedDate: {
+            $gte: dateRange.start,
+            $lte: dateRange.end,
+          },
+        },
+      },
       {
         $group: {
           _id: '$rentalStatus',
-          count: { $sum: 1 },
+          value: { $sum: 1 }, 
+        },
+      },
+      {
+        $project: {
+          name: '$_id',
+          value: 1,
+          _id: 0,
         },
       },
     ]);
+  }
 
-    // Calculate revenue statistics
-    const completedRentals = await Rental.find({
-      rentalStatus: 'available', // assuming 'available' means returned and completed
-      returnedDate: { $exists: true, $ne: null },
-    }).populate('vehicleId');
+  /**
+   * Get rentals by vehicle type formatted for Pie chart
+   */
+  static async getRentalsByVehicleType(duration = 'all') {
+    const dateRange = DurationFilterStrategy.getDateRange(duration);
 
-    // Calculate revenue and rental duration
-    let totalRevenue = 0;
-    let totalRentalDays = 0;
-
-    completedRentals.forEach((rental) => {
-      const startDate = moment(rental.rentedDate);
-      const endDate = moment(rental.returnedDate);
-      const days = endDate.diff(startDate, 'days') || 1; // minimum 1 day
-
-      totalRentalDays += days;
-      totalRevenue += days * rental.vehicleId.rentalPricePerDay;
-    });
-
-    // Daily, weekly and monthly rental counts
-    const dailyRentals = await Rental.countDocuments({
-      rentedDate: { $gte: today.toDate() },
-    });
-
-    const weeklyRentals = await Rental.countDocuments({
-      rentedDate: { $gte: thisWeekStart.toDate() },
-    });
-
-    const monthlyRentals = await Rental.countDocuments({
-      rentedDate: { $gte: thisMonthStart.toDate() },
-    });
-
-    // 2. VEHICLE STATISTICS
-
-    // Vehicles by status
-    const vehiclesByStatus = await Vehicle.aggregate([
+    return await Rental.aggregate([
       {
-        $group: {
-          _id: '$vehicleStatus',
-          count: { $sum: 1 },
+        $match: {
+          rentalStatus: { $in: ['available', 'booked', 'inuse'] },
+          rentedDate: {
+            $gte: dateRange.start,
+            $lte: dateRange.end,
+          },
         },
       },
-    ]);
-
-    // Most rented vehicles
-    const mostRentedVehicles = await Rental.aggregate([
-      {
-        $group: {
-          _id: '$vehicleId',
-          rentCount: { $sum: 1 },
-        },
-      },
-      { $sort: { rentCount: -1 } },
-      { $limit: 5 },
       {
         $lookup: {
           from: 'vehicles',
-          localField: '_id',
+          localField: 'vehicleId',
+
           foreignField: '_id',
           as: 'vehicleDetails',
         },
       },
-      { $unwind: '$vehicleDetails' },
+
       {
-        $project: {
-          _id: 0,
-          vehicleId: '$_id',
-          manufacturer: '$vehicleDetails.manufacturer',
-          model: '$vehicleDetails.model',
-          rentCount: 1,
-        },
+        $unwind: '$vehicleDetails',
       },
-    ]);
-
-    // Vehicle utilization rate
-    const totalVehicles = await Vehicle.countDocuments();
-    const rentedVehicles = await Vehicle.countDocuments({
-      vehicleStatus: 'booked',
-    });
-    const utilizationRate =
-      totalVehicles > 0 ? (rentedVehicles / totalVehicles) * 100 : 0;
-
-    // 3. CUSTOMER STATISTICS
-
-    // Total customers
-    const totalCustomers = await User.countDocuments({ role: 'customer' });
-
-    // Top customers by rental count
-    const topCustomers = await Rental.aggregate([
       {
         $group: {
-          _id: '$customerId',
-          rentalCount: { $sum: 1 },
+          _id: '$vehicleDetails.techSpecs.type',
+          value: { $sum: 1 }, 
         },
       },
-      { $sort: { rentalCount: -1 } },
-      { $limit: 5 },
-      {
-        $lookup: {
-          from: 'users',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'customerDetails',
-        },
-      },
-      { $unwind: '$customerDetails' },
       {
         $project: {
+          name: '$_id', 
+          value: 1,
           _id: 0,
-          customerId: '$_id',
-          name: '$customerDetails.name',
-          email: '$customerDetails.email',
-          rentalCount: 1,
         },
       },
     ]);
+  }
 
-    // New customers in the last month
-    const newCustomers = await User.countDocuments({
-      role: 'customer',
-      createdAt: { $gte: thisMonthStart.toDate() },
+  /**
+   * Get rentals by duration formatted for PieChart
+   */
+  static async getRentalsByDuration(duration = 'all') {
+    const dateRange = DurationFilterStrategy.getDateRange(duration);
+
+    const today = moment().startOf('day');
+    const thisWeekStart = moment().startOf('week');
+    const thisMonthStart = moment().startOf('month');
+
+    // Apply the duration filter to the base query
+    const baseQuery = {
+      rentedDate: {
+        $gte: dateRange.start,
+        $lte: dateRange.end,
+      },
+    };
+
+    const dailyRentals = await Rental.countDocuments({
+      ...baseQuery,
+      rentedDate: { $gte: today.toDate() },
     });
 
-    // 4. FINANCIAL STATISTICS
+    const weeklyRentals = await Rental.countDocuments({
+      ...baseQuery,
+      rentedDate: { $gte: thisWeekStart.toDate() },
+    });
 
-    // Average revenue per rental
-    const avgRevenuePerRental =
-      completedRentals.length > 0 ? totalRevenue / completedRentals.length : 0;
+    const monthlyRentals = await Rental.countDocuments({
+      ...baseQuery,
+      rentedDate: { $gte: thisMonthStart.toDate() },
+    });
 
-    // Average rental duration
-    const avgRentalDuration =
-      completedRentals.length > 0
-        ? totalRentalDays / completedRentals.length
-        : 0;
+    return [
+      { name: 'daily', value: dailyRentals },
+      { name: 'weekly', value: weeklyRentals },
+      { name: 'monthly', value: monthlyRentals },
+    ];
+  }
 
-    // Projected monthly revenue (based on current daily average)
-    const daysInMonth = moment().daysInMonth();
-    const dailyAvgRevenue =
-      completedRentals.length > 0
-        ? totalRevenue / moment().diff(moment().subtract(30, 'days'), 'days')
-        : 0;
-    const projectedMonthlyRevenue = dailyAvgRevenue * daysInMonth;
+  /**
+   * Get daily statistics for selected duration formatted for LineChart/AreaChart/BarChart
+   * days - Number of days to look back (default: 7)
+   */
+  static async gettimeframeStats(duration = 'all', days = 7) {
+    const dayNames = ['Sun', 'Mon', 'Tues', 'Weds', 'Thur', 'Fri', 'Sat'];
 
-    const revenueByVehicleType = await Rental.aggregate([
-          // Only consider completed or active rentals
-          {
-            $match: {
-              rentalStatus: { $in: ['available', 'booked', 'inuse'] },
-            },
-          },
-          // Lookup vehicle details
-          {
-            $lookup: {
-              from: 'vehicles',
-              localField: 'vehicleId',
-              foreignField: '_id',
-              as: 'vehicleDetails',
-            },
-          },
-          {
-            $unwind: '$vehicleDetails',
-          },
-          // Calculate rental duration in days
-          {
-            $addFields: {
-              rentalDays: {
-                $cond: {
-                  if: { $eq: ['$returnedDate', null] },
-                  then: {
-                    $ceil: {
-                      $divide: [
-                        { $subtract: [new Date(), '$rentedDate'] },
-                        1000 * 60 * 60 * 24, // Convert ms to days
-                      ],
-                    },
-                  },
-                  else: {
-                    $ceil: {
-                      $divide: [
-                        { $subtract: ['$returnedDate', '$rentedDate'] },
-                        1000 * 60 * 60 * 24, // Convert ms to days
-                      ],
-                    },
-                  },
-                },
-              },
-            },
-          },
-          // Calculate rental cost
-          {
-            $addFields: {
-              revenue: {
-                $multiply: ['$rentalDays', '$vehicleDetails.rentalPricePerDay'],
-              },
-            },
-          },
-          // Group by vehicle type
-          {
-            $group: {
-              _id: '$vehicleDetails.techSpecs.type',
-              totalRevenue: { $sum: '$revenue' },
-              count: { $sum: 1 },
-            },
-          },
-          // Sort by revenue
-          {
-            $sort: { totalRevenue: -1 },
-          },
-        ]);
+    // Adjust the number of days to look back based on the duration
+    let pastDays = days;
+    if (duration === 'monthly') {
+      pastDays = 30;
+    } else if (duration === 'weekly') {
+      pastDays = 7;
+    } else if (duration === 'daily') {
+      pastDays = 1;
+    }
 
-    const dailyStats = await Rental.aggregate([
-      // Match rentals from the last 7 days
+    const dateRange = DurationFilterStrategy.getDateRange(duration);
+
+    const result = await Rental.aggregate([
+      // Match rentals from the specified time period
       {
         $match: {
           rentedDate: {
-            $gte: new Date(new Date().setDate(new Date().getDate() - 7)),
+            $gte: new Date(
+              new Date().setDate(new Date().getDate() - pastDays)
+            ),
+            $lte: dateRange.end,
           },
         },
       },
@@ -263,21 +215,42 @@ const getRentalStatistics = async (req, res) => {
             $dateToString: { format: '%Y-%m-%d', date: '$rentedDate' },
           },
           dayOfWeek: {
-            $first: { $dayOfWeek: '$rentedDate' }, // 1 for Sunday, 2 for Monday, etc.
+            $first: { $dayOfWeek: '$rentedDate' }, // 1 for Sunday, 2 for Monday, ...
           },
-          numberOfRentals: { $sum: 1 },
+          rentals: { $sum: 1 },
+
           // Calculate total revenue based on rental duration and daily price
-          totalRevenue: {
+          revenue: {
             $sum: {
-              $multiply: [
-                '$vehicle.rentalPricePerDay',
-                {
-                  $divide: [
-                    { $subtract: ['$returnedDate', '$rentedDate'] },
-                    1000 * 60 * 60 * 24, // Convert milliseconds to days
+              $cond: {
+                if: { $eq: ['$returnedDate', null] },
+                then: {
+                  $multiply: [
+                    '$vehicle.rentalPricePerDay',
+                    {
+                      $ceil: {
+                        $divide: [
+                          { $subtract: [new Date(), '$rentedDate'] },
+                          1000 * 60 * 60 * 24, // Convert ms to days
+                        ],
+                      },
+                    },
                   ],
                 },
-              ],
+                else: {
+                  $multiply: [
+                    '$vehicle.rentalPricePerDay',
+                    {
+                      $ceil: {
+                        $divide: [
+                          { $subtract: ['$returnedDate', '$rentedDate'] },
+                          1000 * 60 * 60 * 24, // Convert ms to days
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
             },
           },
           // Count unique customers
@@ -287,7 +260,7 @@ const getRentalStatistics = async (req, res) => {
       // Add a field for number of unique customers
       {
         $addFields: {
-          numberOfCustomers: { $size: '$uniqueCustomers' },
+          customers: { $size: '$uniqueCustomers' }, // renamed from numberOfCustomers to match frontend naming
         },
       },
       // Project the fields we need
@@ -296,9 +269,9 @@ const getRentalStatistics = async (req, res) => {
           _id: 0,
           date: '$_id',
           dayOfWeek: 1,
-          numberOfRentals: 1,
-          totalRevenue: 1,
-          numberOfCustomers: 1,
+          rentals: 1,
+          revenue: 1,
+          customers: 1,
         },
       },
       // Sort by date
@@ -306,44 +279,199 @@ const getRentalStatistics = async (req, res) => {
         $sort: { date: 1 },
       },
     ]);
-    
 
-    // Compile all statistics
+
+    // Format dayOfWeek to match the frontend naming (Sun, Mon, etc.)
+    return result.map((day) => ({
+      name: dayNames[day.dayOfWeek - 1], // -1 because dayOfWeek is 1-based
+      rentals: day.rentals,
+      revenue: day.revenue,
+      customers: day.customers,
+    }));
+  }
+
+  /**
+   * Get summary statistics for the dashboard
+   * @param {string} duration - Filter by duration (daily, weekly, monthly, etc.)
+   */
+  static async getSummaryStats(duration = 'all') {
+    const dateRange = DurationFilterStrategy.getDateRange(duration);
+
+    const totalRentals = await Rental.countDocuments({
+      rentedDate: {
+        $gte: dateRange.start,
+        $lte: dateRange.end,
+      },
+    });
+
+    const cancelledRentals = await Rental.countDocuments({
+      rentalStatus: 'cancelled',
+      rentedDate: {
+        $gte: dateRange.start,
+        $lte: dateRange.end,
+      },
+    });
+
+    // Total customers registered within the date range (if applicable)
+    let totalCustomersQuery = { role: 'customer' };
+    if (duration !== 'all') {
+      totalCustomersQuery.createdAt = {
+        $gte: dateRange.start,
+        $lte: dateRange.end,
+      };
+    }
+    const totalCustomers = await User.countDocuments(totalCustomersQuery);
+
+    const revenueByVehicleType = await Rental.aggregate([
+      {
+        $match: {
+          rentalStatus: { $in: ['available', 'booked', 'inuse', 'completed'] },
+          rentedDate: {
+            $gte: dateRange.start,
+            $lte: dateRange.end,
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'vehicles',
+          localField: 'vehicleId',
+          foreignField: '_id',
+          as: 'vehicleDetails',
+        },
+      },
+      {
+        $unwind: '$vehicleDetails',
+      },
+      {
+        $addFields: {
+          rentalDays: {
+            $cond: {
+              if: { $eq: ['$returnedDate', null] },
+              then: {
+                $ceil: {
+                  $divide: [
+                    { $subtract: [new Date(), '$rentedDate'] },
+                    1000 * 60 * 60 * 24, // Convert ms to days
+                  ],
+                },
+              },
+              else: {
+                $ceil: {
+                  $divide: [
+                    { $subtract: ['$returnedDate', '$rentedDate'] },
+                    1000 * 60 * 60 * 24, // Convert ms to days
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          revenue: {
+            $multiply: ['$rentalDays', '$vehicleDetails.rentalPricePerDay'],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$revenue' },
+        },
+      },
+    ]);
+
+    const totalRevenue =
+      revenueByVehicleType.length > 0
+        ? revenueByVehicleType[0].totalRevenue.toFixed(2)
+        : 0;
+
+    return {
+      totalRentals,
+      totalCancelled: cancelledRentals,
+      totalRevenue,
+      totalCustomers,
+      duration: duration, // Include the duration in the response
+    };
+  }
+}
+
+/**
+ * Get dashboard statistics
+ * This controller uses the Facade pattern to simplify the interface
+ * and provide data in the exact format needed by frontend charts
+ */
+const getRentalStatistics = async (req, res) => {
+  try {
+    // Extract the duration parameter from the request query
+    // Default to 'all' if not specified
+    const duration = req.query.duration || 'all';
+
+    // Validate the duration parameter
+    const validDurations = [
+      'daily',
+      'weekly',
+      'monthly',
+      'yearly',
+      'all',
+    ];
+    if (!validDurations.includes(duration)) {
+      return res.status(400).json({
+        message: `Invalid duration parameter. Valid options are: ${validDurations.join(
+          ', '
+        )}`,
+      });
+    }
+
+    // Use the Facade to get all the data in the correct format
+    const [
+      rentalByStatus,
+      rentalsByVehicleType,
+      rentalsByRentalDuration,
+      dailyRentals,
+      summaryStats,
+    ] = await Promise.all([
+      DashboardStatisticsFacade.getRentalsByStatus(duration),
+      DashboardStatisticsFacade.getRentalsByVehicleType(duration),
+      DashboardStatisticsFacade.getRentalsByDuration(duration),
+      DashboardStatisticsFacade.gettimeframeStats(duration),
+      DashboardStatisticsFacade.getSummaryStats(duration),
+    ]);
+
+    // Format the response to match what's expected by the frontend
     const statistics = {
       rental: {
-        byStatus: rentalsByStatus,
-        daily: dailyRentals,
-        weekly: weeklyRentals,
-        monthly: monthlyRentals,
-        total: await Rental.countDocuments(),
-      },
-      vehicle: {
-        byStatus: vehiclesByStatus,
-        mostRented: mostRentedVehicles,
-        utilizationRate: utilizationRate.toFixed(2),
-        total: totalVehicles,
-      },
-      customer: {
-        top: topCustomers,
-        newThisMonth: newCustomers,
-        total: totalCustomers,
+        byStatus: rentalByStatus,
+        daily: rentalsByRentalDuration[0].value,
+        weekly: rentalsByRentalDuration[1].value,
+        monthly: rentalsByRentalDuration[2].value,
+        total: summaryStats.totalRentals,
       },
       financial: {
-        totalRevenue: totalRevenue.toFixed(2),
-        avgRevenuePerRental: avgRevenuePerRental.toFixed(2),
-        avgRentalDuration: avgRentalDuration.toFixed(1),
-        projectedMonthlyRevenue: projectedMonthlyRevenue.toFixed(2),
-        revenueByVehicleType: revenueByVehicleType,
+        revenueByVehicleType: rentalsByVehicleType,
+        totalRevenue: summaryStats.totalRevenue,
       },
-      dailyStats
+      customer: {
+        total: summaryStats.totalCustomers,
+      },
+      timeframeStats: dailyRentals,
+      // Summary stats are directly usable in the frontend
+      summaryStats,
+      // Include the selected duration in the response
+      appliedFilter: {
+        duration: duration,
+      },
+
     };
 
     res.status(200).json(statistics);
   } catch (error) {
     console.error('Error generating statistics:', error);
-    throw error;
+
+    res.status(500).json({ message: 'Error generating dashboard statistics' });
   }
 };
-
 
 module.exports = { getRentalStatistics };

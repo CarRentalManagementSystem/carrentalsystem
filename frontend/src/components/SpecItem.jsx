@@ -5,6 +5,7 @@ import {
   Wind,
   Settings2,
   Route,
+  CircleDot,
 } from 'lucide-react';
 
 const SpecItem = ({ title, value, icon }) => {
@@ -24,19 +25,7 @@ const SpecItem = ({ title, value, icon }) => {
         ) : icon === 'distance' ? (
           <Route width='24' height='24' />
         ) : (
-          <svg
-            width='24'
-            height='24'
-            viewBox='0 0 24 24'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              d='M12 2L4 6V12C4 15.31 7.58 19.5 12 21C16.42 19.5 20 15.31 20 12V6L12 2Z'
-              stroke='#464255'
-              strokeWidth='2'
-            />
-          </svg>
+          <CircleDot className='w-4 h-4 text-gray-500' />
         )}
       </div>
       <span className='text-sm font-medium'>{title}</span>

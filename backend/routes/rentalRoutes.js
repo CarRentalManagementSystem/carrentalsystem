@@ -16,5 +16,4 @@ router.route('/:id').put(protect, updateRental).delete(protect, deleteRental);
 
 
 
-
 module.exports = router;

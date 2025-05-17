@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import BookingCard from './BookingCard';
+
 import { useAuth } from '../../context/AuthContext';
 
 const MyBookingsContainer = ({ bookings }) => {
@@ -35,15 +36,18 @@ const MyBookingsContainer = ({ bookings }) => {
         setVisibleBookings(upcoming);
     }, [bookings, user.role, statusFilter]);
 
+
     // Reminder notifications
     useEffect(() => {
         visibleBookings.forEach((b) => {
-            const daysToPickup = dayjs(b.rentedDate).diff(dayjs(), 'day');
+
+            const daysToPickup = dayjs(b.rentedDate).startOf('day').diff(dayjs().startOf('day'), 'day');
             if(user.role == "customer"){
                 if (daysToPickup === 1) {
                     alert(`Reminder: Your pickup for ${b.vehicleId?.manufacturer} ${b.vehicleId?.model} is tomorrow!`);
             }}
             
+
         });
     }, [visibleBookings]);
 
@@ -54,6 +58,7 @@ const MyBookingsContainer = ({ bookings }) => {
 
     return (
         <section className="p-6 max-w-4xl mx-auto">
+
             {user.role === 'admin' && (
                 <div className="mb-6">
                     <select
@@ -72,6 +77,7 @@ const MyBookingsContainer = ({ bookings }) => {
             {visibleBookings.length > 0 ? (
                 visibleBookings.map((booking) => (
                     <BookingCard key={booking._id} booking={booking} onCancelled={handleCancelled} />
+
                 ))
             ) : (
                 <p className="text-gray-500">No upcoming bookings.</p>
