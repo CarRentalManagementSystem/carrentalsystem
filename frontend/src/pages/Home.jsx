@@ -8,9 +8,6 @@ import Dashboard from '../components/Dashboard';
 
 const Home = () => {
   const [vehicles, setVehicles] = useState([]);
-
-  const [setRentingVehicle] = useState(null);
-
   const [vehicleGroups, setVehicleGroups] = useState([
     { id: '0', name: 'All vehicles' },
     { id: '1', name: 'Sedan' },
@@ -25,6 +22,7 @@ const Home = () => {
     { id: '10', name: 'Sports' },
   ]);
 
+  const [selectedGroup, setSelectedGroup] = useState('0');
 
   const [rentedDate, setRentedDate] = useState(
     new Date().toISOString().split('T')[0]
@@ -40,6 +38,10 @@ const Home = () => {
 
   const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
+
+  const handleChangeVehicleGroup = (id) => {
+    setSelectedGroup(id);
+  };
 
   const handleChangeRentedDate = (date) => {
     if (new Date(date) > new Date(returnedDate)) {
@@ -59,24 +61,21 @@ const Home = () => {
     setReturnedDate(date);
   };
 
+  const { user } = useAuth();
 
-  const {user} = useAuth();
-
-  
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
         const response = await axiosInstance.get('/api/vehicles');
         setVehicles(response.data);
       } catch (error) {
-        alert('Failed to fetch vehicle list.');
+        setMessage('Failed to fetch vehicle list.');
+        setOpen(true);
       }
     };
 
     fetchVehicles();
   }, []);
-
-
 
   return (
     <>
@@ -87,6 +86,9 @@ const Home = () => {
           <HeroSection
             rentedDate={rentedDate}
             returnedDate={returnedDate}
+            vehicleGroups={vehicleGroups}
+            selectedGroup={selectedGroup}
+            onChangeVehicleGroup={handleChangeVehicleGroup}
             onChangeRentedDate={handleChangeRentedDate}
             onChangeReturnedDate={handleChangeReturnedDate}
           />

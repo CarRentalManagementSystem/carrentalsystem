@@ -9,37 +9,53 @@ import { useAuth } from '../context/AuthContext';
 import Toast from '../components/Toast';
 
 const VehicleDetails = () => {
-
   let navigate = useNavigate();
-  const {user} = useAuth();
-    
+  const { user } = useAuth();
+
   const location = useLocation();
-  const { vehicle, dates: { rentedDate, returnedDate } } = location.state || {};
-  const [open,setOpen] = useState(false);
+  const {
+    vehicle,
+    dates: { rentedDate, returnedDate },
+  } = location.state || {};
+  const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [imageError, setImageError] = useState(false);
 
-  const handleClick =()=> {
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
+  // Determine image source based on error state
+  const imageSrc = imageError
+    ? '/images/default-car.png'
+    : `/images/${vehicle?.manufacturer}-${vehicle?.model}.png`;
+
+
+  const handleClick = () => {
     if (!user) {
       setMessage('You need to log in to book a car');
       setOpen(true);
       return;
     }
 
-      navigate('/payment', {
-        state: {
-          vehicleId: vehicle._id,
-          vehicle,
-          rentalPricePerDay: vehicle.rentalPricePerDay,
-          rentedDate,
-          returnedDate,
-          totalRentalFee,
-        },
-      });
-  }
+    navigate('/payment', {
+      state: {
+        vehicleId: vehicle._id,
+        vehicle,
+        rentalPricePerDay: vehicle.rentalPricePerDay,
+        rentedDate,
+        returnedDate,
+        totalRentalFee,
+      },
+    });
+  };
 
-  const duration = Math.ceil((new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24))
-  const totalRentalFee = vehicle.rentalPricePerDay * duration
+  // Convert ms to days
+  const duration = Math.ceil(
+    (new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24)
+  );
+  const totalRentalFee = vehicle.rentalPricePerDay * duration;
+  
 
   return (
     <div className='grid gap-8 m-20 md:grid-cols-2'>
@@ -56,9 +72,10 @@ const VehicleDetails = () => {
 
         <div className='mb-6'>
           <img
-            src={`/images/${vehicle.manufacturer}-${vehicle.model}.png`}
+            src={imageSrc}
             alt={`${vehicle.manufacturer}-${vehicle.model}`}
             className='object-contain w-full bg-gray-200 rounded'
+            onError={handleImageError}
           />
         </div>
 

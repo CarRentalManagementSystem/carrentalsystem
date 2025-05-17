@@ -39,7 +39,7 @@ const Payment = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("USER OBJECT:", user);
+    console.log('USER OBJECT:', user);
     const context = {
       customerId: user.id,
       vehicleId,
@@ -61,6 +61,16 @@ const Payment = () => {
     }
   };
 
+  const [imageError, setImageError] = useState(false);
+  
+    const handleImageError = () => {
+      setImageError(true);
+    };
+  
+    // Determine image source based on error state
+    const imageSrc = imageError
+      ? '/images/default-car.png'
+      : `/images/${vehicle?.manufacturer}-${vehicle?.model}.png`;
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>
@@ -72,24 +82,51 @@ const Payment = () => {
           </p>
         </div>
         <ImageBox
-          imageUrl={`/images/${vehicle?.manufacturer}-${vehicle?.model}.png`}
+          imageUrl={imageSrc}
           altText={`${vehicle?.manufacturer}-${vehicle?.model}`}
+          onError={handleImageError}
         />
         <ItemBox>
-
-          <SpecItem title='Vehicle Type' value={vehicle?.techSpecs?.type} icon='car' />
-          <SpecItem title='Transmission' value={vehicle?.techSpecs?.transmission} icon='gear' />
+          <SpecItem
+            title='Vehicle Type'
+            value={vehicle?.techSpecs?.type}
+            icon='car'
+          />
+          <SpecItem
+            title='Transmission'
+            value={vehicle?.techSpecs?.transmission}
+            icon='gear'
+          />
           <SpecItem title='Air Conditioning' value='Yes' icon='aircon' />
-          <SpecItem title='Fuel Type' value={vehicle?.techSpecs?.fuelType} icon='fuel' />
-          <SpecItem title='Number of seats' value={vehicle?.techSpecs?.seats} icon='seats' />
-          <SpecItem title='Number of doors' value={vehicle?.techSpecs?.doors} icon='doors' />
+          <SpecItem
+            title='Fuel Type'
+            value={vehicle?.techSpecs?.fuelType}
+            icon='fuel'
+          />
+          <SpecItem
+            title='Number of seats'
+            value={vehicle?.techSpecs?.seats}
+            icon='seats'
+          />
+          <SpecItem
+            title='Number of doors'
+            value={vehicle?.techSpecs?.doors}
+            icon='doors'
+          />
         </ItemBox>
         <div className='grid items-center grid-cols-2 gap-4 p-4 mt-4 mb-4 rounded bg-secondary'>
-          <span><strong>Pick up on:</strong> {rentedDate}</span>
-          <span><strong>Return on:</strong> {returnedDate}</span>
-          <span><strong>Renting for:</strong> {duration} days</span>
-          <span><strong>Total Cost:</strong> ${totalRentalFee}</span>
-
+          <span>
+            <strong>Pick up on:</strong> {rentedDate}
+          </span>
+          <span>
+            <strong>Return on:</strong> {returnedDate}
+          </span>
+          <span>
+            <strong>Renting for:</strong> {duration} days
+          </span>
+          <span>
+            <strong>Total Cost:</strong> ${totalRentalFee}
+          </span>
         </div>
       </div>
       <CardDetailForm onSubmit={handleSubmit} />
