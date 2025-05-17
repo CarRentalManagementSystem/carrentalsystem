@@ -14,11 +14,11 @@ const Register = () => {
     console.log('Form submitted');
     console.log(formData);
 
-    if (!formData.name || !formData.email || !formData.password || !formData.phoneNumber|| !formData.dateOfBirth) {
+    if (!formData.name || !formData.email || !formData.password || !formData.phoneNumber || !formData.dateOfBirth) {
       alert('Please fill out all fields.');
       return;
     }
-    
+
 
     try {
       await axiosInstance.post('/api/auth/register', formData);
@@ -104,20 +104,9 @@ const Register = () => {
           />
         </div>
 
-        <div className="flex items-center gap-4 mb-4">
-          <label className="text-lg font-medium font-['Work_Sans'] w-48">
-            Address
-          </label>
-          <input
-            type="text"
-            placeholder="Address"
-            value={formData.address}
-            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
-          />
-        </div>
-
-        <button type="submit" className="w-full bg-primary text-white text-lg font-['Work_Sans'] font-medium p-2 rounded hover:bg-primary-700 transition">
+        <button
+          type="submit"
+          className="w-full bg-primary text-white text-lg font-['Work_Sans'] font-medium p-2 rounded hover:bg-primary-700 transition">
           Create Account
         </button>
       </form>

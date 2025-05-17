@@ -8,20 +8,20 @@ const generateToken = (id) => {
 };
 
 const registerUser = async (req, res) => {
-    
+
     console.log('Received data:', req.body);
     console.log('Request Body:', req.body);
-    const { role = 'customer', name, email, password, phoneNumber, dateOfBirth} = req.body;
+    const { role = 'customer', name, email, password, phoneNumber, dateOfBirth } = req.body;
     try {
         const userExists = await User.findOne({ email });
         if (userExists) return res.status(400).json({ message: 'User already exists' });
         const user = await User.create({
-            role, name, email, password,phoneNumber, dateOfBirth
+            role, name, email, password, phoneNumber, dateOfBirth
         });
-        
+
         console.log('bbbbb');
         res.status(201).json({
-            id: user.id, role: user.role, name: user.name, email: user.email, password: user.password, phoneNumber: user.phoneNumber,dateOfBirth: user.dateOfBirth,
+            id: user.id, role: user.role, name: user.name, email: user.email, password: user.password, phoneNumber: user.phoneNumber, dateOfBirth: user.dateOfBirth,
             token: generateToken(user.id)
         });
     } catch (error) {
@@ -65,7 +65,7 @@ const getProfile = async (req, res) => {
 };
 const getAllNames = async (req, res) => {
     try {
-        const users = await User.find({}, 'email phoneNumber name _id'); 
+        const users = await User.find({}, 'email phoneNumber name _id');
 
         if (!users || users.length === 0) {
             return res.status(404).json({ message: 'No users found' });
@@ -92,11 +92,11 @@ const updateUserProfile = async (req, res) => {
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const { name, email, phoneNumber, address } = req.body;
+        const { name, email, phoneNumber } = req.body;
         user.name = name || user.name;
         user.email = email || user.email;
         user.phoneNumber = phoneNumber || user.phoneNumber;
-        user.address = address || user.address;
+
 
 
 
@@ -120,4 +120,4 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, getProfile , getAllNames};
+module.exports = { registerUser, loginUser, updateUserProfile, getProfile, getAllNames };
