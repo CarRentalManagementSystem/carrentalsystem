@@ -121,7 +121,7 @@ const AboutUs = () => {
 
           <div className='relative h-[300px] md:h-auto rounded overflow-hidden'>
             <img
-              src='/images/car-rental-experience.jpeg'
+              src='/images/car-rental-experience.jpg'
               alt='Car rental experience'
               className='object-cover w-full h-full rounded-lg'
             />
