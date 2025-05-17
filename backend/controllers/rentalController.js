@@ -8,16 +8,27 @@ const Vehicle = require('../models/Vehicle');
 const Notification = require('../models/Notification');
 
 const getRentals = async (req, res) => {
-    try {
-
+    if(req.user.role === 'admin'){
+        try {
+            const rentals = await Rental.find({ }).populate("vehicleId");
+            console.log("Sample Rentals (Admin):", rentals.slice(0, 3));
+            res.json(rentals);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+      } else try {
         const rentals = await Rental.find({ customerId: req.user._id }).populate("vehicleId"); //  Populate car details
-        console.log("rentalController API returning Rentals:", JSON.stringify(rentals, null, 2)); //  check whether return rentals
+        // console.log("Sample Rentals (Customer):", rentals.slice(0, 3));
+        // console.log("rentalController API returning Rentals:", JSON.stringify(rentals, null, 2)); //  check whether return rentals
+
         res.json(rentals);
     } catch (error) {
         console.error("rentalController Error fetching rentals:", error.message);
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 
 // Add Rental Function:
@@ -48,6 +59,7 @@ const addRental = async (req, res) => {
         //mark vehicle as booked
         await Vehicle.findByIdAndUpdate(vehicleId, {
             vehicleStatus: 'rented',
+
         });
 
         const vehicle = await Vehicle.findById(vehicleId);
@@ -57,6 +69,7 @@ const addRental = async (req, res) => {
             receiverRole: 'customer',
             title: 'Booking Confirmed',
             content: `Your booking for ${vehicle.manufacturer} ${vehicle.model} from ${new Date(rentedDate).toLocaleDateString()} to ${new Date(returnedDate).toLocaleDateString()} has been confirmed.\nRental number: ${vehicleId}`,
+
         });
 
         console.log("Successfully stored rental data in DB:", rental);
@@ -99,12 +112,21 @@ const cancelRental = async (req, res) => {
     const { vehicleId } = req.body;
     try {
         const rental = await Rental.findById(req.params.id);
+
         if (!rental) {
             return res.status(404).json({ message: 'Rental not found' });
         }
-
+        console.log("req.user.role:", req.user.role);
         // update rentalStatus
-        rental.rentalStatus = 'cancelled';
+        if(req.user.role === 'admin'){
+            rental.rentalStatus = 'completed';
+            console.log("rental12214:", rental);
+        } else {
+            rental.rentalStatus = 'cancelled';
+            console.log("rentalaaaaa:", rental);
+        }
+       
+
         const updatedRental = await rental.save();
 
         // update vehicleStatus
@@ -160,4 +182,6 @@ const deleteRental = async (req, res) => {
     //     res.status(500).json({ message: error.message });
     // }
 };
+
 module.exports = { getRentals, addRental, updateRental, deleteRental, cancelRental };
+

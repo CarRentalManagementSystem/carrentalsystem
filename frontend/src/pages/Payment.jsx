@@ -1,3 +1,4 @@
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -8,6 +9,7 @@ import SpecItem from '../components/SpecItem';
 import CardDetailForm from '../components/CardDetailForm';
 import Toast from '../components/Toast';
 import { buildBookingChain } from '../bookingSteps/bookingChain';
+
 
 const Payment = () => {
   let location = useLocation();
@@ -59,6 +61,7 @@ const Payment = () => {
     }
   };
 
+
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>
       <div className='w-1/3 p-6 m-12'>
@@ -73,6 +76,7 @@ const Payment = () => {
           altText={`${vehicle?.manufacturer}-${vehicle?.model}`}
         />
         <ItemBox>
+
           <SpecItem title='Vehicle Type' value={vehicle?.techSpecs?.type} icon='car' />
           <SpecItem title='Transmission' value={vehicle?.techSpecs?.transmission} icon='gear' />
           <SpecItem title='Air Conditioning' value='Yes' icon='aircon' />
@@ -85,12 +89,15 @@ const Payment = () => {
           <span><strong>Return on:</strong> {returnedDate}</span>
           <span><strong>Renting for:</strong> {duration} days</span>
           <span><strong>Total Cost:</strong> ${totalRentalFee}</span>
+
         </div>
       </div>
       <CardDetailForm onSubmit={handleSubmit} />
       <Toast message='Payment was successful' open={open} setOpen={setOpen} />
     </div>
   );
+
 };
+
 
 export default Payment;
