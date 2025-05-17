@@ -1,20 +1,19 @@
 import { Fuel, Settings2 } from 'lucide-react';
-
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
 const VehicleCard = ({ vehicle, dates }) => {
-
   const { user } = useAuth();
-
   const navigate = useNavigate();
+  const [imageError, setImageError] = useState(false);
 
   const handleClickDetails = () => {
-
-    
     try {
-      navigate(`/vehicle-details/${vehicle._id}`, { state: { vehicle, dates } });
+      navigate(`/vehicle-details/${vehicle._id}`, {
+        state: { vehicle, dates },
+      });
     } catch (error) {
       console.error(error);
     }
@@ -26,21 +25,31 @@ const VehicleCard = ({ vehicle, dates }) => {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleClickDelete = async (vehicleId) => {
     try {
-      const confirmed = window.confirm("Are you sure you want to delete this car?");
+      const confirmed = window.confirm(
+        'Are you sure you want to delete this car?'
+      );
 
       if (confirmed) {
         axiosInstance.delete(`/api/vehicles/delete/${vehicle._id}`);
-        alert("Successfully Deleted!");
+        alert('Successfully Deleted!');
       }
-
     } catch (error) {
       console.error(error);
     }
-  }
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  // Determine image source based on error state
+  const imageSrc = imageError
+    ? '/images/default-car.png'
+    : `/images/${vehicle?.manufacturer}-${vehicle?.model}.png`;
 
   return (
     <div
@@ -49,9 +58,10 @@ const VehicleCard = ({ vehicle, dates }) => {
     >
       <div className='flex items-center justify-center h-48 bg-secondary'>
         <img
-          src={`/images/${vehicle?.manufacturer}-${vehicle?.model}.png`}
-          alt='CarImage'
+          src={imageSrc}
+          alt={`${vehicle?.manufacturer} ${vehicle?.model}`}
           className='object-contain'
+          onError={handleImageError}
         />
       </div>
       <div className='p-4'>

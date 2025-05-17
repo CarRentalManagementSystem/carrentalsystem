@@ -315,7 +315,7 @@ const VehicleForm = ({formData, setFormData, onSubmit}) => {
               <input
                 id='fuelType'
                 name='fuelType'
-                placeholder='e.g. Petrol'
+                placeholder='e.g. Gasoline'
                 value={formData.techSpecs.fuelType}
                 onChange={handleInputChange}
                 required
