@@ -21,6 +21,7 @@ import axiosInstance from '../axiosConfig';
 import DurationFilter from './DurationFilter';
 import { CircleDollarSign, CircleX, ClipboardList, Users, X } from 'lucide-react';
 
+
 const COLORS = [
   '#0088FE',
   '#00C49F',
@@ -33,6 +34,7 @@ const COLORS = [
   '#f46d43',
   '#fee08b',
 ];
+
 
 const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -70,6 +72,7 @@ const Dashboard = () => {
     { value: 'all', label: 'All' },
   ];
 
+
   return (
     <div className='flex flex-col min-h-screen'>
       {isLoading ? (
@@ -77,6 +80,7 @@ const Dashboard = () => {
       ) : (
         <main className='flex-1 p-6 space-y-6'>
           <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>
+
             <h2 className='text-2xl font-bold tracking-tight'>
               Rental Dashboard
             </h2>
@@ -93,24 +97,32 @@ const Dashboard = () => {
               title='Total Rentals'
               value={todayStats.totalRentals}
               icon={
+
                 <ClipboardList className='w-4 h-4 text-gray-500' />
+
               }
             />
             <SummaryFrame
               title='Cancelled Rentals'
               value={todayStats.totalCancelled}
+
               icon={<CircleX className='w-4 h-4 text-gray-500' />}
+
             />
             <SummaryFrame
               title='Total Revenue'
               value={`$${todayStats.totalRevenue}`}
+
               icon={<CircleDollarSign className='w-4 h-4 text-gray-500' />}
+
             />
             <SummaryFrame
               title='Total Customers'
               value={todayStats.totalCustomers}
               icon={
+
                 <Users className='w-4 h-4 text-gray-500' />
+
               }
             />
           </div>
@@ -128,7 +140,9 @@ const Dashboard = () => {
                 <ResponsiveContainer width='100%' height='100%'>
                   <PieChart>
                     <Pie
+
                       data={stats.rental.byStatus}
+
                       cx='50%'
                       cy='50%'
                       labelLine={false}
@@ -138,7 +152,9 @@ const Dashboard = () => {
                       dataKey='value'
                       nameKey='name'
                     >
+
                       {stats.rental.byStatus.map((entry, index) => (
+
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
@@ -162,7 +178,9 @@ const Dashboard = () => {
                 <ResponsiveContainer width='100%' height='100%'>
                   <PieChart>
                     <Pie
+
                       data={stats.financial.revenueByVehicleType}
+
                       cx='50%'
                       cy='50%'
                       labelLine={false}
@@ -172,6 +190,7 @@ const Dashboard = () => {
                       dataKey='value'
                       nameKey='name'
                     >
+
                       {stats.financial.revenueByVehicleType.map(
                         (entry, index) => (
                           <Cell
@@ -180,6 +199,7 @@ const Dashboard = () => {
                           />
                         )
                       )}
+
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
@@ -201,11 +221,13 @@ const Dashboard = () => {
                 <ResponsiveContainer width='100%' height='100%'>
                   <PieChart>
                     <Pie
+
                       data={[
                         { name: 'daily', value: stats.rental.daily },
                         { name: 'weekly', value: stats.rental.weekly },
                         { name: 'monthly', value: stats.rental.monthly },
                       ]}
+
                       cx='50%'
                       cy='50%'
                       labelLine={false}
@@ -215,11 +237,13 @@ const Dashboard = () => {
                       dataKey='value'
                       nameKey='name'
                     >
+
                       {[
                         { name: 'daily', value: stats.rental.daily },
                         { name: 'weekly', value: stats.rental.weekly },
                         { name: 'monthly', value: stats.rental.monthly },
                       ].map((entry, index) => (
+
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
@@ -238,14 +262,18 @@ const Dashboard = () => {
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-2'>
             <div className='col-span-1 bg-white border rounded-lg shadow'>
               <div className='p-4 border-b'>
+
                 <h3 className='text-lg font-medium'>Number of Rentals</h3>
                 <p className='text-sm text-gray-500'>
                   Rental trends {timeframe}
+
                 </p>
               </div>
               <div className='p-4 h-[300px]'>
                 <ResponsiveContainer width='100%' height='100%'>
+
                   <AreaChart data={stats.timeframeStats}>
+
                     <defs>
                       <linearGradient
                         id='colorRentals'
@@ -283,14 +311,18 @@ const Dashboard = () => {
             </div>
             <div className='col-span-1 bg-white border rounded-lg shadow'>
               <div className='p-4 border-b'>
+
                 <h3 className='text-lg font-medium'>Total Revenue</h3>
                 <p className='text-sm text-gray-500'>
                   Revenue trends {timeframe}
+
                 </p>
               </div>
               <div className='p-4 h-[300px]'>
                 <ResponsiveContainer width='100%' height='100%'>
+
                   <LineChart data={stats.timeframeStats}>
+
                     <CartesianGrid strokeDasharray='3 3' />
                     <XAxis dataKey='name' />
                     <YAxis />
@@ -310,14 +342,18 @@ const Dashboard = () => {
           {/* Customer Bar Chart */}
           <div className='bg-white border rounded-lg shadow'>
             <div className='p-4 border-b'>
+
               <h3 className='text-lg font-medium'>Number of Customers</h3>
               <p className='text-sm text-gray-500'>
                 Customer count {timeframe}
+
               </p>
             </div>
             <div className='p-4 h-[300px]'>
               <ResponsiveContainer width='100%' height='100%'>
+
                 <BarChart data={stats.timeframeStats}>
+
                   <CartesianGrid strokeDasharray='3 3' />
                   <XAxis dataKey='name' />
                   <YAxis />
@@ -335,7 +371,9 @@ const Dashboard = () => {
       )}
     </div>
   );
+
 };
+
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -353,4 +391,6 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+
 export default Dashboard;
+

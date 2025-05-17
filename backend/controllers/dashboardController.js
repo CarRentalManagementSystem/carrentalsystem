@@ -99,10 +99,12 @@ class DashboardStatisticsFacade {
         $lookup: {
           from: 'vehicles',
           localField: 'vehicleId',
+
           foreignField: '_id',
           as: 'vehicleDetails',
         },
       },
+
       {
         $unwind: '$vehicleDetails',
       },
@@ -277,6 +279,7 @@ class DashboardStatisticsFacade {
         $sort: { date: 1 },
       },
     ]);
+
 
     // Format dayOfWeek to match the frontend naming (Sun, Mon, etc.)
     return result.map((day) => ({
@@ -460,11 +463,13 @@ const getRentalStatistics = async (req, res) => {
       appliedFilter: {
         duration: duration,
       },
+
     };
 
     res.status(200).json(statistics);
   } catch (error) {
     console.error('Error generating statistics:', error);
+
     res.status(500).json({ message: 'Error generating dashboard statistics' });
   }
 };

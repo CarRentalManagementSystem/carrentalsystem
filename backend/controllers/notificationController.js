@@ -6,7 +6,14 @@ const Notification = require('../models/Notification');
 
 const getNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find();
+    const notifications = await Notification.find({ receiverRole: req.user.role });
+    // wait for testing
+    // const notifications = await Notification.find({
+    //   $or: [
+    //     { receiverRole: req.user.role },
+    //     { receiverId: req.user.id }
+    //   ]
+    // });
     res.json(notifications);
   } catch (error) {
     res.status(500).json({ message: error.message });

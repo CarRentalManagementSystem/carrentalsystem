@@ -1,3 +1,4 @@
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -8,6 +9,7 @@ import SpecItem from '../components/SpecItem';
 import CardDetailForm from '../components/CardDetailForm';
 import Toast from '../components/Toast';
 import { buildBookingChain } from '../bookingSteps/bookingChain';
+
 
 const Payment = () => {
   let location = useLocation();
@@ -69,7 +71,6 @@ const Payment = () => {
     const imageSrc = imageError
       ? '/images/default-car.png'
       : `/images/${vehicle?.manufacturer}-${vehicle?.model}.png`;
-  
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>
@@ -132,6 +133,8 @@ const Payment = () => {
       <Toast message='Payment was successful' open={open} setOpen={setOpen} />
     </div>
   );
+
 };
+
 
 export default Payment;
