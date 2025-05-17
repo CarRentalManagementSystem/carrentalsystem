@@ -67,7 +67,7 @@ const VehicleDetails = () => {
           <span className='text-2xl font-bold text-primary'>
             Total price - ${totalRentalFee}
           </span>
-          <span className='ml-1 text-sm text-gray-500'>/ {duration} day</span>
+          <span className='ml-1 text-sm text-gray-500'>/ {duration} {duration > 1 ? 'days' : 'day'}</span>
         </div>
 
         <div className='mb-6'>

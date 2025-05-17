@@ -1,10 +1,10 @@
 
-import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import RentalDateFilter from '../components/RentalDateFilter';
 import VehicleGroupFilter from '../components/VehicleGroupFilter';
 import VehicleCardList from '../components/VehicleCardList';
 import VehicleMakeFilter from '../components/VehicleMakeFilter';
+import { useState, useEffect } from 'react';
 import VehicleFuelFilter from '../components/VehicleFuelFilter';
 import axiosInstance from '../axiosConfig';
 import { useAuth } from '../context/AuthContext';
@@ -204,7 +204,7 @@ const VehicleBoard = () => {
 
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
-      <h1 className='text-center'>Select a vehicle group</h1>
+      <h1 className='py-5 text-center'>Select a vehicle group</h1>
       <VehicleGroupFilter
         vehicleGroups={vehicleGroups}
         selectedVehicleGroup={selectedGroup}

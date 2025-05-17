@@ -51,7 +51,7 @@ const AboutUs = () => {
         {/* Stats */}
         <section className='container grid gap-8 px-4 py-16 mx-auto text-center md:grid-cols-3'>
           <div>
-            <h2 className='mb-2 text-5xl font-bold text-primary'>2k+</h2>
+            <h2 className='mb-2 text-5xl font-bold text-primary'>250+</h2>
             <p className='text-gray-700'>Happy customers</p>
           </div>
           <div>
