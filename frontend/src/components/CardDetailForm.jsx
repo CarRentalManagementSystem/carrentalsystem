@@ -47,22 +47,22 @@ const CreditCardForm = ({onSubmit}) => {
           <Typography variant='body2' className='mb-2 text-sm font-medium'>
             Payment Method
           </Typography>
-          <Box className='flex items-center justify-start gap-4'>
+          <Box className='flex items-center justify-center gap-4'>
             <img
               src='/images/mastercard-logo.svg'
               alt='Mastercard'
-              className='h-8'
+              className='h-5'
             />
-            <img src='/images/visa-logo.svg' alt='Visa' className='h-8' />
+            <img src='/images/visa-logo.svg' alt='Visa' className='h-5' />
             <img
               src='/images/amex-logo.svg'
               alt='American Express'
-              className='h-8'
+              className='h-5'
             />
             <img
               src='/images/discover-logo.svg'
               alt='Discover'
-              className='h-8'
+              className='h-5'
             />
           </Box>
         </Paper>

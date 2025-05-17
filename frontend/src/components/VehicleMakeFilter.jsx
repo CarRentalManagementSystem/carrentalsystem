@@ -9,7 +9,7 @@ const VehicleMakeFilter = ({
         {vehicleMakes.map((make) => (
           <div
             key={make.id}
-            className={`min-w-[100px] rounded p-4 flex flex-col items-center justify-center cursor-pointer ${
+            className={`min-w-[100px] rounded p-1 flex flex-col items-center justify-center cursor-pointer ${
               selectedMake === make.id
                 ? 'bg-primary text-white'
                 : 'bg-secondary hover:bg-secondary'
