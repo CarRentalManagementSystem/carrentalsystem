@@ -9,14 +9,15 @@ const RentalForm = ({ rentals, setRentals}) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({ rentalId: '', senderId: '' , title: '' ,issueCategory: '' ,issueContent: '' ,createdDate: Date() ,issueStatus: 'incomplete'});
-  const [notiFormData, setNotiFormData] = useState({ receiverId: '',receiverRole: '',  title: '', content: '', createdDate:''});
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(user){formData.senderId = user.id;} 
-    else{formData.rentalId = null;}
-    
+    if(user){
+      formData.senderId = user.id;
+    } 
+    else {
+      formData.rentalId = null;
+    }
 
     if (  !formData.title || !formData.issueCategory || !formData.issueContent) {
       
@@ -27,12 +28,14 @@ const RentalForm = ({ rentals, setRentals}) => {
 
     try {
       await axiosInstance.post('/api/issue',formData);
-      alert('Issue report successful! Our staff will contact you as soon as possible.');
       await NotificationSender({
         targetRole: 'admin',
         title: 'New Report about:' + formData.title,
         content: 'Please contact related customer as soon as possible',
       });
+      alert('Issue report successful! Our staff will contact you as soon as possible.');
+      navigate('/');
+
     } catch (error) {
       console.error('Issue report failed:', {
         status: error.response?.status,
