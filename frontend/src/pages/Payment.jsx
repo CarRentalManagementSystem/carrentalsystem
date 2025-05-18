@@ -39,7 +39,6 @@ const Payment = () => {
   };
 
   const handleSubmit = async () => {
-    console.log('USER OBJECT:', user);
     const context = {
       customerId: user.id,
       vehicleId,

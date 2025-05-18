@@ -13,8 +13,6 @@ const VehicleForm = ({formData, setFormData, onSubmit}) => {
         transmission: false,
     });
 
-    console.log(formData);
-
     const handleInputChange = (e) => {
       const { name, value } = e.target;
       if (
