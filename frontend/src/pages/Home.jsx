@@ -28,7 +28,13 @@ const Home = () => {
     new Date().toISOString().split('T')[0]
   );
 
-  const [returnedDate, setReturnedDate] = useState();
+  const defaultReturnDate = (() => {
+    const tomorrow = new Date(rentedDate);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  })();
+
+  const [returnedDate, setReturnedDate] = useState(defaultReturnDate);
 
   /* automatically reset return date to a day after rented date to allow smoother date setting flow */
   useEffect(() => {
@@ -150,7 +156,7 @@ const Home = () => {
               </p>
             </div>
           </section>
-          <RecommendedVehicles vehicles={vehicles} showViewAll={true} />
+          <RecommendedVehicles vehicles={vehicles} showViewAll={true} rentedDate={rentedDate} returnedDate={returnedDate} />
           <Toast open={open} setOpen={setOpen} message={message} />
         </>
       )}

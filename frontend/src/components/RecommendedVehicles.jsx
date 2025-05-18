@@ -7,6 +7,8 @@ const RecommendedVehicles = ({
     vehicles,
     showViewAll = true,
     onViewAllClick = () => { },
+    rentedDate,
+    returnedDate
 
 }) => {
 
@@ -29,7 +31,7 @@ const RecommendedVehicles = ({
                 )}
             </div>
 
-            <VehicleCardList vehicles={recommended} />
+            <VehicleCardList vehicles={recommended} dates={{rentedDate, returnedDate}} />
         </section>
     );
 };

@@ -30,6 +30,9 @@ const VehicleBoard = () => {
 
   /* Default dates when unselected */
 
+
+  /* automatically reset return date to a day after rented date to allow smoother date setting flow */
+
   const defaultRentedDate = new Date().toISOString().split('T')[0];
 
   const defaultReturnDate = (() => {
@@ -45,12 +48,21 @@ const VehicleBoard = () => {
     initialReturnedDate || defaultReturnDate
   );
 
-  const handleChangeEditRentedDate = (date) => {
-    if (new Date(date) > new Date(editReturnedDate)) {
-      setMessage('Rental date cannot be after return date');
-      setOpen(true);
-      return;
+
+  useEffect(() => {
+    const defaultReturnDate = (() => {
+      const tomorrow = new Date(editRentedDate);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return tomorrow.toISOString().split('T')[0];
+    })();
+
+    /* only if the newly set rented date is set after previously set return date */
+    if (editRentedDate > editReturnedDate) {
+      setEditReturnedDate(defaultReturnDate);
     }
+  }, [editRentedDate]);
+
+  const handleChangeEditRentedDate = (date) => {
     setEditRentedDate(date);
   };
 
