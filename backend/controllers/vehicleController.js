@@ -12,18 +12,6 @@ const getAllVehicles= async (req, res) => {
     }
 };
 
-const addVehicle = async (req , res) => {
-    try {
-        const vehicle = req.body;
-
-        const newVehicle = Vehicle.create(vehicle);
-        
-        res.status(201).json(newVehicle);
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-}
-
 const getOneVehicle = async (req, res) => {
     try {
         const vehicle = await Vehicle.findById(req.params.id)
@@ -33,25 +21,49 @@ const getOneVehicle = async (req, res) => {
     }
 } 
 
-const updateVehicle = async (req, res) => {
+const addVehicle = async (req, res) => {
+  if (req.user.role === 'admin') {
     try {
-        const vehicleId = req.params.id;
-        const updatedInfo = req.body;
+      const vehicle = req.body;
 
-        const updatedVehicle = await Vehicle.findByIdAndUpdate(vehicleId, updatedInfo);
+      const newVehicle = Vehicle.create(vehicle);
 
-        res.status(201).json(updatedVehicle);
-    } catch(error) {
-        res.status(500).json({message:error.message});
+      res.status(201).json(newVehicle);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  } else {
+    res.status(401).json({ message: 'Unauthorized access' });
+  }
+};
+
+const updateVehicle = async (req, res) => {
+    if (req.user.role === 'admin') {
+        try {
+            const vehicleId = req.params.id;
+            const updatedInfo = req.body;
+    
+            const updatedVehicle = await Vehicle.findByIdAndUpdate(vehicleId, updatedInfo);
+    
+            res.status(201).json(updatedVehicle);
+        } catch(error) {
+            res.status(500).json({message:error.message});
+        }
+    } else {
+        res.status(401).json({ message: 'Unauthorized access' });
     }
 }
 
 const deleteVehicle = async (req,res) => {
-    try {
+    if (req.user.role === 'admin') {
+      try {
         const vehicleId = req.params.id;
         await Vehicle.findByIdAndDelete(vehicleId);
-    } catch (error) {
-        res.status(500).json({message: error.message})
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    } else {
+      res.status(401).json({ message: 'Unauthorized access' });
     }
 }
 

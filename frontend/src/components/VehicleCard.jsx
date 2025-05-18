@@ -4,10 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../axiosConfig';
 
-const VehicleCard = ({ vehicle, dates }) => {
+const VehicleCard = ({ vehicle, vehicles, setVehicles, dates }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleClickDetails = () => {
     try {
@@ -27,18 +28,33 @@ const VehicleCard = ({ vehicle, dates }) => {
     }
   };
 
-  const handleClickDelete = async (vehicleId) => {
+  const handleClickDelete = async () => {
     try {
       const confirmed = window.confirm(
         'Are you sure you want to delete this car?'
       );
 
-      if (confirmed) {
-        axiosInstance.delete(`/api/vehicles/delete/${vehicle._id}`);
-        alert('Successfully Deleted!');
-      }
+      if (!confirmed) return;
+
+      setIsDeleting(true);
+
+      await axiosInstance.delete(`/api/vehicles/delete/${vehicle._id}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+
+      // Update state first, then show alert
+      const newVehicles = vehicles.filter((v) => v._id !== vehicle._id);
+      setVehicles(newVehicles);
+
+      alert('Successfully Deleted!');
+
     } catch (error) {
-      console.error(error);
+      
+      console.error('Error deleting vehicle:', error);
+      alert('Failed to delete vehicle. Please try again.');
+      
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -99,18 +115,21 @@ const VehicleCard = ({ vehicle, dates }) => {
         <div className='grid grid-cols-3 gap-2'>
           <button
             className='w-full bg-primary text-white py-2 hover:bg-[#4a2dc0] transition-colors rounded'
-            onClick={handleClickDetails}>
+            onClick={handleClickDetails}
+          >
             View Details
           </button>
           <button
             className='w-full py-2 text-white transition-colors bg-orange-500 rounded hover:bg-orange-700'
-            onClick={handleClickUpdate}>
+            onClick={handleClickUpdate}
+          >
             Update Vehicle
           </button>
           <button
             className='w-full py-2 text-white transition-colors bg-red-600 rounded hover:bg-red-700'
-            onClick={handleClickDelete}>
-            Delete Vehicle
+            onClick={handleClickDelete}
+          >
+            {isDeleting ? 'Deleted' : 'Delete Vehicle'}
           </button>
         </div>
       );

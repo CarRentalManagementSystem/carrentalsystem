@@ -404,74 +404,74 @@ class DashboardStatisticsFacade {
  * and provide data in the exact format needed by frontend charts
  */
 const getRentalStatistics = async (req, res) => {
-  try {
-    // Extract the duration parameter from the request query
-    // Default to 'all' if not specified
-    const duration = req.query.duration || 'all';
+  if (req.user.role === 'admin') {
+    try {
+      // Extract the duration parameter from the request query
+      // Default to 'all' if not specified
+      const duration = req.query.duration || 'all';
 
-    // Validate the duration parameter
-    const validDurations = [
-      'daily',
-      'weekly',
-      'monthly',
-      'yearly',
-      'all',
-    ];
-    if (!validDurations.includes(duration)) {
-      return res.status(400).json({
-        message: `Invalid duration parameter. Valid options are: ${validDurations.join(
-          ', '
-        )}`,
-      });
+      // Validate the duration parameter
+      const validDurations = ['daily', 'weekly', 'monthly', 'yearly', 'all'];
+      if (!validDurations.includes(duration)) {
+        return res.status(400).json({
+          message: `Invalid duration parameter. Valid options are: ${validDurations.join(
+            ', '
+          )}`,
+        });
+      }
+
+      // Use the Facade to get all the data in the correct format
+      const [
+        rentalByStatus,
+        rentalsByVehicleType,
+        rentalsByRentalDuration,
+        dailyRentals,
+        summaryStats,
+      ] = await Promise.all([
+        DashboardStatisticsFacade.getRentalsByStatus(duration),
+        DashboardStatisticsFacade.getRentalsByVehicleType(duration),
+        DashboardStatisticsFacade.getRentalsByDuration(duration),
+        DashboardStatisticsFacade.gettimeframeStats(duration),
+        DashboardStatisticsFacade.getSummaryStats(duration),
+      ]);
+
+      // Format the response to match what's expected by the frontend
+      const statistics = {
+        rental: {
+          byStatus: rentalByStatus,
+          daily: rentalsByRentalDuration[0].value,
+          weekly: rentalsByRentalDuration[1].value,
+          monthly: rentalsByRentalDuration[2].value,
+          total: summaryStats.totalRentals,
+        },
+        financial: {
+          revenueByVehicleType: rentalsByVehicleType,
+          totalRevenue: summaryStats.totalRevenue,
+        },
+        customer: {
+          total: summaryStats.totalCustomers,
+        },
+        timeframeStats: dailyRentals,
+        // Summary stats are directly usable in the frontend
+        summaryStats,
+        // Include the selected duration in the response
+        appliedFilter: {
+          duration: duration,
+        },
+      };
+
+      res.status(200).json(statistics);
+    } catch (error) {
+      console.error('Error generating statistics:', error);
+
+      res
+        .status(500)
+        .json({ message: 'Error generating dashboard statistics' });
     }
-
-    // Use the Facade to get all the data in the correct format
-    const [
-      rentalByStatus,
-      rentalsByVehicleType,
-      rentalsByRentalDuration,
-      dailyRentals,
-      summaryStats,
-    ] = await Promise.all([
-      DashboardStatisticsFacade.getRentalsByStatus(duration),
-      DashboardStatisticsFacade.getRentalsByVehicleType(duration),
-      DashboardStatisticsFacade.getRentalsByDuration(duration),
-      DashboardStatisticsFacade.gettimeframeStats(duration),
-      DashboardStatisticsFacade.getSummaryStats(duration),
-    ]);
-
-    // Format the response to match what's expected by the frontend
-    const statistics = {
-      rental: {
-        byStatus: rentalByStatus,
-        daily: rentalsByRentalDuration[0].value,
-        weekly: rentalsByRentalDuration[1].value,
-        monthly: rentalsByRentalDuration[2].value,
-        total: summaryStats.totalRentals,
-      },
-      financial: {
-        revenueByVehicleType: rentalsByVehicleType,
-        totalRevenue: summaryStats.totalRevenue,
-      },
-      customer: {
-        total: summaryStats.totalCustomers,
-      },
-      timeframeStats: dailyRentals,
-      // Summary stats are directly usable in the frontend
-      summaryStats,
-      // Include the selected duration in the response
-      appliedFilter: {
-        duration: duration,
-      },
-
-    };
-
-    res.status(200).json(statistics);
-  } catch (error) {
-    console.error('Error generating statistics:', error);
-
-    res.status(500).json({ message: 'Error generating dashboard statistics' });
+  } else {
+    res.status(401).json({message: 'Unauthorized access'});
   }
+  
 };
 
 module.exports = { getRentalStatistics };
