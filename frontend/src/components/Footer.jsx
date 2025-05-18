@@ -1,7 +1,13 @@
 import { Car, Facebook, Instagram, Linkedin, LocateIcon, Phone, Send, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { useAuth } from "../context/AuthContext";
+
 const Footer = () => {
+
+  const {user} = useAuth();
+
+  console.log(user)
 
   const vehicleGroups =[
       { id: '1', name: 'Sedan' },
@@ -67,17 +73,19 @@ const Footer = () => {
             <h3 className='mb-4 font-medium'>Useful links</h3>
             <ul className='grid gap-2'>
               <FooterLink text='Home' to='/' />
-              <FooterLink text='About us' to='/about' />
-              <FooterLink text='Contact us' to='/contact' />
+              {user?.role === 'admin' ? null : <>
+                <FooterLink text='About us' to='/about' />
+                <FooterLink text='Contact us' to='/contact' />
+              </>}
             </ul>
           </div>
 
           <div>
             <h3 className='mb-4 font-medium'>Vehicles</h3>
             <ul className='grid grid-cols-4 gap-2'>
-             { vehicleGroups.map(group => (
-              <FooterLink text={group.name} id={group.id} to='/vehicles'/>
-             ))}
+              {vehicleGroups.map((group) => (
+                <FooterLink text={group.name} id={group.id} to='/vehicles' />
+              ))}
             </ul>
           </div>
         </div>

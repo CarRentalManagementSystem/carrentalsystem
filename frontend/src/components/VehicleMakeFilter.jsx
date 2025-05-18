@@ -5,7 +5,7 @@ const VehicleMakeFilter = ({
 }) => {
   return (
     <div className='overflow-x-auto no-scrollbar'>
-      <div className='flex px-2 mb-12 space-x-4'>
+      <div className='flex px-2 mb-6 space-x-4'>
         {vehicleMakes.map((make) => (
           <div
             key={make.id}
