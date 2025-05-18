@@ -1,94 +1,165 @@
-# **Assignment: Full-Stack CRUD Application Development with DevOps Practices**
+# **Car Rental System - Software Life Cycle Management**
 
 ## **Objective**
 
-This project is about extending a provided application by implementing **CRUD (Create, Read, Update, Delete)** to the topic I chose, which is **“car rental system”**
-.
-The whole project is based on the **requirements diagram using sysML**. The developing steps will follow the user stories, issues I planned in **JIRA**. This approach helps to ensure that no task will be forgotten.
+This project implements a comprehensive **Car Rental System** with separate interfaces for customers and rental agents. The system follows core Object-Oriented Programming principles and incorporates multiple design patterns to ensure maintainability, scalability, and reusability.
 
-Besides only developing the system, I use **GitHub version control** and **Branching Strategy** to ensure that each feature is well-developed and functional. Also, using **CI/CD** to support me in integrating code continuously and deploying continuously, allowing me to detect any bugs and conflicts, ensuring that each feature I develop works well so that I can move to the next feature.
-
+The project was developed using a systematic approach, including requirements analysis, UI/UX design with Figma, and implementation of design patterns. The team collaborated effectively using GitHub for version control and applied thorough API testing using Postman.
 
 ### **1. Real-World Application**
 
-* This system allows users to view available cars and rent the car, editing their rental and deleting the rental if they change their mind.
+* The Car Rental System addresses common pain points in vehicle rental processes:
+  * Customers forgetting pickup and return dates due to lack of reminders
+  * Customers needing a channel to report issues like vehicle malfunction or lost items
+  * Rental agents lacking centralized dashboard for real-time business insights
+  * Need for efficient vehicle management
 
-### **2. Project Management with JIRA and SysML**
+### **2. Project Structure**
 
-* The Epics, user stories, child issues I created all follow the requirement diagram.
-* Each Epic designs for own purpose, there are: User Authentication, Car Management, rental Management, User Profile Management
-Each Epic includes user stories for specific feature. For example, in rental Management, there are rental creating, viewing, updating and deleting.
-* User stories can break down to child issues, which ensures that no tasks will be forgotten.
+```
+car-rental/
+├── package.json          # Root package.json for project-wide scripts
+├── frontend/            # React frontend application
+│   ├── public/
+│   ├── src/
+│   └── package.json
+├── backend/             # Node.js Express backend API
+│   ├── models/
+│   ├── routes/
+│   ├── controllers/
+│   ├── middlewares/
+│   ├── server.js
+│   └── package.json
+└── README.md            # This file
+```
 
-* **JIRA board URL:**https://neal-liu.atlassian.net/jira/software/projects/CRS/boards/36.
+## **3.Installation**
 
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/CarRentalManagementSystem/carrentalsystem.git
+   cd carrentalsystem
+   ```
 
-### **3. Backend Development (Node.js + Express + MongoDB)**
-
-Create a user-friendly interface: 
-* Implement **forms** for adding and updating records
-* Display data using  **tables, cards, or lists**
-* use TailwindCSS and some hover on buttons
-
-### **4. Frontend Development (React.js)**
-
-* Create a user-friendly interface**.
-* Implement **forms** for adding, showing, deleting and updating records (CRUD).
-* Display data using  **tables, cards, or lists**
-
-### **5. Authentication & Authorization**
-
-* Ensure **only authenticated users** can access and perform CRUD operations.
-* Use **JWT (JSON Web Tokens)** for user authentication.
-
-### **6. GitHub Version Control & Branching Strategy**
-
-* Use **GitHub for version control** and maintain:
-  * `main` branch
-  * Feature branches: feature/signup, feature/updateProfile, feature/carViewing, feature/rentalAdUpDel, feature/rentalViewing, feature/fix-issue 
-* Follow proper **commit messages** and  **pull request (PR) reviews** .
-
-### **7. CI/CD Pipeline Setup**
-
-* Implement a **CI/CD pipeline using GitHub Actions** to:
-
-  * Automatically **run tests** on every commit/pull request (Optional).
-  * Deploy the **backend** to **AWS** .
-  * Deploy the **frontend** to **AWS**.
-
-* **CI/CD pipeline details**
-  * **CI/CD workflow:** 
-  * Set up job 
-  * Checkout Code                 (CI)
-  * Setup Node.js                 (CI)
-  * Print Env Secret              (CI, using on CI and CD)
-  * Run pm2 stop all              (CD)
-  * Install Backend Dependencies  (CI)
-  * Install Frontend Dependencies (CI)
-  * Run Backend Tests             (CI)
-  * Run npm ci                    (CI)
-  * Run cd./backend               (CD)
-  * Run pm2 start all             (CD)
-  * Run pm2 restart all           (CD)
-  * Post Setup Node.js            (CI)
-  * Post Checkout Code            (CI)
-  * Complete job
-
-  * **CI:** focuses on **building** (dependency Installation for Node.js) and **testing** applications
-  
-    * set up CI process using a **YML file**
-      * Start with the defined trigger: pushes to the main branch
-      * Run the defined jobs: see github/workflows/ci.yml
-  * 
-
-  * **CD: ensure automatic deployment to the server**
-    
-    using a **YML file** and **GitHub UI**
-
-    * Set up **EC2 in AWS** and **GitHub self-hosted runner**
-      * Instance type: t2.medium (using uni. account)
-      * Use the web server **Nginx** to deploy frontend, serving **React files** 
-        and as a reverse proxy for Node.js to handle requests
-      * Use PM2 to manage node.js, ensuring the operation run continuosly
+2. Install dependencies for all parts of the application:
+   ```bash
+   npm run install-all
+   ```
 
 
+### **4. Core Features**
+
+* **For Customers:**
+  * Search and browse vehicles with filtering by type, fuel, brand
+  * Book vehicles with specified rental duration
+  * Receive automated pickup and return reminders
+  * Cancel bookings when needed
+  * Report issues to rental agents
+  * Manage profile information
+
+* **For Rental Agents:**
+  * View dashboard with business analytics (revenue, rental status, customer counts)
+  * Manage vehicle inventory (add, update, delete)
+  * View and resolve customer issue reports
+  * Monitor rental status and mark rentals as completed
+
+### **5. Technology Stack**
+
+#### **Frontend:**
+* React.js
+* TailwindCSS
+* Recharts (for data visualization)
+* Material UI (cleaner UI components)
+* dayjs (for formatting rental date and return date)
+* lucide-react (for icons used in figma design)
+* Various React libraries (axios, react-router-dom)
+
+#### **Backend:**
+* Node.js + Express
+* MongoDB (database)
+* JWT for authentication
+* Bcrypt for password encryption
+* Mongoose for database modeling
+
+### **5. Design Patterns Implemented**
+
+* **Observer Pattern:** For notification system when issues are reported
+* **Factory Pattern:** Creating different navigation components based on user role
+* **Composite Pattern:** For generating structured vehicle card components
+* **Chain of Responsibility:** Managing the booking flow process
+* **Facade Pattern:** Simplifying complex dashboard data aggregation logics in the dashboard controller
+* **Strategy Pattern:** For implementing different timeframe filtering strategies of dashboard
+
+### **6. OOP Principles Applied**
+
+* **Classes & Objects:** Implemented User, Vehicle, Rental, Issue, and Notification classes
+* **Inheritance:** Navigation bars inherit from GeneralNavbar
+* **Encapsulation:** Internal filtering logic hidden from component files
+* **Polymorphism:** Different form classes implementing same methods with different behaviors
+
+### **7. Authentication & Authorization**
+
+* Role-based access control (customer vs agent)
+* Secure password management
+* JWT-based authentication
+
+### **8. API Testing**
+
+Link to postman API testing: 
+
+* Thorough API testing performed using Postman
+* Test cases include:
+  * User authentication (login/logout)
+  * Vehicle management operations
+  * Rental submission and completion
+  * Issue reporting and resolution
+  * Notification delivery
+  * Dashboard statistics fetching
+
+#### API Documentation : 
+
+* Authentication Endpoints
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - User login
+- `GET /api/auth/profile` - Get user profile
+
+* Vehicle Endpoints
+- `GET /api/vehicles` - Get all available vehicles
+- `GET /api/vehicles/:id` - Get vehicle details
+- `POST /api/vehicles/add` - Add a new vehicle (admin only)
+- `PUT /api/vehicles/update/:id` - Update vehicle details (admin only)
+- `DELETE /api/vehicles/delete/:id` - Delete a vehicle (admin only)
+
+* Booking Endpoints
+- `GET /api/rentals` - Get all user bookings
+- `POST /api/rentals` - Create a new booking
+- `PATCH /api/rentals/cancel/:id` - Cancel booking
+- `PUT /api/rentals/:id` - Update booking (admin only)
+- `DELETE /api/rentals/:id` - Delete booking details
+
+* Issue Report Endpoints
+- `GET /api/issues` - Get all issues (admin only)
+- `POST /api/issues` - Report a new issue (customer)
+- `PUT /api/issues/:id` - Update issue status (admin only)
+
+* Dashboard Endpoint
+- `GET /api/dashboard/statistics` - Get all issues (admin only)
+
+
+### **9. UI/UX Design**
+
+Link to Figma production ready version: 
+
+* Clean, intuitive interface designed with Figma
+* Role-specific views for customers and agents
+* Dashboard interface for agents with data visualization
+* Consistent color scheme and typography
+
+---
+
+This project was developed as part of IFN636: Software Life Cycle Management course.
+
+Team Members:
+- Alex Yoo
+- Hang Chi Lee
+- Yen-Ling Liu
