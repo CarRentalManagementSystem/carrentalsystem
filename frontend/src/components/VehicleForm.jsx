@@ -109,6 +109,7 @@ const VehicleForm = ({formData, setFormData, onSubmit}) => {
       'Bentley',
       'Volvo',
       'Lexus',
+      'Bugatti'
     ];
 
     const types = [
