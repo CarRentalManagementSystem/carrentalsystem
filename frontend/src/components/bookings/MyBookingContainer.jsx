@@ -57,7 +57,7 @@ const MyBookingsContainer = ({ bookings }) => {
     };
 
     return (
-        <section className="p-6 max-w-4xl mx-auto">
+        <section className="max-w-4xl p-6 mx-auto">
 
             {user.role === 'admin' && (
                 <div className="mb-6">
@@ -80,7 +80,11 @@ const MyBookingsContainer = ({ bookings }) => {
 
                 ))
             ) : (
-                <p className="text-gray-500">No upcoming bookings.</p>
+                <div className='py-12 text-center'>
+                    <p className='text-xl text-gray-500'>
+                        No upcoming bookings
+                    </p>
+                </div>
             )}
         </section>
     );

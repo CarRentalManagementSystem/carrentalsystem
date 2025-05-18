@@ -80,7 +80,11 @@ const Dashboard = ({user}) => {
   return (
     <div className='flex flex-col min-h-screen'>
       {isLoading ? (
-        <div> Loading... Please Wait</div>
+        <div className='py-12 text-center'>
+          <p className='text-xl text-gray-500'>
+            Loading... Please Wait
+          </p>
+        </div>
       ) : (
         <main className='flex-1 p-6 space-y-6'>
           <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between'>

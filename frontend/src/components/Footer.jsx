@@ -82,7 +82,7 @@ const Footer = () => {
             <h3 className='mb-4 font-medium'>Vehicles</h3>
             <ul className='grid grid-cols-4 gap-2'>
               {vehicleGroups.map((group) => (
-                <FooterLink text={group.name} id={group.id} to='/vehicles' />
+                <FooterLink key={group.id} text={group.name} id={group.id} to='/vehicles' />
               ))}
             </ul>
           </div>
