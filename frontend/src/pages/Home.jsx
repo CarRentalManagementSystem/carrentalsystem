@@ -28,13 +28,24 @@ const Home = () => {
     new Date().toISOString().split('T')[0]
   );
 
-  const defaultReturnDate = (() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
-  })();
+  const [returnedDate, setReturnedDate] = useState();
 
-  const [returnedDate, setReturnedDate] = useState(defaultReturnDate);
+  /* automatically reset return date to a day after rented date to allow smoother date setting flow */
+  useEffect(() => {
+
+    const defaultReturnDate = (() => {
+      const tomorrow = new Date(rentedDate);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return tomorrow.toISOString().split('T')[0];
+    })();
+
+    /* only if the newly set rented date is set after previously set return date */
+    if (rentedDate > returnedDate) {
+      setReturnedDate(defaultReturnDate);
+    }
+
+  }, [rentedDate])
+
 
   const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
@@ -44,11 +55,6 @@ const Home = () => {
   };
 
   const handleChangeRentedDate = (date) => {
-    if (new Date(date) > new Date(returnedDate)) {
-      setMessage('Rental date cannot be after return date');
-      setOpen(true);
-      return;
-    }
     setRentedDate(date);
   };
 

@@ -9,7 +9,7 @@ const VehicleFuelFilter = ({
     <div className='flex flex-wrap justify-center gap-4 mb-8'>
       {vehicleFuelTypes.map((fuel) => (
         <div
-          className={`'bg-[#f9f9f9] cursor-pointer hover:bg-[#e5e5e5] p-2 rounded-full flex items-center gap-2'} ${
+          className={`'bg-[#f9f9f9] cursor-pointer text-sm hover:bg-primary hover:text-white p-2 rounded-full flex items-center gap-2'} ${
             selectedFuelType === fuel.id
               ? 'bg-primary text-white'
               : 'bg-secondary'

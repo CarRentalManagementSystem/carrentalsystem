@@ -56,11 +56,11 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
+    return <div className="mt-20 text-center">Loading...</div>;
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
+    <div className="max-w-xl p-8 mx-auto my-20 bg-white shadow-lg rounded-xl">
       <form onSubmit={handleSubmit}>
         <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">Your Profile</h1>
 
@@ -99,7 +99,7 @@ const Profile = () => {
             placeholder="Phone Number"
             value={formData.phoneNumber}
             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-            className="w-full mb-4 p-2 border rounded"
+            className="w-full p-2 mb-4 border rounded"
           />
         </div>
 

@@ -9,7 +9,7 @@ const VehicleGroupFilter = ({
     <div className='flex flex-wrap justify-center gap-4 mb-8'>
       {vehicleGroups.map((group) => (
         <div
-          className={`'bg-[#f9f9f9] cursor-pointer hover:bg-secondary p-2 rounded-full flex items-center gap-2'} ${
+          className={`'bg-[#f9f9f9] cursor-pointer text-sm hover:bg-primary hover:text-white p-2 rounded-full flex items-center gap-2'} ${
             selectedVehicleGroup === group.id
               ? 'bg-primary-700 text-white'
               : 'bg-secondary'
