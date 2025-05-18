@@ -164,6 +164,8 @@ Dashboard Endpoint
 ## **9. UI/UX Design**
 
 Link to Figma production ready version: 
+* Customer view: https://www.figma.com/proto/RlV3i4hFGwL3GrjWLR4LBf/IFN-636-Figma-design?node-id=433-2591&t=R0UNoOSEyb4wWRt4-1&scaling=min-zoom&content-scaling=fixed&page-id=433%3A2590&starting-point-node-id=433%3A2591
+* Agent view: https://www.figma.com/proto/RlV3i4hFGwL3GrjWLR4LBf/IFN-636-Figma-design?node-id=527-6681&t=7JfOlylz2VW1eMiM-1&scaling=min-zoom&content-scaling=fixed&page-id=433%3A2590&starting-point-node-id=527%3A6681&show-proto-sidebar=1 
 
 * Clean, intuitive interface designed with Figma
 * Role-specific views for customers and agents
