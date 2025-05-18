@@ -156,6 +156,7 @@ const VehicleBoard = () => {
     fetchVehicles();
   }, [initialGroup, vehicleGroups]);
 
+
   const handleSelectVehicleGroup = (groupId) => {
     setSelectedGroup(groupId);
     applyFilters(groupId, selectedMake, selectedFuelType);
@@ -252,6 +253,7 @@ const VehicleBoard = () => {
       )}
       <VehicleCardList
         vehicles={vehicles}
+        setVehicles={setVehicles}
         dates={{ rentedDate: editRentedDate, returnedDate: editReturnedDate }}
         onClickDetails={handleClickDetails}
       />

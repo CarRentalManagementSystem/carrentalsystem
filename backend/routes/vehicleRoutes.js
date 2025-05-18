@@ -1,20 +1,22 @@
 
 const express = require('express');
 const { getAllVehicles, addVehicle, getOneVehicle, updateVehicle, deleteVehicle } = require('../controllers/vehicleController');
-//Create a new router
+const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
  
 //when "/" receive GET request, run getCars
 router.route('/').get(getAllVehicles);
 
-/* POST new created vehicle */
-router.route('/add').post(addVehicle);
-
 router.route('/:id').get(getOneVehicle);
 
-router.route('/update/:id').put(updateVehicle);
+/* Admin specific requests */
+router.route('/add').post(protect, addVehicle);
 
-router.route('/delete/:id').delete(deleteVehicle);
+router.route('/update/:id').put(protect, updateVehicle);
+
+router.route('/delete/:id').delete(protect, deleteVehicle);
+
+
 
 //allow other files to use this router
 module.exports = router;

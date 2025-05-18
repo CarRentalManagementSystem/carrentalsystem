@@ -19,7 +19,7 @@ import {
 import SummaryFrame from './SummaryFrame';
 import axiosInstance from '../axiosConfig';
 import DurationFilter from './DurationFilter';
-import { CircleDollarSign, CircleX, ClipboardList, Users, X } from 'lucide-react';
+import { CircleDollarSign, CircleX, ClipboardList, Users } from 'lucide-react';
 
 
 const COLORS = [
@@ -36,17 +36,21 @@ const COLORS = [
 ];
 
 
-const Dashboard = () => {
+const Dashboard = ({user}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({});
-
   const [timeframe, setTimeframe] = useState('weekly');
 
   useEffect(() => {
     const fetchDashboardStats = async () => {
       try {
         setIsLoading(true);
-        const response = await axiosInstance.get(`/api/dashboard/statistics?duration=${timeframe}`);
+        const response = await axiosInstance.get(
+          `/api/dashboard/statistics?duration=${timeframe}`,
+          {
+            headers: { Authorization: `Bearer ${user.token}` },
+          }
+        );
         setStats(response.data);
         setIsLoading(false);
       } catch (error) {

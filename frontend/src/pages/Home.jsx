@@ -92,7 +92,7 @@ const Home = () => {
   return (
     <>
       {user?.role === 'admin' ? (
-        <Dashboard />
+        <Dashboard user={user} />
       ) : (
         <>
           <HeroSection

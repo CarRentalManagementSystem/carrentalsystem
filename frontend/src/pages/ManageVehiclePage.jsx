@@ -32,7 +32,9 @@ const ManageVehiclePage = () => {
 
     const handleAddVehicle =  async () => {
         try {
-                await axiosInstance.post('/api/vehicles/add', formData);
+                await axiosInstance.post('/api/vehicles/add', formData, {
+                  headers: { Authorization: `Bearer ${user.token}` },
+                });
                 alert('Vehicle registration successful!');
                 navigate('/vehicles');
             } catch (error) {
@@ -46,7 +48,13 @@ const ManageVehiclePage = () => {
 
     const handleUpdateVehicle = async () => {
         try {
-            await axiosInstance.put(`/api/vehicles/update/${vehicle._id}`, formData);
+            await axiosInstance.put(
+              `/api/vehicles/update/${vehicle._id}`,
+              formData,
+              {
+                headers: { Authorization: `Bearer ${user.token}` },
+              }
+            );
             alert('Vehicle update successful!');
             navigate('/vehicles');
         } catch (error) {

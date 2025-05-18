@@ -2,8 +2,10 @@
 
 ## **Objective**
 
-This project is about extending a provided application by implementing **CRUD (Create, Read, Update, Delete)** to the topic I chose, which is **“car rental system”**.
+This project is about extending a provided application by implementing **CRUD (Create, Read, Update, Delete)** to the topic I chose, which is **“car rental system”**
+.
 The whole project is based on the **requirements diagram using sysML**. The developing steps will follow the user stories, issues I planned in **JIRA**. This approach helps to ensure that no task will be forgotten.
+
 Besides only developing the system, I use **GitHub version control** and **Branching Strategy** to ensure that each feature is well-developed and functional. Also, using **CI/CD** to support me in integrating code continuously and deploying continuously, allowing me to detect any bugs and conflicts, ensuring that each feature I develop works well so that I can move to the next feature.
 
 
