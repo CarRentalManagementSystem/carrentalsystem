@@ -6,13 +6,10 @@ const Register = () => {
   const [formData, setFormData] = useState({
     role: 'customer', name: '', email: '', password: '', phoneNumber: '', dateOfBirth: ''
   });
-  console.log('Form Data:', formData);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted');
-    console.log(formData);
 
     if (!formData.name || !formData.email || !formData.password || !formData.phoneNumber || !formData.dateOfBirth) {
       alert('Please fill out all fields.');

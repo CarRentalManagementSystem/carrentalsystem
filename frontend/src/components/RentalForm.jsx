@@ -8,8 +8,6 @@ const RentalForm = ({ rentals, setRentals, editingRental, setEditingRental }) =>
   const location = useLocation();
   const selectedCar = location.state?.car;
 
-  console.log("Selected Car passed to RentalForm:", selectedCar);
-
   const [formData, setFormData] = useState({ pickupDate: '', returnDate: '' });
 
 
@@ -82,7 +80,6 @@ const RentalForm = ({ rentals, setRentals, editingRental, setEditingRental }) =>
       };
 
       if (editingRental) {
-        console.log(formData)
         const response = await axiosInstance.put(`/api/rentals/${editingRental._id}`, payload, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
@@ -91,7 +88,6 @@ const RentalForm = ({ rentals, setRentals, editingRental, setEditingRental }) =>
         const response = await axiosInstance.post('/api/rentals', payload, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        console.log(response.data)
         setRentals([...rentals, response.data]);
       }
 
@@ -109,14 +105,14 @@ const RentalForm = ({ rentals, setRentals, editingRental, setEditingRental }) =>
 
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
-      <h1 className="text-2xl font-bold mb-4">{editingRental ? 'Editing your Booking:' :
+    <form onSubmit={handleSubmit} className="p-6 mb-6 bg-white rounded shadow-md">
+      <h1 className="mb-4 text-2xl font-bold">{editingRental ? 'Editing your Booking:' :
         'You have selected this car:'}</h1>
       {(selectedCar || editingRental) && (
         <div className="mb-4">
           <h2 className="text-xl font-semibold">{formData.brand} {formData.model}</h2>
-          <p className="text-m text-gray-500">{formData.year}</p>
-          <p className="text-xl text-green-900 font-bold">Price per Day: ${formData.pricePerDay}</p>
+          <p className="text-gray-500 text-m">{formData.year}</p>
+          <p className="text-xl font-bold text-green-900">Price per Day: ${formData.pricePerDay}</p>
         </div>
       )}
       <label>Pickup Date</label>
@@ -124,7 +120,7 @@ const RentalForm = ({ rentals, setRentals, editingRental, setEditingRental }) =>
         type="date"
         value={formData.pickupDate}
         onChange={(e) => setFormData({ ...formData, pickupDate: e.target.value })}
-        className="w-full mb-4 p-2 border rounded"
+        className="w-full p-2 mb-4 border rounded"
       />
 
       <label>Return Date</label>
@@ -132,10 +128,9 @@ const RentalForm = ({ rentals, setRentals, editingRental, setEditingRental }) =>
         type="date"
         value={formData.returnDate}
         onChange={(e) => setFormData({ ...formData, returnDate: e.target.value })}
-        className="w-full mb-4 p-2 border rounded"
+        className="w-full p-2 mb-4 border rounded"
       />
-      <button type="submit" className="w-full bg-green-600 text-white p-2 
-      rounded hover:bg-green-700 transform hover:scale-105 transition-transform duration-200">
+      <button type="submit" className="w-full p-2 text-white transition-transform duration-200 transform bg-green-600 rounded hover:bg-green-700 hover:scale-105">
         {editingRental ? 'Update Rental' : 'Confirm Rental'}
       </button>
     </form>

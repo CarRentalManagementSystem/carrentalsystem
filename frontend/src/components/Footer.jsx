@@ -7,8 +7,6 @@ const Footer = () => {
 
   const {user} = useAuth();
 
-  console.log(user)
-
   const vehicleGroups =[
       { id: '1', name: 'Sedan' },
       { id: '2', name: 'Compact' },

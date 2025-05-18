@@ -17,8 +17,6 @@ const RentalForm = ({ rentals, setRentals}) => {
     if(user){formData.senderId = user.id;} 
     else{formData.rentalId = null;}
     
-    console.log('Form submitted');
-    console.log(formData);
 
     if (  !formData.title || !formData.issueCategory || !formData.issueContent) {
       

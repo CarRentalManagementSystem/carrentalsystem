@@ -11,7 +11,6 @@ const Rentals = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log("Bookings received:", rentals);
         const fetchRentals = async () => {
             try {
                 const response = await axiosInstance.get('/api/rentals', {
@@ -28,8 +27,8 @@ const Rentals = () => {
     }, [user]);
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-6">My Bookings</h1>
+        <div className="container p-6 mx-auto">
+            <h1 className="mb-6 text-3xl font-bold">Current Bookings</h1>
             <MyBookingContainer bookings={rentals} />
         </div>
     );

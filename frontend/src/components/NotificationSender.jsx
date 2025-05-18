@@ -11,7 +11,6 @@ export const NotificationSender = async ({ targetIndiviual, targetRole, title, c
 
   try {
     await axiosInstance.post('/api/notification', formData);
-    console.log('Notification sent successfully');
   } catch (error) {
     console.error('Notification send failed:', {
       status: error.response?.status,

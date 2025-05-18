@@ -21,8 +21,6 @@ const VehicleBoard = () => {
     selectedGroup: initialGroup,
   } = location.state || {};
 
-  console.log(location.state);
-
   const [vehicles, setVehicles] = useState([]);
   const [allVehicles, setAllVehicles] = useState([]);
   const [open, setOpen] = useState(false);
