@@ -120,9 +120,8 @@ const VehicleDetails = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       });
 
-      // Update state first, then show alert
-
       alert('Successfully Deleted!');
+      navigate('/vehicles')
     } catch (error) {
       console.error('Error deleting vehicle:', error);
       alert('Failed to delete vehicle. Please try again.');
