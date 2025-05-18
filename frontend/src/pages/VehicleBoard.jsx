@@ -217,7 +217,9 @@ const VehicleBoard = () => {
 
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
-      <h1 className='py-5 text-center'>Select a vehicle group</h1>
+      <h1 className='py-5 text-center'>
+        {user?.role === 'admin' ? 'Manage' : 'Select'} a vehicle group
+      </h1>
       <VehicleGroupFilter
         vehicleGroups={vehicleGroups}
         selectedVehicleGroup={selectedGroup}
