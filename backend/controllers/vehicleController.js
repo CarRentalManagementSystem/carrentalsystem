@@ -1,6 +1,5 @@
-//Get Car Function:
-//Only allow user to view cars
 
+// get all vehicles
 const Vehicle = require('../models/Vehicle');
 
 const getAllVehicles= async (req, res) => {
@@ -12,6 +11,7 @@ const getAllVehicles= async (req, res) => {
     }
 };
 
+// get only one vehicle
 const getOneVehicle = async (req, res) => {
     try {
         const vehicle = await Vehicle.findById(req.params.id)
@@ -21,6 +21,7 @@ const getOneVehicle = async (req, res) => {
     }
 } 
 
+// add one vehicle (agent only)
 const addVehicle = async (req, res) => {
   if (req.user.role === 'admin') {
     try {
@@ -37,6 +38,7 @@ const addVehicle = async (req, res) => {
   }
 };
 
+// update one vehicle (agent only)
 const updateVehicle = async (req, res) => {
     if (req.user.role === 'admin') {
         try {
@@ -54,6 +56,7 @@ const updateVehicle = async (req, res) => {
     }
 }
 
+// delete one vehicle (agent only)
 const deleteVehicle = async (req,res) => {
     if (req.user.role === 'admin') {
       try {
