@@ -114,7 +114,7 @@ carrentalsystem/
 
 ## **8. API Testing**
 
-Link to postman API testing: 
+Link to postman API testing: https://assignment2-636.postman.co/workspace/Assignment2-636-Workspace~ca670901-447e-4e52-8d50-873ffa31f622/collection/44372605-c8a2b4d9-121a-4684-9e52-6031a0f835f5?action=share&creator=45020708&active-environment=44372605-71732f9a-f44b-4af7-9e8a-ef18b0e25f7d
 
 * Thorough API testing performed using Postman
 * Test cases include:
