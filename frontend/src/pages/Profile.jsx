@@ -4,7 +4,7 @@ import axiosInstance from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const { user } = useAuth(); // Access user token from context
+  const { user, setUser } = useAuth(); // Access user token from context
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,6 +27,7 @@ const Profile = () => {
           email: response.data.email,
           phoneNumber: response.data.phoneNumber,
         });
+        
       } catch (error) {
         alert('Failed to fetch profile. Please try again.');
       } finally {
@@ -45,6 +46,14 @@ const Profile = () => {
       await axiosInstance.put('/api/auth/profile', formData, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
+      
+      setUser((prev) => ({
+        ...prev,
+        name: formData.name,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+      }));
+
       alert('Profile updated successfully!');
       navigate('/');
     } catch (error) {
