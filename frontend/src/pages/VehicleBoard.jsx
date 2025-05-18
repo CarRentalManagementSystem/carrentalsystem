@@ -1,4 +1,3 @@
-
 import { useLocation, useNavigate } from 'react-router-dom';
 import RentalDateFilter from '../components/RentalDateFilter';
 import VehicleGroupFilter from '../components/VehicleGroupFilter';
@@ -27,10 +26,6 @@ const VehicleBoard = () => {
   const [message, setMessage] = useState('');
 
   /* Default dates when unselected */
-
-
-  /* automatically reset return date to a day after rented date to allow smoother date setting flow */
-
   const defaultRentedDate = new Date().toISOString().split('T')[0];
 
   const defaultReturnDate = (() => {
@@ -45,7 +40,6 @@ const VehicleBoard = () => {
   const [editReturnedDate, setEditReturnedDate] = useState(
     initialReturnedDate || defaultReturnDate
   );
-
 
   useEffect(() => {
     const defaultReturnDate = (() => {
@@ -125,9 +119,17 @@ const VehicleBoard = () => {
     { id: '26', name: 'Lexus' },
   ]);
 
-  const [selectedGroup, setSelectedGroup] = useState( initialGroup || '0');
+  // Initialize with the value from location state if available
+  const [selectedGroup, setSelectedGroup] = useState(initialGroup || '0');
   const [selectedMake, setSelectedMake] = useState('0');
   const [selectedFuelType, setSelectedFuelType] = useState('0');
+
+  // Effect to respond to location state changes
+  useEffect(() => {
+    if (location.state?.selectedGroup) {
+      setSelectedGroup(location.state.selectedGroup);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -135,45 +137,48 @@ const VehicleBoard = () => {
         const response = await axiosInstance.get('/api/vehicles');
         setAllVehicles(response.data);
 
-        // Apply initial filters if they exist
-        if (initialGroup && initialGroup !== '0') {
-          const filteredVehicles = response.data.filter(
-            (vehicle) =>
-              vehicle.techSpecs?.type ===
-              vehicleGroups.find((group) => group.id === initialGroup).name && vehicle.vehicleStatus === 'available'
-          );
-          setVehicles(filteredVehicles);
-        } else {
-          setVehicles(response.data);
-        }
+        // Apply filters based on the current selectedGroup
+        applyFilters(
+          selectedGroup,
+          selectedMake,
+          selectedFuelType,
+          response.data
+        );
       } catch (error) {
         console.error('Failed to fetch the car data.');
         setMessage('Failed to fetch vehicles. Please try again.');
         setOpen(true);
       }
     };
-
     fetchVehicles();
-  }, [initialGroup, vehicleGroups]);
+  }, []);
 
+  // Effect to filter vehicles when selectedGroup changes
+  useEffect(() => {
+    applyFilters(selectedGroup, selectedMake, selectedFuelType, allVehicles);
+  }, [selectedGroup, selectedMake, selectedFuelType]);
 
   const handleSelectVehicleGroup = (groupId) => {
     setSelectedGroup(groupId);
-    applyFilters(groupId, selectedMake, selectedFuelType);
   };
 
   const handleSelectVehicleMake = (makeId) => {
     setSelectedMake(makeId);
-    applyFilters(selectedGroup, makeId, selectedFuelType);
   };
 
   const handleSelectFuelType = (fuelTypeId) => {
     setSelectedFuelType(fuelTypeId);
-    applyFilters(selectedGroup, selectedMake, fuelTypeId);
   };
 
-  const applyFilters = (groupId, makeId, fuelId) => {
-    let filteredVehicles = allVehicles;
+  const applyFilters = (
+    groupId,
+    makeId,
+    fuelId,
+    vehiclesToFilter = allVehicles
+  ) => {
+    if (!vehiclesToFilter.length) return;
+
+    let filteredVehicles = vehiclesToFilter;
 
     if (groupId !== '0') {
       const groupName = vehicleGroups.find(
@@ -213,7 +218,6 @@ const VehicleBoard = () => {
       },
     });
   };
-
 
   return (
     <div className='min-h-screen px-12 bg-gray-100'>
