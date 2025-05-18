@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Car, User } from 'lucide-react';
+import { Bell, Car, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 
@@ -29,10 +29,12 @@ const CustomerNavbar = ({ user, logout, navigate }) => {
   return (
     <header className='container flex items-center justify-between px-6 py-4'>
       <GeneralNavbar />
-      <Link to='/rentals' className="hover:text-primary font-['Work_Sans']">My Bookings</Link>
       <div className='flex items-center gap-4'>
-        <Link to='/notification' className="hover:text-primary font-['Work_Sans']">Notification</Link>
+        <Link to='/rentals' className="hover:text-primary font-['Work_Sans']">My Bookings</Link>
         <Link to='/profile' className='flex items-center gap-2'>
+        <div className='p-2 text-white rounded-full bg-primary'>
+          <Link Link to='/notification' className="hover:text-primary-700 font-['Work_Sans']"><Bell className='w-4 h-4'/></Link>
+        </div>
           <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'} </span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
             <User className='w-6 h-6' />
@@ -61,24 +63,46 @@ const AdminNavbar = ({ user, logout, navigate }) => {
           <div className='p-2 rounded-full bg-primary'>
             <Car className='w-6 h-6 text-white' />
           </div>
-          <span className="text-lg font-medium font-['Work_Sans'] " >Best Car Rental</span>
+          <span className="text-lg font-medium font-['Work_Sans'] ">
+            Best Car Rental
+          </span>
         </div>
-        <Link to='/' className="hover:text-primary font-['Work_Sans']">Home</Link>
-        <Link to='/vehicles' className="hover:text-primary font-['Work_Sans']">Vehicles</Link>
-        <Link to='/returnVehicle' className='hover:text-primary'>View Rental</Link>
-        <Link to='/issue' className="hover:text-primary font-['Work_Sans']">View Issue Reports</Link>
+        <Link to='/' className="hover:text-primary font-['Work_Sans']">
+          Home
+        </Link>
+        <Link to='/vehicles' className="hover:text-primary font-['Work_Sans']">
+          Vehicles
+        </Link>
+        <Link to='/returnVehicle' className='hover:text-primary'>
+          View Rental
+        </Link>
+        <Link to='/issue' className="hover:text-primary font-['Work_Sans']">
+          View Issue Reports
+        </Link>
       </nav>
       <div className='flex items-center gap-4'>
-        <Link to='/notification' className="hover:text-primary font-['Work_Sans']">Notification</Link>
+        <div className='p-2 text-white rounded-full bg-primary'>
+          <Link
+            Link
+            to='/notification'
+            className="hover:text-primary-700 font-['Work_Sans']"
+          >
+            <Bell className='w-4 h-4' />
+          </Link>
+        </div>
         <Link to='/profile' className='flex items-center gap-2'>
-          <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'}      ({user.role})</span>
+          <span className="text-sm text-gray-600 font-['Work_Sans']">
+            Hello, {user.name || 'User'} ({user.role})
+          </span>
           <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
             <User className='w-6 h-6' />
           </div>
         </Link>
 
-        <button onClick={handleLogout} className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700 font-['Work_Sans']">
-
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700 font-['Work_Sans']"
+        >
           Logout
         </button>
       </div>
