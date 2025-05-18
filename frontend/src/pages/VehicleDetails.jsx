@@ -8,6 +8,7 @@ import ItemBox from '../components/ItemBox';
 import { useAuth } from '../context/AuthContext';
 import Toast from '../components/Toast';
 import RentalDateFilter from '../components/RentalDateFilter';
+import RecommendedVehicles from '../components/RecommendedVehicles';
 
 const VehicleDetails = () => {
   let navigate = useNavigate();
@@ -16,6 +17,7 @@ const VehicleDetails = () => {
   const location = useLocation();
   const {
     vehicle,
+    vehicles,
     dates: { rentedDate, returnedDate },
 
   } = location.state || {};
@@ -104,6 +106,7 @@ const VehicleDetails = () => {
 
 
   return (
+    <>
     <div className='grid gap-8 m-20 md:grid-cols-2'>
       <div>
         <h1 className='mb-2 text-3xl font-bold'>
@@ -189,6 +192,14 @@ const VehicleDetails = () => {
       </div>
       <Toast open={open} setOpen={setOpen} message={message} />
     </div>
+    <RecommendedVehicles
+      title="Other cars"
+      vehicles={vehicles}
+      showViewAll={true}
+      rentedDate={rentedDate}
+      returnedDate={returnedDate}
+    />
+    </>
   );
 }
 

@@ -12,7 +12,9 @@ const RecommendedVehicles = ({
 
 }) => {
 
-    const recommended = vehicles.slice(0, 4);
+    const shuffled = [...vehicles].sort(() => 0.5 - Math.random());
+    
+    const recommended = shuffled.slice(0, 4);
     const navigate = useNavigate();
 
     return (

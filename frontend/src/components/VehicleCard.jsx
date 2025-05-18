@@ -13,7 +13,7 @@ const VehicleCard = ({ vehicle, vehicles, setVehicles, dates }) => {
   const handleClickDetails = () => {
     try {
       navigate(`/vehicle-details/${vehicle._id}`, {
-        state: { vehicle, dates },
+        state: { vehicle, vehicles, dates },
       });
     } catch (error) {
       console.error(error);
