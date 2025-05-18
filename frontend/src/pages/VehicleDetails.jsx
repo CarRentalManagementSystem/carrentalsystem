@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Check } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
@@ -7,6 +7,7 @@ import SpecItem from '../components/SpecItem';
 import ItemBox from '../components/ItemBox';
 import { useAuth } from '../context/AuthContext';
 import Toast from '../components/Toast';
+import RentalDateFilter from '../components/RentalDateFilter';
 
 const VehicleDetails = () => {
   let navigate = useNavigate();
@@ -16,10 +17,14 @@ const VehicleDetails = () => {
   const {
     vehicle,
     dates: { rentedDate, returnedDate },
+
   } = location.state || {};
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [imageError, setImageError] = useState(false);
+  const [duration, setDuration] = useState();
+  const [totalRentalFee, setTotalRentalFee] = useState();
 
   const handleImageError = () => {
     setImageError(true);
@@ -43,18 +48,66 @@ const VehicleDetails = () => {
         vehicleId: vehicle._id,
         vehicle,
         rentalPricePerDay: vehicle.rentalPricePerDay,
-        rentedDate,
-        returnedDate,
+        rentedDate: editRentedDate,
+        returnedDate: editReturnedDate,
         totalRentalFee,
       },
     });
   };
 
-  // Convert ms to days
-  const duration = Math.ceil(
-    (new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24)
+  const [editRentedDate, setEditRentedDate] = useState(
+    rentedDate || null
   );
-  const totalRentalFee = vehicle.rentalPricePerDay * duration;
+  const [editReturnedDate, setEditReturnedDate] = useState(
+    returnedDate  || null
+  );
+
+  useEffect(() => {
+    const defaultReturnDate = (() => {
+      const tomorrow = new Date(editRentedDate);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return tomorrow.toISOString().split('T')[0];
+    })();
+
+    /* only if the newly set rented date is set after previously set return date */
+    if (editRentedDate > editReturnedDate) {
+      setEditReturnedDate(defaultReturnDate);
+    }
+  }, [editRentedDate]);
+
+  const handleChangeEditRentedDate = (date) => {
+    setEditRentedDate(date);
+  };
+
+  const handleChangeEditReturnedDate = (date) => {
+    if (new Date(date) < new Date(editRentedDate)) {
+      setMessage('Return date cannot be before rental date');
+      setOpen(true);
+      return;
+    }
+    setEditReturnedDate(date);
+  };
+
+  useEffect(() => {
+    
+    const newDuration = Math.ceil(
+        (new Date(editReturnedDate) - new Date(editRentedDate)) / (1000 * 60 * 60 * 24)
+      );
+
+    setDuration(newDuration);
+
+    const newTotalRentalFee = vehicle.rentalPricePerDay * duration
+
+    setTotalRentalFee(newTotalRentalFee);
+    
+  }, [editRentedDate, editReturnedDate, duration, totalRentalFee])
+
+  // Convert ms to days
+  // const duration = Math.ceil(
+  //   (new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24)
+  // );
+  
+  // const totalRentalFee = vehicle.rentalPricePerDay * duration;
   
 
   return (
@@ -67,7 +120,9 @@ const VehicleDetails = () => {
           <span className='text-2xl font-bold text-primary'>
             Total price - ${totalRentalFee}
           </span>
-          <span className='ml-1 text-sm text-gray-500'>/ {duration} {duration > 1 ? 'days' : 'day'}</span>
+          <span className='ml-1 text-sm text-gray-500'>
+            / {duration} {duration > 1 ? 'days' : 'day'}
+          </span>
         </div>
 
         <div className='mb-6'>
@@ -81,14 +136,20 @@ const VehicleDetails = () => {
 
         <div className='grid items-center grid-cols-3 gap-4 p-4 mt-4 mb-4 rounded bg-secondary'>
           <span>
-            <strong>Pick up on:</strong> {rentedDate}
+            <strong>Pick up on:</strong> {editRentedDate}
           </span>
           <span>
-            <strong>Return on:</strong> {returnedDate}
+            <strong>Return on:</strong> {editReturnedDate}
           </span>
           <span>
             <strong>Renting for:</strong> {duration} days
           </span>
+          <RentalDateFilter
+            rentedDate={editRentedDate}
+            returnedDate={editReturnedDate}
+            onChangeRentedDate={handleChangeEditRentedDate}
+            onChangeReturnedDate={handleChangeEditReturnedDate}
+          />
         </div>
       </div>
       <div>
