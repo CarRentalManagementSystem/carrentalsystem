@@ -2,12 +2,18 @@
 const mongoose = require('mongoose');
 
 const rentalSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    carId: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
-    pickupDate: { type: Date, required: true },
-    returnDate: { type: Date, required: true },
-    status: { type: String, enum: ['confirmed', 'completed', 'cancelled'], default: 'confirmed' }
-});
+    customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    vehicleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle' },
+    rentedDate: { type: Date, required: true },
+    returnedDate: { type: Date, required: true },
+    totalRentalFee: { type: Number, required: true },
+    paymentStatus: { type: String, enum: ['paid', 'refunded'], default: 'paid', required: true },
+    rentalStatus: { type: String, enum: ['booked', 'cancelled', 'overdue', 'completed'], default: 'booked', required: true },
+
+},
+    { timestamps: true } // add timestamps to record time
+);
+
 /*
 //fix issue, to avoid conflict
 delete mongoose.models['Rental'];

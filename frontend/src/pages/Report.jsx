@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
-import RentalForm from '../components/RentalForm';
-import RentalList from '../components/RentalList';
+import ReportForm from '../components/ReportForm';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const Rentals = () => {
+const Reports = () => {
   const { user } = useAuth();
   const [rentals, setRentals] = useState([]);
-  const [editingRental, setEditingRental] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,24 +17,28 @@ const Rentals = () => {
         });
         setRentals(response.data);
       } catch (error) {
-        navigate('/login');
+        // navigate('/login');
       }
     };
-
     fetchRentals();
   }, [user, navigate]);
 
+
+
   return (
     <div className="container mx-auto p-6">
-      <RentalForm
-        rentals={rentals}
-        setRentals={setRentals}
-        editingRental={editingRental}
-        setEditingRental={setEditingRental}
-      />
-      <RentalList rentals={rentals} setRentals={setRentals} setEditingRental={setEditingRental} />
+      <h1 className="text-3xl font-bold mb-6">Report Issue</h1>
+      <div className="max-w-xl mx-auto mt-16 bg-white rounded-xl shadow-lg p-8">
+
+        <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">Tell us about your issue{rentals.id}</h1>
+        <ReportForm rentals={rentals} setRentals={setRentals} />
+      </div>
     </div>
   );
+
+
+
+
 };
 
-export default Rentals;
+export default Reports;

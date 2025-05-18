@@ -4,12 +4,11 @@ import axiosInstance from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const { user } = useAuth(); // Access user token from context
+  const { user, setUser } = useAuth(); // Access user token from context
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phoneNumber: '',
-    address: '',
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -27,8 +26,8 @@ const Profile = () => {
           name: response.data.name,
           email: response.data.email,
           phoneNumber: response.data.phoneNumber,
-          address: response.data.address,
         });
+        
       } catch (error) {
         alert('Failed to fetch profile. Please try again.');
       } finally {
@@ -47,6 +46,14 @@ const Profile = () => {
       await axiosInstance.put('/api/auth/profile', formData, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
+      
+      setUser((prev) => ({
+        ...prev,
+        name: formData.name,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+      }));
+
       alert('Profile updated successfully!');
       navigate('/');
     } catch (error) {
@@ -58,44 +65,55 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
+    return <div className="mt-20 text-center">Loading...</div>;
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20">
-      <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
-        <h1 className="text-2xl font-bold mb-4 text-center">Your Profile</h1>
-        <input
-          type="text"
-          placeholder="Name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="tel"
-          placeholder="Phone Number"
-          value={formData.phoneNumber}
-          onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
+    <div className="max-w-xl p-8 mx-auto my-20 bg-white shadow-lg rounded-xl">
+      <form onSubmit={handleSubmit}>
+        <h1 className="justify-start text-black text-4xl text-center font-semibold font-['Work_Sans'] mb-8">Your Profile</h1>
 
-        <input
-          type="text"
-          placeholder="Address"
-          value={formData.address}
-          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <button type="submit" className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700
-        transform hover:scale-105 transition-transform duration-200">
+        <div className="flex items-center gap-4 mb-4">
+          <label className="text-lg font-medium font-['Work_Sans'] w-48">
+            Name
+          </label>
+          <input
+            type="text"
+            placeholder="Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
+          />
+        </div>
+
+        <div className="flex items-center gap-4 mb-4">
+          <label className="text-lg font-medium font-['Work_Sans'] w-48">
+            Email
+          </label>
+          <input
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="w-full px-5 py-2 border border-lg rounded-xl text-lg font-['Work_Sans']"
+          />
+        </div>
+
+        <div className="flex items-center gap-4 mb-4">
+          <label className="text-lg font-medium font-['Work_Sans'] w-48">
+            Phone number
+          </label>
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            value={formData.phoneNumber}
+            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+            className="w-full p-2 mb-4 border rounded"
+          />
+        </div>
+
+        <button type="submit"
+          className="w-full bg-primary text-white text-lg font-['Work_Sans'] font-medium p-2 rounded hover:bg-primary-700 transition">
           {loading ? 'Updating...' : 'Update Profile'}
         </button>
       </form>

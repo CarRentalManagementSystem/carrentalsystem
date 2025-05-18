@@ -6,15 +6,17 @@ const connectDB = require('./config/db');
 
 dotenv.config(); //read .env
 
-
-
 const app = express(); // instance of Express, deal with HTTP request
 
 app.use(cors());
 app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/rentals', require('./routes/rentalRoutes'));
-app.use('/api/cars', require('./routes/carRoutes'));
+app.use('/api/issue', require('./routes/issueRoutes'));
+app.use('/api/vehicles', require('./routes/vehicleRoutes'));
+app.use('/api/notification', require('./routes/notificationRoutes'));
+app.use('/api/dashboard', require('./routes/dashboardRoutes'));
+
 
 // Export the app object for testing
 if (require.main === module) {
@@ -22,6 +24,7 @@ if (require.main === module) {
   // If the file is run directly, start the server
   const PORT = process.env.PORT || 5001;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 }
 
 // allow other file to load app (like test.js), won't launch the server
