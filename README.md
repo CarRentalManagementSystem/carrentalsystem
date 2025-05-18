@@ -6,6 +6,15 @@ This project implements a comprehensive **Car Rental System** with separate inte
 
 The project was developed using a systematic approach, including requirements analysis, UI/UX design with Figma, and implementation of design patterns. The team collaborated effectively using GitHub for version control and applied thorough API testing using Postman.
 
+---
+
+This project was developed as part of IFN636: Software Life Cycle Management course.
+
+Team Members:
+- Alex Yoo
+- Hang Chi Lee
+- Yen-Ling Liu
+
 ### **1. Real-World Application**
 
 * The Car Rental System addresses common pain points in vehicle rental processes:
@@ -155,11 +164,3 @@ Link to Figma production ready version:
 * Dashboard interface for agents with data visualization
 * Consistent color scheme and typography
 
----
-
-This project was developed as part of IFN636: Software Life Cycle Management course.
-
-Team Members:
-- Alex Yoo
-- Hang Chi Lee
-- Yen-Ling Liu
