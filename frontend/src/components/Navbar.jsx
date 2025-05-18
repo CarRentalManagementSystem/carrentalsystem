@@ -35,13 +35,12 @@ const CustomerNavbar = ({ user, logout, navigate }) => {
         <div className='p-2 text-white rounded-full bg-primary'>
           <Link Link to='/notification' className="hover:text-primary-700 font-['Work_Sans']"><Bell className='w-4 h-4'/></Link>
         </div>
-          <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'} </span>
-          <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
-            <User className='w-6 h-6' />
-          </div>
+        <span className="text-sm text-gray-600 font-['Work_Sans']">Hello, {user.name || 'User'} </span>
+        <div className='items-center p-1 overflow-hidden border rounded-full'>
+          <User className='w-6 h-6' />
+        </div>
         </Link>
         <button onClick={handleLogout} className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700 font-['Work_Sans']">
-
           Logout
         </button>
       </div>
@@ -92,9 +91,9 @@ const AdminNavbar = ({ user, logout, navigate }) => {
         </div>
         <Link to='/profile' className='flex items-center gap-2'>
           <span className="text-sm text-gray-600 font-['Work_Sans']">
-            Hello, {user.name || 'User'} ({user.role})
+            Hello, {user.name} ({user.role})
           </span>
-          <div className='items-center w-10 h-10 overflow-hidden rounded-full'>
+          <div className='items-center p-1 overflow-hidden border rounded-full'>
             <User className='w-6 h-6' />
           </div>
         </Link>
