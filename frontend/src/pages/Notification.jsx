@@ -25,10 +25,10 @@ const Notifications = () => {
 
   }, [user, navigate]);
   const userNotifications = notifications.filter(
-    (n) => String(n.receiverId) === String(user.id)
+    (n) => String(n.receiverId) === String(user?.id)
   );
   const roleNotifications = notifications.filter(
-    (n) => String(n.receiverRole) === String(user.role)
+    (n) => String(n.receiverRole) === String(user?.role)
   );
 
   return (

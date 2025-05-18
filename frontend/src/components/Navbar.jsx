@@ -91,7 +91,7 @@ const AdminNavbar = ({ user, logout, navigate }) => {
         </div>
         <Link to='/profile' className='flex items-center gap-2'>
           <span className="text-sm text-gray-600 font-['Work_Sans']">
-            Hello, {user.name} ({user.role})
+            Hello, {user?.name} ({user?.role})
           </span>
           <div className='items-center p-1 overflow-hidden border rounded-full'>
             <User className='w-6 h-6' />

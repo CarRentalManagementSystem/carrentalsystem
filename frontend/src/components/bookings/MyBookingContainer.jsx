@@ -13,7 +13,7 @@ const MyBookingsContainer = ({ bookings }) => {
     // Filter visible bookings on mount/update
     useEffect(() => {
         let upcoming = [];
-        if (user.role === 'customer') {
+        if (user?.role === 'customer') {
             upcoming = bookings
                 .filter((b) =>
                     b.rentalStatus === 'booked' &&
@@ -21,7 +21,7 @@ const MyBookingsContainer = ({ bookings }) => {
                     dayjs(b.returnedDate).isAfter(dayjs()))
                 )
                 .sort((a, b) => dayjs(a.returnedDate).diff(dayjs(b.returnedDate)));
-        } else if (user.role === 'admin') {
+        } else if (user?.role === 'admin') {
             // Sort by rentalStatus first, then by returnedDate (most recent first)
             upcoming = [...bookings]
                 .filter((b) => statusFilter === 'all' || b.rentalStatus === statusFilter)
@@ -34,7 +34,7 @@ const MyBookingsContainer = ({ bookings }) => {
         }
 
         setVisibleBookings(upcoming);
-    }, [bookings, user.role, statusFilter]);
+    }, [bookings, user?.role, statusFilter]);
 
 
     // Reminder notifications
@@ -42,7 +42,7 @@ const MyBookingsContainer = ({ bookings }) => {
         visibleBookings.forEach((b) => {
 
             const daysToPickup = dayjs(b.rentedDate).startOf('day').diff(dayjs().startOf('day'), 'day');
-            if(user.role == "customer"){
+            if(user?.role == "customer"){
                 if (daysToPickup === 1) {
                     alert(`Reminder: Your pickup for ${b.vehicleId?.manufacturer} ${b.vehicleId?.model} is tomorrow!`);
             }}
@@ -59,7 +59,7 @@ const MyBookingsContainer = ({ bookings }) => {
     return (
         <section className="max-w-4xl p-6 mx-auto">
 
-            {user.role === 'admin' && (
+            {user?.role === 'admin' && (
                 <div className="mb-6">
                     <select
                         value={statusFilter}

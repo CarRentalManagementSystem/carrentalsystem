@@ -219,7 +219,7 @@ const VehicleDetails = () => {
               icon='distance'
             />
           </ItemBox>
-          {user.role === 'admin' ? (
+          {user?.role === 'admin' ? (
             <div className='grid grid-cols-2 gap-2'>
               <button
                 className='w-full py-3 text-white transition-colors bg-orange-500 rounded hover:bg-orange-700'

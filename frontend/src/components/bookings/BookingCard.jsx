@@ -112,7 +112,7 @@ const BookingCard = ({ booking, onCancelled }) => {
                     {/* Cancel booking and view details */}
                     <div className="flex gap-2 mt-1">
 
-                        {user.role === 'admin' ? (
+                        {user?.role === 'admin' ? (
                             <button
                                 className={`px-3 py-1 text-sm rounded ${
                                     booking.rentalStatus === 'booked'
