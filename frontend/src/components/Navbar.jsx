@@ -8,7 +8,7 @@ const GeneralNavbar = () => (
   <nav className='flex items-center gap-8'>
     <div className='flex items-center gap-2'>
       <div className='p-2 rounded-full bg-primary'>
-        <Car className='w-6 h-6 text-white' />
+        <Car className='text-white ' />
       </div>
       <span className="text-lg font-medium font-['Work_Sans'] " >Best Car Rental</span>
     </div>
