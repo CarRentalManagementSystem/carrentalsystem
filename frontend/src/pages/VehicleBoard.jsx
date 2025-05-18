@@ -21,6 +21,8 @@ const VehicleBoard = () => {
     selectedGroup: initialGroup,
   } = location.state || {};
 
+  console.log(location.state);
+
   const [vehicles, setVehicles] = useState([]);
   const [allVehicles, setAllVehicles] = useState([]);
   const [open, setOpen] = useState(false);
@@ -113,7 +115,7 @@ const VehicleBoard = () => {
     { id: '26', name: 'Lexus' },
   ]);
 
-  const [selectedGroup, setSelectedGroup] = useState(initialGroup || '0');
+  const [selectedGroup, setSelectedGroup] = useState( initialGroup || '0');
   const [selectedMake, setSelectedMake] = useState('0');
   const [selectedFuelType, setSelectedFuelType] = useState('0');
 

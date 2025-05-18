@@ -16,10 +16,13 @@ import AboutUs from './pages/AboutUs';
 import MyBookings from './pages/MyBookings'
 import Notification from './pages/Notification';
 import ReturnVehicle from './pages/ReturnVehicle';
+import Footer from './components/Footer';
+import ScrollToTop from './utils/ScrollToTop';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop/>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -41,6 +44,7 @@ function App() {
         <Route path="/notification" element={<Notification />} />
         <Route path="/returnVehicle" element={<ReturnVehicle />} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }
