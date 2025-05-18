@@ -53,12 +53,12 @@ const Footer = () => {
             <ContactInfo
               icon='email'
               title='Email'
-              content='alexyoo@email.com'
+              content='bestcarental@email.com'
             />
           </div>
 
           <div>
-            <ContactInfo icon='phone' title='Phone' content='+617 547-6401' />
+            <ContactInfo icon='phone' title='Phone' content='+611 234-5678' />
           </div>
         </div>
 
