@@ -66,7 +66,7 @@ const AdminNavbar = ({ user, logout, navigate }) => {
         <Link to='/' className="hover:text-primary font-['Work_Sans']">Home</Link>
         <Link to='/vehicles' className="hover:text-primary font-['Work_Sans']">Vehicles</Link>
         <Link to='/returnVehicle' className='hover:text-primary'>View Rental</Link>
-        <Link to='/issue' className="hover:text-primary font-['Work_Sans']">View Issues</Link>
+        <Link to='/issue' className="hover:text-primary font-['Work_Sans']">View Issue Reports</Link>
       </nav>
       <div className='flex items-center gap-4'>
         <Link to='/notification' className="hover:text-primary font-['Work_Sans']">Notification</Link>
