@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 
 // get all vehicles
 const Vehicle = require('../models/Vehicle');
@@ -23,9 +24,11 @@ const getOneVehicle = async (req, res) => {
 
 // add one vehicle (agent only)
 const addVehicle = async (req, res) => {
+
   if (req.user.role === 'admin') {
     try {
       const vehicle = req.body;
+      vehicle.vehicleId = uuidv4();
 
       const newVehicle = Vehicle.create(vehicle);
 
