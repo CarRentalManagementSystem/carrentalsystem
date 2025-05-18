@@ -128,37 +128,37 @@ Link to postman API testing:
 ### API Documentation : 
 
 * Authentication Endpoints
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/profile` - Get user profile
-- `GET /api/auth/allName` - Get all user names
-- `PUT /api/auth/profile` - Update user profile
+ * `POST /api/auth/register` - Register a new user
+ * `POST /api/auth/login` - User login
+ * `GET /api/auth/profile` - Get user profile
+ * `GET /api/auth/allName` - Get all user names
+ * `PUT /api/auth/profile` - Update user profile
 
 * Vehicle Endpoints
-- `GET /api/vehicles` - Get all available vehicles
-- `GET /api/vehicles/:id` - Get vehicle details
-- `POST /api/vehicles/add` - Add a new vehicle (admin only)
-- `PUT /api/vehicles/update/:id` - Update vehicle details (admin only)
-- `DELETE /api/vehicles/delete/:id` - Delete a vehicle (admin only)
+ * `GET /api/vehicles` - Get all available vehicles
+ * `GET /api/vehicles/:id` - Get vehicle details
+ * `POST /api/vehicles/add` - Add a new vehicle (admin only)
+ * `PUT /api/vehicles/update/:id` - Update vehicle details (admin only)
+ * `DELETE /api/vehicles/delete/:id` - Delete a vehicle (admin only)
 
 * Rental Endpoints
-- `GET /api/rentals` - Get all user bookings
-- `POST /api/rentals` - Create a new booking
-- `PATCH /api/rentals/cancel/:id` - Cancel booking
-- `PUT /api/rentals/:id` - Update booking (admin only)
-- `DELETE /api/rentals/:id` - Delete booking details
+ * `GET /api/rentals` - Get all user bookings
+ * `POST /api/rentals` - Create a new booking
+ * `PATCH /api/rentals/cancel/:id` - Cancel booking
+ * `PUT /api/rentals/:id` - Update booking (admin only)
+ * `DELETE /api/rentals/:id` - Delete booking details
 
 * Issue Report Endpoints
-- `GET /api/issues` - Get all issues (admin only)
-- `POST /api/issues` - Report a new issue (customer)
-- `PUT /api/issues/:id` - Update issue status (admin only)
+ * `GET /api/issues` - Get all issues (admin only)
+ * `POST /api/issues` - Report a new issue (customer)
+ * `PUT /api/issues/:id` - Update issue status (admin only)
 
 * Notification Endpoints
-- `GET /api/notification` - Get all notifications
-- `POST /api/notification` - Create a notification
+ * `GET /api/notification` - Get all notifications
+ * `POST /api/notification` - Create a notification
 
 * Dashboard Endpoint
-- `GET /api/dashboard/statistics` - Get all issues (admin only)
+ * `GET /api/dashboard/statistics` - Get all issues (admin only)
 
 
 ## **9. UI/UX Design**
