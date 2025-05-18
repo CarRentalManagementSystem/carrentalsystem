@@ -131,6 +131,8 @@ Link to postman API testing:
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - User login
 - `GET /api/auth/profile` - Get user profile
+- `GET /api/auth/allName` - Get all user names
+- `PUT /api/auth/profile` - Update user profile
 
 * Vehicle Endpoints
 - `GET /api/vehicles` - Get all available vehicles
@@ -139,7 +141,7 @@ Link to postman API testing:
 - `PUT /api/vehicles/update/:id` - Update vehicle details (admin only)
 - `DELETE /api/vehicles/delete/:id` - Delete a vehicle (admin only)
 
-* Booking Endpoints
+* Rental Endpoints
 - `GET /api/rentals` - Get all user bookings
 - `POST /api/rentals` - Create a new booking
 - `PATCH /api/rentals/cancel/:id` - Cancel booking
@@ -150,6 +152,10 @@ Link to postman API testing:
 - `GET /api/issues` - Get all issues (admin only)
 - `POST /api/issues` - Report a new issue (customer)
 - `PUT /api/issues/:id` - Update issue status (admin only)
+
+* Notification Endpoints
+- `GET /api/notification` - Get all notifications
+- `POST /api/notification` - Create a notification
 
 * Dashboard Endpoint
 - `GET /api/dashboard/statistics` - Get all issues (admin only)
