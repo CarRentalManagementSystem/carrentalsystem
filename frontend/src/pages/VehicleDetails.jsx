@@ -102,13 +102,6 @@ const VehicleDetails = () => {
     
   }, [editRentedDate, editReturnedDate, duration, totalRentalFee])
 
-  // Convert ms to days
-  // const duration = Math.ceil(
-  //   (new Date(returnedDate) - new Date(rentedDate)) / (1000 * 60 * 60 * 24)
-  // );
-  
-  // const totalRentalFee = vehicle.rentalPricePerDay * duration;
-  
 
   return (
     <div className='grid gap-8 m-20 md:grid-cols-2'>
