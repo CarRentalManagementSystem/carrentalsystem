@@ -26,7 +26,7 @@ Team Members:
 ## **2. Project Structure**
 
 ```
-car-rental/
+carrentalsystem/
 ├── package.json          # Root package.json for project-wide scripts
 ├── frontend/            # React frontend application
 │   ├── public/
