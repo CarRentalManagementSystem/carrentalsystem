@@ -1,4 +1,4 @@
-const NotificationList = ({ userNotifications, roleNotifications }) => {
+const NotificationList = ({ notifications }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString();
@@ -9,46 +9,33 @@ const NotificationList = ({ userNotifications, roleNotifications }) => {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   // Filter and sort user notifications
-  const recentUserNotifications = [...userNotifications]
+  const recentNotifications = [...notifications]
     .filter((n) => new Date(n.createdAt) >= sevenDaysAgo)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
   // Filter and sort role notifications
-  const recentRoleNotifications = [...roleNotifications]
+  /*const recentRoleNotifications = [...roleNotifications]
     .filter((n) => new Date(n.createdAt) >= sevenDaysAgo)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));*/
 
   return (
     <div>
-      {recentUserNotifications.length === 0 && recentRoleNotifications.length === 0 ? (
+      {recentNotifications.length === 0 ? (
         <p className="text-center text-gray-500">No notifications in the last 7 days.</p>
       ) : (
-        <div>
-          {recentUserNotifications.map((notification) => (
+        recentNotifications.map((notification) => (
+          <div
+            key={notification._id}
+            className="max-w-xl mx-auto mt-4 bg-white border border-gray-100 rounded-xl shadow-lg p-8"
+          >
+            <h3 className="text-lg font-semibold">{notification.title}</h3>
+            <p className="text-sm text-gray-600 mb-1">{formatDate(notification.createdAt)}</p>
             <div
-              key={`user-${notification._id}`}
-              className="max-w-xl mx-auto mt-4 bg-white border border-gray-100 rounded-xl shadow-lg p-8"
-            >
-              <h3 className="text-lg font-semibold">{notification.title}</h3>
-              <p className="text-sm text-gray-600 mb-1">
-                {formatDate(notification.createdAt)}
-              </p>
-              <p className="text-gray-800 mb-1">{notification.content}</p>
-            </div>
-          ))}
-          {recentRoleNotifications.map((notification) => (
-            <div
-              key={`role-${notification._id}`}
-              className="max-w-xl mx-auto mt-4 bg-white border border-gray-100 rounded-xl shadow-lg p-8"
-            >
-              <h3 className="text-lg font-semibold">{notification.title}</h3>
-              <p className="text-sm text-gray-600 mb-1">
-                {formatDate(notification.createdAt)}
-              </p>
-              <p className="text-gray-800 mb-1">{notification.content}</p>
-            </div>
-          ))}
-        </div>
+              className="text-gray-800 mb-1"
+              dangerouslySetInnerHTML={{ __html: notification.content }}
+            />
+          </div>
+        ))
       )}
     </div>
   );
