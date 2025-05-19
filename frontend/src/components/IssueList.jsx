@@ -12,7 +12,7 @@ const IssueList = ({ issues, setIssues }) => {
   const navigate = useNavigate();
 
   const cateList = [
-    "Car Issue", "Lost Item", "Insurance", "Others", "option1", "option2", "option3"
+    "Car Issue", "Lost Item", "Insurance", "Others"
   ];
 
   useEffect(() => {
