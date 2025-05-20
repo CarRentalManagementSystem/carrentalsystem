@@ -10,7 +10,7 @@ const MyBookingsContainer = ({ bookings }) => {
     const [visibleBookings, setVisibleBookings] = useState([]);
     const [statusFilter, setStatusFilter] = useState('all');
 
-    // Filter visible bookings on mount/update
+    // Filter visible bookings
     useEffect(() => {
         let upcoming = [];
         if (user?.role === 'customer') {
@@ -18,7 +18,7 @@ const MyBookingsContainer = ({ bookings }) => {
                 .filter((b) =>
                     b.rentalStatus === 'booked' &&
                     (dayjs(b.returnedDate).isSame(dayjs(), 'day') ||
-                    dayjs(b.returnedDate).isAfter(dayjs()))
+                        dayjs(b.returnedDate).isAfter(dayjs()))
                 )
                 .sort((a, b) => dayjs(a.returnedDate).diff(dayjs(b.returnedDate)));
         } else if (user?.role === 'admin') {
@@ -42,11 +42,12 @@ const MyBookingsContainer = ({ bookings }) => {
         visibleBookings.forEach((b) => {
 
             const daysToPickup = dayjs(b.rentedDate).startOf('day').diff(dayjs().startOf('day'), 'day');
-            if(user?.role == "customer"){
+            if (user?.role == "customer") {
                 if (daysToPickup === 1) {
                     alert(`Reminder: Your pickup for ${b.vehicleId?.manufacturer} ${b.vehicleId?.model} is tomorrow!`);
-            }}
-            
+                }
+            }
+
 
         });
     }, [visibleBookings]);
