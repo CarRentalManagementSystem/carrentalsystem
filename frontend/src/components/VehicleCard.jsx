@@ -47,12 +47,7 @@ const VehicleCard = ({ vehicle, vehicles, setVehicles, dates }) => {
       setVehicles(newVehicles);
 
       alert('Successfully Deleted!');
-
     } catch (error) {
-      
-      console.error('Error deleting vehicle:', error);
-      alert('Failed to delete vehicle. Please try again.');
-      
     } finally {
       setIsDeleting(false);
     }

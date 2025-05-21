@@ -125,7 +125,7 @@ const Dashboard = ({user}) => {
 
             />
             <SummaryFrame
-              title='Total Customers'
+              title='Total New Customers'
               value={todayStats.totalCustomers}
               icon={
 
